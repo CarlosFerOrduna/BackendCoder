@@ -61,7 +61,7 @@ class ProductManager {
             throw new Error(`El id es ${id}, cuando tiene que ser un numero`);
         }
 
-        return this.#products.find((p) => p.id === id) ?? console.error(`Not found`);
+        return this.#products.find((p) => p.id == id) ?? console.error(`Not found`);
     };
 
     updateProduct = async (product) => {
@@ -74,7 +74,7 @@ class ProductManager {
         }
 
         this.#products = this.#products.map((p) => {
-            return p.id === product.id
+            return p.id == product.id
                 ? {
                       id: p.id,
                       title: product?.title ?? p.title,
