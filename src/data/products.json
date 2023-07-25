@@ -1,0 +1,110 @@
+[
+	{
+		"id": null,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC123",
+		"stock": 25
+	},
+	{
+		"id": 1,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC456",
+		"stock": 25
+	},
+	{
+		"id": 2,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC789",
+		"stock": 25
+	},
+	{
+		"id": 3,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC987",
+		"stock": 25
+	},
+	{
+		"id": 4,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC654",
+		"stock": 25
+	},
+	{
+		"id": 5,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "ABC321",
+		"stock": 25
+	},
+	{
+		"id": 6,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF123",
+		"stock": 25
+	},
+	{
+		"id": 7,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF456",
+		"stock": 25
+	},
+	{
+		"id": 8,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF789",
+		"stock": 25
+	},
+	{
+		"id": 9,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF987",
+		"stock": 25
+	},
+	{
+		"id": 10,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF654",
+		"stock": 25
+	},
+	{
+		"id": 11,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": "DEF321",
+		"stock": 25
+	}
+]
