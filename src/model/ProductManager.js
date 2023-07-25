@@ -41,7 +41,7 @@ class ProductManager {
             throw new Error(`El codigo ya existe`);
         }
 
-        const id = Math.max(...this.#products.map((p) => p.id)) + 1;
+        const id = Math.max(...this.#products.map((p) => p.id)) + 1 ?? 1;
 
         this.#products.push({ id: id == -Infinity ? 1 : id, ...product });
 
