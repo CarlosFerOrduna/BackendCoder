@@ -29,7 +29,7 @@ app.get("/products/:pid", async (req, res) => {
     const { pid } = req.params;
 
     if (!pid || isNaN(pid)) {
-        return res.status(404).json({
+        return res.status(400).json({
             status: "error",
             message: "pid not valid",
             date: {}
