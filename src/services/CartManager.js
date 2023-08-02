@@ -42,12 +42,14 @@ class CartManager {
         this.#carts.map((c) => {
             return c.id == cid
                 ? c.products.some((p) => p.product == pid)
-                    ? c.product.map((p) => p.product == pid && p.quantity++)
-                    : c.products.push({ product: pid, quantity: 1 })
+                    ? c.products.map((p) => p.product == pid && p.quantity++)
+                    : c.products.push({ product: parseInt(pid), quantity: 1 })
                 : c;
         });
 
-        return await this.getCartById(cid);
+        await writeFile(this.#path, JSON.stringify(this.#carts, null, "\t"));
+
+        return this.#carts.filter((c) => c.id == cid);
     };
 
     cartExists = async (cid) => {
