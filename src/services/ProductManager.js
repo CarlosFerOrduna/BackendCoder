@@ -26,7 +26,7 @@ class ProductManager {
         }
 
         if (!product?.price || isNaN(product.price)) {
-            throw new Error(`El precio es ${product.price}, cuando debe ser un numero`);
+            throw new Error(`El precio es ${product.price}, cuando debe ser un int`);
         }
 
         if (!product?.status || !typeof product.status == "boolean") {
@@ -34,7 +34,7 @@ class ProductManager {
         }
 
         if (!product?.stock || isNaN(product.stock)) {
-            throw new Error(`El stock es ${product.stock}, cuando debe ser un numero`);
+            throw new Error(`El stock es ${product.stock}, cuando debe ser un int`);
         }
 
         if (!product?.category || !isNaN(product.category)) {
@@ -67,24 +67,14 @@ class ProductManager {
         return this.#products;
     };
 
-    getProductById = async (id) => {
-        await this.#loadProducts();
+    getProductById = async (pid) => {
+        await this.productExists(pid);
 
-        if (!id || isNaN(id)) {
-            throw new Error(`El id es ${id}, cuando tiene que ser un numero`);
-        }
-
-        return this.#products.find((p) => p.id == id) ?? console.error(`Not found`);
+        return this.#products.find((p) => p.id == pid) ?? console.error(`Not found`);
     };
 
     updateProduct = async (product) => {
-        await this.#loadProducts();
-
-        const existsProduct = this.#products.some((p) => p.id == product.id);
-
-        if (!existsProduct) {
-            throw new Error("El producto no existe");
-        }
+        await this.productExists(product.id);
 
         this.#products = this.#products.map((p) => {
             return p.id == product.id
@@ -112,19 +102,25 @@ class ProductManager {
         return this.#products.filter((p) => p.id == product.id);
     };
 
-    deleteProduct = async (id) => {
-        await this.#loadProducts();
+    deleteProduct = async (pid) => {
+        await this.productExists(pid);
 
-        const existsProduct = this.#products.some((p) => p.id == id);
-        if (!existsProduct) {
-            throw new Error("El producto no existe");
-        }
-
-        const product = this.#products.filter((p) => p.id == id);
-
-        this.#products = this.#products.filter((p) => p.id != id);
+        this.#products = this.#products.filter((p) => p.id != pid);
 
         await writeFile(this.#path, JSON.stringify(this.#products, null, "\t"));
+    };
+
+    productExists = async (pid) => {
+        await this.#loadProducts();
+
+        if (!pid || isNaN(pid)) {
+            throw new Error(`El pid es ${pid}, cuando tiene que ser un int`);
+        }
+
+        const existsProduct = this.#products.some((p) => p.id == pid);
+        if (!existsProduct) {
+            throw new Error(`No existe el producto con id: ${pid}`);
+        }
     };
 
     #loadProducts = async () => {
