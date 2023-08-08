@@ -2,9 +2,9 @@ import { Router } from "express";
 import productManager from "../services/ProductManager.js";
 import { uploader } from "../utils/multer.utils.js";
 
-const routerProducts = Router();
+const router = Router();
 
-routerProducts.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
     const { limit } = req.query;
     const products = await productManager.getProducts();
 
@@ -23,7 +23,7 @@ routerProducts.get("/", async (req, res) => {
     });
 });
 
-routerProducts.get("/:pid", async (req, res) => {
+router.get("/:pid", async (req, res) => {
     const { pid } = req.params;
 
     if (!pid || isNaN(pid)) {
@@ -50,7 +50,7 @@ routerProducts.get("/:pid", async (req, res) => {
     });
 });
 
-routerProducts.post("/", uploader.single("file"), async (req, res) => {
+router.post("/", uploader.single("file"), async (req, res) => {
     try {
         const { title, description, code, price, status, stock, category } = req.body;
 
@@ -79,7 +79,7 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
     }
 });
 
-routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
+router.put("/:pid", uploader.single("file"), async (req, res) => {
     try {
         const { title, description, code, price, status, stock, category } = req.body;
         const { pid } = req.params;
@@ -110,7 +110,7 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
     }
 });
 
-routerProducts.delete("/:pid", async (req, res) => {
+router.delete("/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
 
@@ -130,4 +130,4 @@ routerProducts.delete("/:pid", async (req, res) => {
     }
 });
 
-export default routerProducts;
+export default router;

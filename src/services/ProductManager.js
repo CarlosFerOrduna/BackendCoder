@@ -1,4 +1,4 @@
-import { writeFile, readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 
 class ProductManager {
