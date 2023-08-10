@@ -1,0 +1,67 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <p class="text-center fs-1 text-uppercase fw-semibold">formularios</p>
+        </div>
+        <div class="col-9">
+            <form class="m-2">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="title" required>
+                    <label for="title" class="text-uppercase">title</label>
+                </div>
+                <div id="d-title"></div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="description" required>
+                    <label for="description" class="text-uppercase">description</label>
+                </div>
+                <div id="d-description"></div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="code" required>
+                    <label for="code" class="text-uppercase">code</label>
+                </div>
+                <div id="d-code"></div>
+                <div class="input-group mb-3">
+                    <label for="status" class="input-group-text">status</label>
+                    <select id="status" class="form-select">
+                        <option selected>true</option>
+                        <option>false</option>
+                    </select>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="stock" required>
+                    <label for="stock" class="text-uppercase">stock</label>
+                </div>
+                <div id="d-stock"></div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="price" required>
+                    <label for="price" class="text-uppercase">price</label>
+                </div>
+                <div id="d-price"></div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="category" required>
+                    <label for="category" class="text-uppercase">category</label>
+                </div>
+                <div id="d-category"></div>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="thumbnails" required>
+                    <label for="thumbnails"class="input-group-text">thumbnails</label>
+                </div>
+                <button id="btn-form-create" type="button" class="btn btn-outline-primary mt-2 col-12">Crear</button>
+            </form>
+        </div>
+        <div class="col-3">
+            <form>
+                <div class="form-floating m-2">
+                    <input type="text" class="form-control" id="pid" required>
+                    <label for="pid" class="text-uppercase">id product</label>
+                </div>
+                <div id="d-pid"></div>
+                <button id="btn-form-delete" type="submit" class="btn btn-outline-danger mt-2 col-12">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    <div class="row" id="products">
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>
