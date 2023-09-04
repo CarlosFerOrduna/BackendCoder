@@ -1,5 +1,6 @@
 const socket = io();
 
+// PRODUCTS
 function deleteProduct(pid) {
     socket.emit("delete_product", pid);
 }
@@ -9,35 +10,43 @@ function createProduct(product) {
 }
 
 function eventDeleteProduct() {
-    document.getElementById("btn-form-delete").addEventListener("click", function () {
-        const pid = document.getElementById("pid").value;
+    let btnDelete = document.getElementById("btn-form-delete");
 
-        if (checkFields({ pid })) {
-            deleteProduct(pid);
-        }
-    });
+    if (btnDelete) {
+        btnDelete.addEventListener("click", function () {
+            const pid = document.getElementById("pid").value;
+
+            if (checkFields({ pid })) {
+                deleteProduct(pid);
+            }
+        });
+    }
 }
 
 function eventCreateProduct() {
-    document.getElementById("btn-form-create").addEventListener("click", function () {
-        product = {
-            title: document.getElementById("title").value,
-            description: document.getElementById("description").value,
-            code: document.getElementById("code").value,
-            price: document.getElementById("price").value,
-            status: document.getElementById("status").value,
-            stock: document.getElementById("stock").value,
-            category: document.getElementById("category").value
-        };
+    let btnCreate = document.getElementById("btn-form-create");
 
-        const thumbnails = document.getElementById("thumbnails").value;
-        if (checkFields(product)) {
-            createProduct({
-                ...product,
-                thumbnails: thumbnails.substring(thumbnails.lastIndexOf("\\"))
-            });
-        }
-    });
+    if (btnCreate) {
+        btnCreate.addEventListener("click", function () {
+            product = {
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value,
+                code: document.getElementById("code").value,
+                price: document.getElementById("price").value,
+                status: document.getElementById("status").value,
+                stock: document.getElementById("stock").value,
+                category: document.getElementById("category").value
+            };
+
+            const thumbnails = document.getElementById("thumbnails").value;
+            if (checkFields(product)) {
+                createProduct({
+                    ...product,
+                    thumbnails: thumbnails.substring(thumbnails.lastIndexOf("\\"))
+                });
+            }
+        });
+    }
 }
 
 function checkFields(element) {
@@ -62,27 +71,90 @@ function loadProducts() {
     socket.on("load_products", (data) => {
         const products = document.getElementById("products");
 
-        let html = data.products
-            .map((p) => {
-                return `<div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="card m-2" style="width: 13rem;">
-                            <img src="${p.thumbnails}" class="card-img-top" alt="${p.title}">
-                            <div class="card-body">
-                                <h5 class="card-title">title: ${p.title}</h5>
-                                <p class="card-text">description: ${p.description}</p>
-                                <p class="card-text">stock: ${p.stock}</p>
-                                <p class="card-text">id: ${p.id}</p>
-                                <a href="#" class="btn btn-primary">Click</a>
+        if (products) {
+            let html = data.products
+                .map((p) => {
+                    return `<div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="card m-2" style="width: 13rem;">
+                                <img src="${p.thumbnails}" class="card-img-top" alt="${p.title}">
+                                <div class="card-body">
+                                    <h5 class="card-title">title: ${p.title}</h5>
+                                    <p class="card-text">description: ${p.description}</p>
+                                    <p class="card-text">stock: ${p.stock}</p>
+                                    <p class="card-text">id: ${p.id}</p>
+                                    <a href="#" class="btn btn-primary">Click</a>
+                                </div>
                             </div>
-                        </div>
-                    </div>`;
-            })
-            .join("");
+                        </div>`;
+                })
+                .join("");
 
-        products.innerHTML = html;
+            products.innerHTML = html;
+        }
     });
 }
 
+// MESSAGES
+
+let user = "";
+
+const swalWraper = async () => {
+    const { value: email } = await Swal.fire({
+        title: "Enter your email",
+        input: "text",
+        inputLabel: "Your email",
+        inputValue: "",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        inputValidator: (value) => {
+            if (!value) {
+                return "You need to write your email!";
+            }
+        }
+    });
+    user = email;
+    document.getElementById("user").innerHTML = user;
+};
+
+const loadMessages = () => {
+    socket.on("load_message", (data) => {
+        let containerMessage = document.getElementById("all-messages");
+
+        if (containerMessage) {
+            containerMessage.innerHTML = "";
+
+            data.messages.reverse().forEach((m) => {
+                const div = document.createElement("div");
+                div.className = "col-12";
+                div.innerHTML = `<div class="alert alert-primary" role="alert">${m.user}: ${m.message}</div>`;
+                containerMessage.appendChild(div);
+            });
+
+            containerMessage.scrollTop = containerMessage.scrollHeight;
+        }
+    });
+};
+
+const insertMessage = () => {
+    const textBoxMessage = document.getElementById("new-message");
+
+    if (textBoxMessage) {
+        textBoxMessage.addEventListener("keyup", ({ key }) => {
+            if (key == "Enter" && textBoxMessage.value != "") {
+                socket.emit("insert_message", {
+                    user: user,
+                    message: textBoxMessage.value
+                });
+
+                textBoxMessage.value = "";
+            }
+        });
+    }
+};
+
 loadProducts();
+loadMessages();
 eventCreateProduct();
 eventDeleteProduct();
+swalWraper();

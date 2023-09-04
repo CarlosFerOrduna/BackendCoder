@@ -6,7 +6,7 @@ class CartManager {
     #carts;
     #path;
     constructor() {
-        this.#path = resolve("./src/data/carts.json");
+        this.#path = resolve("./src/dao/data/carts.json");
         this.#carts = [];
     }
 

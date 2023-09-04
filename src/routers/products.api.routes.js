@@ -1,12 +1,12 @@
 import { Router } from "express";
-import productManager from "../services/ProductManager.js";
+import productService from "../services/products.service.js";
 import { uploader } from "../utils/multer.utils.js";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
     const { limit } = req.query;
-    const products = await productManager.getProducts();
+    const products = await productService.getProducts();
 
     if (limit && !isNaN(limit)) {
         return res.status(200).json({
@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
     const { pid } = req.params;
 
-    if (!pid || isNaN(pid)) {
+    if (!pid) {
         return res.status(400).json({
             status: "error",
             message: "pid not valid",
@@ -34,7 +34,7 @@ router.get("/:pid", async (req, res) => {
         });
     }
 
-    const product = await productManager.getProductById(pid);
+    const product = await productService.getProductById(pid);
     if (!product) {
         return res.status(404).json({
             status: "error",
@@ -54,7 +54,7 @@ router.post("/", uploader.single("file"), async (req, res) => {
     try {
         const { title, description, code, price, status, stock, category } = req.body;
 
-        const product = await productManager.addProduct({
+        const product = await productService.addProduct({
             title,
             description,
             code,
@@ -84,8 +84,7 @@ router.put("/:pid", uploader.single("file"), async (req, res) => {
         const { title, description, code, price, status, stock, category } = req.body;
         const { pid } = req.params;
 
-        const product = await productManager.updateProduct({
-            id: pid,
+        const product = await productService.updateProduct(pid, {
             title,
             description,
             code,
@@ -114,7 +113,7 @@ router.delete("/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
 
-        await productManager.deleteProduct(pid);
+        await productService.deleteProduct(pid);
 
         return res.status(204).json({
             status: "success",

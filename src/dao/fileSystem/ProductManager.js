@@ -6,7 +6,7 @@ class ProductManager {
     #path;
 
     constructor() {
-        this.#path = resolve("./src/data/products.json");
+        this.#path = resolve("./src/dao/data/products.json");
         this.#products = [];
     }
 
