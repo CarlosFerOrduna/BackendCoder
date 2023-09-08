@@ -1,12 +1,12 @@
-import { readFile, writeFile } from "fs/promises";
-import { resolve } from "path";
-import productManager from "./ProductManager.js";
+import { readFile, writeFile } from 'fs/promises';
+import { resolve } from 'path';
+import productManager from './ProductManager.js';
 
 class CartManager {
     #carts;
     #path;
     constructor() {
-        this.#path = resolve("./src/dao/data/carts.json");
+        this.#path = resolve('./src/dao/data/carts.json');
         this.#carts = [];
     }
 
@@ -19,7 +19,7 @@ class CartManager {
 
         this.#carts.push(newCart);
 
-        await writeFile(this.#path, JSON.stringify(this.#carts, null, "\t"));
+        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'));
 
         return newCart;
     };
@@ -36,7 +36,7 @@ class CartManager {
 
         const product = await productManager.getProductById(pid);
         if (product.stock - 1 < 0) {
-            throw new Error("El producto no cuenta con el stock suficiente");
+            throw new Error('El producto no cuenta con el stock suficiente');
         }
 
         this.#carts.map((c) => {
@@ -47,7 +47,7 @@ class CartManager {
                 : c;
         });
 
-        await writeFile(this.#path, JSON.stringify(this.#carts, null, "\t"));
+        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'));
 
         return this.#carts.filter((c) => c.id == cid);
     };
@@ -67,7 +67,7 @@ class CartManager {
 
     #loadCarts = async () => {
         try {
-            this.#carts = JSON.parse(await readFile(this.#path, "utf-8"));
+            this.#carts = JSON.parse(await readFile(this.#path, 'utf-8'));
         } catch {
             this.#carts = [];
         }

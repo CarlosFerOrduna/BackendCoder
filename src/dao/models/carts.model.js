@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const CartItemSchema = new Schema({
     product: {
         type: Schema.Types.ObjectId,
-        ref: "products",
+        ref: 'products',
         required: true
     },
     quantity: {
@@ -17,6 +17,6 @@ const CartSchema = new Schema({
     products: [CartItemSchema]
 });
 
-const CartModel = model("carts", CartSchema);
+const CartModel = model('carts', CartSchema);
 
 export { CartModel };

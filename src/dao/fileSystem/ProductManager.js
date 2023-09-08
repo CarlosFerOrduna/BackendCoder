@@ -1,12 +1,12 @@
-import { readFile, writeFile } from "fs/promises";
-import { resolve } from "path";
+import { readFile, writeFile } from 'fs/promises';
+import { resolve } from 'path';
 
 class ProductManager {
     #products;
     #path;
 
     constructor() {
-        this.#path = resolve("./src/dao/data/products.json");
+        this.#path = resolve('./src/dao/data/products.json');
         this.#products = [];
     }
 
@@ -29,7 +29,7 @@ class ProductManager {
             throw new Error(`El precio es ${product.price}, cuando debe ser un int`);
         }
 
-        if (!product?.status || !typeof product.status == "boolean") {
+        if (!product?.status || !typeof product.status == 'boolean') {
             product.status = true;
         }
 
@@ -56,7 +56,7 @@ class ProductManager {
 
         this.#products.push(newProduct);
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, "\t"));
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
 
         return newProduct;
     };
@@ -97,7 +97,7 @@ class ProductManager {
                 : p;
         });
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, "\t"));
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
 
         return this.#products.filter((p) => p.id == product.id);
     };
@@ -107,7 +107,7 @@ class ProductManager {
 
         this.#products = this.#products.filter((p) => p.id != pid);
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, "\t"));
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
     };
 
     productExists = async (pid) => {
@@ -125,7 +125,7 @@ class ProductManager {
 
     #loadProducts = async () => {
         try {
-            this.#products = JSON.parse(await readFile(this.#path, "utf-8"));
+            this.#products = JSON.parse(await readFile(this.#path, 'utf-8'));
         } catch {
             this.#products = [];
         }

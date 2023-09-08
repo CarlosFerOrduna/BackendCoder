@@ -1,18 +1,9 @@
-import { ProductModel } from "../DAO/models/products.model.js";
+import { ProductModel } from '../DAO/models/products.model.js';
 
-class ProductService {
-    addProduct = async (product) => {
+const productService = {
+    addProduct: async (product) => {
         try {
-            const newProduct = new ProductModel({
-                title: product.title,
-                description: product.description,
-                code: product.code,
-                price: product.price,
-                status: product.status,
-                stock: product.stock,
-                category: product.category,
-                thumbnails: product.thumbnail
-            });
+            const newProduct = new ProductModel(product);
 
             await newProduct.validate();
 
@@ -20,46 +11,27 @@ class ProductService {
         } catch (error) {
             throw new Error(`ERROR: ${error.message}. DETAIL: ${error.errors}`);
         }
-    };
-
-    getProducts = async () => {
+    },
+    getProducts: async (limit, sort, page, query) => {
         try {
-            return await ProductModel.find({});
+            return await ProductModel.find({}).limit(limit).sort({ price: sort });
         } catch (error) {
             throw new Error(`Error searching products: ${error.message}`);
         }
-    };
-
-    getProductById = async (id) => {
+    },
+    getProductById: async (id) => {
         try {
             const product = await ProductModel.findById(id);
             if (!product) {
-                throw new Error("The product does not exist");
+                throw new Error('The product does not exist');
             }
 
             return product;
         } catch (error) {
             throw new Error(`Error searching product: ${error.message}`);
         }
-    };
-
-    getLimitedProducts = async (limit) => {
-        try {
-            return await ProductModel.find({}).limit(limit);
-        } catch (error) {
-            throw new Error(`Error searching products: ${error.message}`);
-        }
-    };
-
-    getSortedProducts = async (sort) => {
-        try {
-            return await ProductModel.find({}).sort(sort);
-        } catch (error) {
-            throw new Error(`Error searching products: ${error.message}`);
-        }
-    };
-
-    updateProduct = async (pid, product) => {
+    },
+    updateProduct: async (pid, product) => {
         const update = {};
 
         if (product?.title && isNaN(product?.title)) {
@@ -98,25 +70,23 @@ class ProductService {
             new: true
         });
         if (!updatedProduct) {
-            throw new Error("The product does not exist");
+            throw new Error('The product does not exist');
         }
 
         return updatedProduct;
-    };
-
-    deleteProduct = async (id) => {
+    },
+    deleteProduct: async (id) => {
         try {
             const deletedProduct = await ProductModel.findByIdAndDelete(id);
             if (!deletedProduct) {
-                throw new Error("The product does not exist");
+                throw new Error('The product does not exist');
             }
 
             return deletedProduct;
         } catch (error) {
             throw new Error(`Error deleting product: ${error.message}`);
         }
-    };
-}
+    }
+};
 
-const productService = new ProductService();
 export default productService;
