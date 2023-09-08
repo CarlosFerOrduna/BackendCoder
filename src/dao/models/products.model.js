@@ -14,4 +14,4 @@ const productSchema = new Schema({
 
 productSchema.plugin(paginate);
 
-export const ProductModel = model('products', productSchema);
+export const productModel = model('products', productSchema);

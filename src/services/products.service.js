@@ -1,9 +1,9 @@
-import { ProductModel } from '../DAO/models/products.model.js';
+import { productModel } from '../DAO/models/products.model.js';
 
 const productService = {
     addProduct: async (product) => {
         try {
-            const newProduct = new ProductModel(product);
+            const newProduct = new productModel(product);
 
             await newProduct.validate();
 
@@ -14,14 +14,21 @@ const productService = {
     },
     getProducts: async (limit, sort, page, query) => {
         try {
-            return await ProductModel.find({}).limit(limit).sort({ price: sort });
+            if (query) {
+                return await productModel.aggregate([
+                    {
+                        $match: {}
+                    }
+                ]);
+            }
+            return await productModel.find({}).limit(limit).sort({ price: sort });
         } catch (error) {
             throw new Error(`Error searching products: ${error.message}`);
         }
     },
     getProductById: async (id) => {
         try {
-            const product = await ProductModel.findById(id);
+            const product = await productModel.findById(id);
             if (!product) {
                 throw new Error('The product does not exist');
             }
@@ -66,7 +73,7 @@ const productService = {
             update.$push = { thumbnails: product?.thumbnail };
         }
 
-        const updatedProduct = await ProductModel.findByIdAndUpdate(pid, update, {
+        const updatedProduct = await productModel.findByIdAndUpdate(pid, update, {
             new: true
         });
         if (!updatedProduct) {
@@ -77,7 +84,7 @@ const productService = {
     },
     deleteProduct: async (id) => {
         try {
-            const deletedProduct = await ProductModel.findByIdAndDelete(id);
+            const deletedProduct = await productModel.findByIdAndDelete(id);
             if (!deletedProduct) {
                 throw new Error('The product does not exist');
             }
