@@ -1,12 +1,12 @@
-import { CartModel } from '../dao/models/carts.model.js';
+import { cartModel } from '../dao/models/carts.model.js';
 import productService from './products.service.js';
 
 const cartService = {
     createCart: async () => {
-        return await CartModel.create({});
+        return await cartModel.create({});
     },
     getCartById: async (id) => {
-        const cart = await CartModel.findById(id);
+        const cart = await cartModel.findById(id).populate('products.product');
         if (!cart) {
             throw new Error('The Cart does not exist');
         }
@@ -14,7 +14,7 @@ const cartService = {
         return cart;
     },
     addProductInCart: async (cid, pid) => {
-        const cart = await CartModel.findById(cid);
+        const cart = await cartModel.findById(cid);
         if (!cart) {
             throw new Error('Cart does not exist');
         }
