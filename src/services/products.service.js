@@ -14,18 +14,11 @@ const productService = {
     },
     getProducts: async (limit, sort, page, query) => {
         try {
-            if (query) {
-                return await productModel.aggregate([
-                    { $match: { status: true } },
-                    { $group: { _id: '$name', totalQuantity: { $sum: '$quantity' } } },
-                    { $sort: { totalQuantity: -1 } },
-                    { $group: { _id: 1, orders: { $push: '$$ROOT' } } },
-                    { $project: { _id: 0, orders: '$orders' } },
-                    { $merge: { into: 'reports' } }
-                ]);
-            }
-
-            return await productModel.find({}).limit(limit).sort({ price: sort });
+            return productModel.paginate(query, {
+                limit: limit ?? 10,
+                page: page ?? 1,
+                sort: { price: sort }
+            });
         } catch (error) {
             throw new Error(`Error searching products: ${error.message}`);
         }

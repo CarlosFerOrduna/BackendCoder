@@ -31,13 +31,31 @@ const productController = {
     },
     getProducts: async (req, res) => {
         try {
-            const { limit, page, sort, query } = req.query;
-            const products = await productService.getProducts(limit, sort, page, query);
+            const { limit, page, sort, status, category } = req.query;
+            const sortCase = { asc: 1, desc: -1 };
+
+            let query = {};
+            if (status) query.status = status;
+            if (category) query.category = category;
+
+            const response = await productService.getProducts(
+                limit,
+                sortCase[sort],
+                page,
+                query
+            );
 
             return res.status(200).json({
                 status: 'success',
-                message: 'Products found successful',
-                data: products
+                payload: response.docs,
+                totalPages: response.totalPages,
+                prevPage: response.prevPage,
+                nextPage: response.nextPage,
+                page: response.page,
+                hasPrevPage: response.hasPrevPage,
+                hasNextPage: response.hasNextPage,
+                prevLink: `http://localhost:8080/api/products/?page=${response.prevPage}`,
+                nextLink: `http://localhost:8080/api/products/?page=${response.nextPage}`
             });
         } catch (error) {
             return res.status(400).json({
