@@ -16,11 +16,15 @@ const productService = {
         try {
             if (query) {
                 return await productModel.aggregate([
-                    {
-                        $match: {}
-                    }
+                    { $match: { status: true } },
+                    { $group: { _id: '$name', totalQuantity: { $sum: '$quantity' } } },
+                    { $sort: { totalQuantity: -1 } },
+                    { $group: { _id: 1, orders: { $push: '$$ROOT' } } },
+                    { $project: { _id: 0, orders: '$orders' } },
+                    { $merge: { into: 'reports' } }
                 ]);
             }
+
             return await productModel.find({}).limit(limit).sort({ price: sort });
         } catch (error) {
             throw new Error(`Error searching products: ${error.message}`);
