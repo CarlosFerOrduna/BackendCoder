@@ -35,6 +35,59 @@ const cartService = {
         }
 
         return await cart.save();
+    },
+    updateQuantityById: async (cid, pid, quantity) => {
+        try {
+            const result = await cartModel.updateOne(
+                { _id: cid, 'products.product': pid },
+                { $set: { 'products.$.quantity': quantity } }
+            );
+
+            if (result.modifiedCount < 1) {
+                throw new Error('Something went wrong');
+            }
+
+            return await cartModel.findById(cid);
+        } catch (error) {
+            throw new Error(`updateQuantityById: ${error.message}`);
+        }
+    },
+    AddProductsInCart: async (cid, products) => {
+        try {
+            return await cartModel.findByIdAndUpdate(cid, {
+                $set: { products }
+            });
+        } catch (error) {
+            throw new Error(`AddProductsInCart: ${error.message}`);
+        }
+    },
+    removeProductInCart: async (cid, pid) => {
+        try {
+            let cart = await cartModel.findById(cid);
+            if (!cart) {
+                throw new Error('Cart does not exist');
+            }
+
+            return await cartModel.findByIdAndUpdate(cid, {
+                $pull: { products: { product: pid } }
+            });
+        } catch (error) {
+            throw new Error(`removeProductInCart: ${error.message}`);
+        }
+    },
+    removeAllProductsInCart: async (cid) => {
+        try {
+            let cart = await cartModel.findById(cid);
+            if (!cart) {
+                throw new Error('Cart does not exist');
+            }
+
+            return await cartModel.findByIdAndUpdate(cid, {
+                $set: { products: [] }
+            });
+        } catch (error) {
+            throw new Error(`removeProductInCart: ${error.message}`);
+        }
     }
 };
 
