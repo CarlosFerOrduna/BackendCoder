@@ -29,6 +29,23 @@ const cartController = {
             });
         }
     },
+    getViewCartById: async (req, res) => {
+        try {
+            const { cid } = req.params;
+            const cart = await cartService.getCartById(cid);
+
+            return res.render('cart', {
+                cart: JSON.parse(JSON.stringify(cart)),
+                title: 'Cart'
+            });
+        } catch (error) {
+            res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            });
+        }
+    },
     addProductInCart: async (req, res) => {
         try {
             const { cid, pid } = req.params;

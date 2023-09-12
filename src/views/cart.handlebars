@@ -1,0 +1,16 @@
+<div class="container">
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+        </tr>
+        {{#each cart.products}}
+        <tr>
+            <td>{{this.product.title}}</td>
+            <td>{{this.product.price}}</td>
+            <td>{{this.product.stock}}</td>
+        </tr>
+        {{/each}}
+    </table>
+</div>

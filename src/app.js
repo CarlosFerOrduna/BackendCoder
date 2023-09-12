@@ -3,6 +3,7 @@ import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
 import productManager from './dao/fileSystem/ProductManager.js';
 import apiCartsRouter from './routers/carts.api.routes.js';
+import viewsCartsRouter from './routers/carts.views.routes.js';
 import { router as viewsChatRouter } from './routers/char.views.routes.js';
 import apiProductsRouter from './routers/products.api.routes.js';
 import viewsProductRouter from './routers/products.views.routes.js';
@@ -25,8 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/products', apiProductsRouter);
-app.use('/api/carts', apiCartsRouter);
 app.use('/views/products', viewsProductRouter);
+app.use('/api/carts', apiCartsRouter);
+app.use('/views/carts', viewsCartsRouter);
 app.use('/views/chat', viewsChatRouter);
 app.use('*', (req, res) => {
     return res.status(400).json({

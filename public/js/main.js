@@ -166,10 +166,10 @@ const addProductInCart = async () => {
     try {
         let inpCartId = document.getElementById('cid');
         let inpProductId = document.getElementById('pid');
-        let btnCartId = document.getElementById('btn-add-cart');
+        let btnCart = document.getElementById('btn-add-cart');
 
-        if (inpCartId && inpProductId && btnCartId) {
-            btnCartId.addEventListener('click', async (event) => {
+        if (inpCartId && inpProductId && btnCart) {
+            btnCart.addEventListener('click', async (event) => {
                 event.preventDefault();
 
                 const cid = inpCartId.value;
@@ -186,4 +186,23 @@ const addProductInCart = async () => {
     }
 };
 
+const goToCart = async () => {
+    try {
+        let inpCartId = document.getElementById('cid');
+        let btnCart = document.getElementById('btn-go-cart');
+
+        if (inpCartId && btnCart) {
+            btnCart.addEventListener('click', async (event) => {
+                event.preventDefault();
+
+                const cid = inpCartId.value;
+                window.location.href = `http://localhost:8080/views/carts/${cid}`;
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
 addProductInCart();
+goToCart();
