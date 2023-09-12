@@ -32,7 +32,6 @@ const cartController = {
     addProductInCart: async (req, res) => {
         try {
             const { cid, pid } = req.params;
-
             const cart = await cartService.addProductInCart(cid, pid);
 
             return res.status(201).json({

@@ -1,21 +1,17 @@
 import { Router } from 'express';
-import productManager from '../dao/fileSystem/ProductManager.js';
+import productController from '../controllers/products.controller.js';
+import productService from '../services/products.service.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-    const products = await productManager.getProducts();
+router.get('/:pid', productController.getProductByIdForViews);
 
-    res.render('home', {
-        products: products,
-        title: 'Products'
-    });
-});
+router.get('/', productController.getProductsForViews);
 
 router.get('/realtimeproducts', async (req, res) => {
-    const products = await productManager.getProducts();
+    const products = await productService.getProducts();
 
-    res.render('realTimeProducts', {
+    return res.render('realTimeProducts', {
         title: 'Productos en tiempo real',
         products: products.reverse()
     });

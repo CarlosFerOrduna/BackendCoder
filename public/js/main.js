@@ -2,19 +2,19 @@ const socket = io();
 
 // PRODUCTS
 function deleteProduct(pid) {
-    socket.emit("delete_product", pid);
+    socket.emit('delete_product', pid);
 }
 
 function createProduct(product) {
-    socket.emit("create_product", product);
+    socket.emit('create_product', product);
 }
 
 function eventDeleteProduct() {
-    let btnDelete = document.getElementById("btn-form-delete");
+    let btnDelete = document.getElementById('btn-form-delete');
 
     if (btnDelete) {
-        btnDelete.addEventListener("click", function () {
-            const pid = document.getElementById("pid").value;
+        btnDelete.addEventListener('click', function () {
+            const pid = document.getElementById('pid').value;
 
             if (checkFields({ pid })) {
                 deleteProduct(pid);
@@ -24,25 +24,25 @@ function eventDeleteProduct() {
 }
 
 function eventCreateProduct() {
-    let btnCreate = document.getElementById("btn-form-create");
+    let btnCreate = document.getElementById('btn-form-create');
 
     if (btnCreate) {
-        btnCreate.addEventListener("click", function () {
+        btnCreate.addEventListener('click', function () {
             product = {
-                title: document.getElementById("title").value,
-                description: document.getElementById("description").value,
-                code: document.getElementById("code").value,
-                price: document.getElementById("price").value,
-                status: document.getElementById("status").value,
-                stock: document.getElementById("stock").value,
-                category: document.getElementById("category").value
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                code: document.getElementById('code').value,
+                price: document.getElementById('price').value,
+                status: document.getElementById('status').value,
+                stock: document.getElementById('stock').value,
+                category: document.getElementById('category').value
             };
 
-            const thumbnails = document.getElementById("thumbnails").value;
+            const thumbnails = document.getElementById('thumbnails').value;
             if (checkFields(product)) {
                 createProduct({
                     ...product,
-                    thumbnails: thumbnails.substring(thumbnails.lastIndexOf("\\"))
+                    thumbnails: thumbnails.substring(thumbnails.lastIndexOf('\\'))
                 });
             }
         });
@@ -50,7 +50,7 @@ function eventCreateProduct() {
 }
 
 function checkFields(element) {
-    const nullish = [null, undefined, "", 0];
+    const nullish = [null, undefined, '', 0];
     let result = true;
 
     for (const key in element) {
@@ -68,8 +68,8 @@ function checkFields(element) {
 }
 
 function loadProducts() {
-    socket.on("load_products", (data) => {
-        const products = document.getElementById("products");
+    socket.on('load_products', (data) => {
+        const products = document.getElementById('products');
 
         if (products) {
             let html = data.products
@@ -87,7 +87,7 @@ function loadProducts() {
                             </div>
                         </div>`;
                 })
-                .join("");
+                .join('');
 
             products.innerHTML = html;
         }
@@ -96,37 +96,39 @@ function loadProducts() {
 
 // MESSAGES
 
-let user = "";
+let user = '';
 
 const swalWraper = async () => {
-    const { value: email } = await Swal.fire({
-        title: "Enter your email",
-        input: "text",
-        inputLabel: "Your email",
-        inputValue: "",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        inputValidator: (value) => {
-            if (!value) {
-                return "You need to write your email!";
+    if (document.getElementById('messages')) {
+        const { value: email } = await Swal.fire({
+            title: 'Enter your email',
+            input: 'text',
+            inputLabel: 'Your email',
+            inputValue: '',
+            showCancelButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write your email!';
+                }
             }
-        }
-    });
-    user = email;
-    document.getElementById("user").innerHTML = user;
+        });
+        user = email;
+        document.getElementById('user').innerHTML = user;
+    }
 };
 
 const loadMessages = () => {
-    socket.on("load_message", (data) => {
-        let containerMessage = document.getElementById("all-messages");
+    socket.on('load_message', (data) => {
+        let containerMessage = document.getElementById('all-messages');
 
         if (containerMessage) {
-            containerMessage.innerHTML = "";
+            containerMessage.innerHTML = '';
 
             data.messages.reverse().forEach((m) => {
-                const div = document.createElement("div");
-                div.className = "col-12";
+                const div = document.createElement('div');
+                div.className = 'col-12';
                 div.innerHTML = `<div class="alert alert-primary" role="alert">${m.user}: ${m.message}</div>`;
                 containerMessage.appendChild(div);
             });
@@ -137,17 +139,17 @@ const loadMessages = () => {
 };
 
 const insertMessage = () => {
-    const textBoxMessage = document.getElementById("new-message");
+    const textBoxMessage = document.getElementById('new-message');
 
     if (textBoxMessage) {
-        textBoxMessage.addEventListener("keyup", ({ key }) => {
-            if (key == "Enter" && textBoxMessage.value != "") {
-                socket.emit("insert_message", {
+        textBoxMessage.addEventListener('keyup', ({ key }) => {
+            if (key == 'Enter' && textBoxMessage.value != '') {
+                socket.emit('insert_message', {
                     user: user,
                     message: textBoxMessage.value
                 });
 
-                textBoxMessage.value = "";
+                textBoxMessage.value = '';
             }
         });
     }
@@ -158,3 +160,30 @@ loadMessages();
 eventCreateProduct();
 eventDeleteProduct();
 swalWraper();
+
+//addProductInCart
+const addProductInCart = async () => {
+    try {
+        let inpCartId = document.getElementById('cid');
+        let inpProductId = document.getElementById('pid');
+        let btnCartId = document.getElementById('btn-add-cart');
+
+        if (inpCartId && inpProductId && btnCartId) {
+            btnCartId.addEventListener('click', async (event) => {
+                event.preventDefault();
+
+                const cid = inpCartId.value;
+                const pid = inpProductId.value;
+                const apiUrl = `http://localhost:8080/api/carts/${cid}/products/${pid}`;
+
+                const response = await fetch(apiUrl, { method: 'POST' });
+
+                console.log(response);
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+addProductInCart();

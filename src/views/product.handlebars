@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="card m-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{product.thumbnail}}" class="img-fluid rounded-start" alt="{{product.title}}">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.title}}</h5>
+                        <p class="card-text">code: {{product.code}}</p>
+                        <p class="card-text">category: {{product.category}}</p>
+                        <p class="card-text">descripcion: {{product.description}}</p>
+                        <p class="card-text">stock: {{product.stock}}</p>
+                        <p class="card-text">precio: ${{product.price}}</p>
+                        {{#if product.status}}
+                            <form>
+                                <input type="hidden" id="pid" value={{product._id}}>
+                                <button type="submit" id="btn-add-cart" class="btn btn-success">Agregar al carrito</button>
+                            </form>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

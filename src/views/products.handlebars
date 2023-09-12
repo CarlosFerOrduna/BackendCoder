@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="row">
+        {{#each payload}}
+            <div class="col-4">
+                <div class="card m-2" style="width: 18rem;">
+                    {{#each this.thumbnails}}
+                        <img src={{this}} class="card-img-top" />
+                    {{/each}}
+                    <div class="card-body">
+                        <h5 class="card-title">{{this.title}}</h5>
+                        <p class="card-text">code: {{this.code}}</p>
+                        <p class="card-text">category: {{this.category}}</p>
+                        <p class="card-text">descripcion: {{this.description}}</p>
+                        <p class="card-text">stock: {{this.stock}}</p>
+                        <p class="card-text">precio: ${{this.price}}</p>
+                        <form>
+                            {{#if this.status}}
+                                <input type="hidden" id="pid" value={{this._id}}>
+                                <button type="submit" id="btn-add-cart" class="btn btn-success">Agregar al carrito</button>
+                            {{/if}}
+                            <a href="http://localhost:8080/views/products/{{this._id}}" class="btn btn-primary">Ver</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+        <nav aria-label="Page navigation example" class="nav justify-content-center">
+            <ul class="pagination">
+                {{#if hasPrevPage}}
+                    <li class="page-item"><a href={{this.prevLink}} class="page-link"><< Anterior</a></li>
+                {{/if}}
+                    <li class="page-item"><a class="page-link disabled">{{this.page}}</a></li>
+                {{#if hasNextPage}}
+                    <li class="page-item"><a href={{this.nextLink}} class="page-link">Siguiente >></a></li>
+                {{/if}} 
+            </ul>
+        </nav>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

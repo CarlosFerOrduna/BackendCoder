@@ -15,7 +15,7 @@ const productService = {
     getProducts: async (limit, sort, page, query) => {
         try {
             return productModel.paginate(query, {
-                limit: limit ?? 10,
+                limit: limit ?? 6,
                 page: page ?? 1,
                 sort: { price: sort }
             });

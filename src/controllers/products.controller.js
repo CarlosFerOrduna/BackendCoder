@@ -38,7 +38,7 @@ const productController = {
             if (status) query.status = status;
             if (category) query.category = category;
 
-            const response = await productService.getProducts(
+            const result = await productService.getProducts(
                 limit,
                 sortCase[sort],
                 page,
@@ -47,15 +47,68 @@ const productController = {
 
             return res.status(200).json({
                 status: 'success',
-                payload: response.docs,
-                totalPages: response.totalPages,
-                prevPage: response.prevPage,
-                nextPage: response.nextPage,
-                page: response.page,
-                hasPrevPage: response.hasPrevPage,
-                hasNextPage: response.hasNextPage,
-                prevLink: `http://localhost:8080/api/products/?page=${response.prevPage}`,
-                nextLink: `http://localhost:8080/api/products/?page=${response.nextPage}`
+                payload: result.docs,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: `http://localhost:8080/api/products/?page=${result.prevPage}`,
+                nextLink: `http://localhost:8080/api/products/?page=${result.nextPage}`
+            });
+        } catch (error) {
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: {}
+            });
+        }
+    },
+    getProductsForViews: async (req, res) => {
+        try {
+            const { limit, page, sort, status, category } = req.query;
+            const sortCase = { asc: 1, desc: -1 };
+
+            let query = {};
+            if (status) query.status = status;
+            if (category) query.category = category;
+
+            const result = await productService.getProducts(
+                limit,
+                sortCase[sort],
+                page,
+                query
+            );
+
+            return res.render('products', {
+                payload: JSON.parse(JSON.stringify(result.docs)),
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: `http://localhost:8080/views/products/?page=${result.prevPage}`,
+                nextLink: `http://localhost:8080/views/products/?page=${result.nextPage}`,
+                title: 'Products'
+            });
+        } catch (error) {
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: {}
+            });
+        }
+    },
+    getProductByIdForViews: async (req, res) => {
+        try {
+            const { pid } = req.params;
+            const product = await productService.getProductById(pid);
+
+            return res.render('product', {
+                product: JSON.parse(JSON.stringify(product)),
+                title: `Product: ${product.title}`
             });
         } catch (error) {
             return res.status(400).json({
