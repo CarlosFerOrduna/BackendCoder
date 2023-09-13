@@ -76,7 +76,25 @@ const cartManager = {
                 btnCart.addEventListener('click', async (event) => {
                     event.preventDefault();
 
-                    const cid = inpCartId.value;
+                    let cid = inpCartId.value;
+                    if (!cid) {
+                        const { value } = await Swal.fire({
+                            title: 'Enter your cart id',
+                            input: 'text',
+                            inputLabel: 'Your cart id',
+                            inputValue: '',
+                            showCancelButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'You need to write your cart id';
+                                }
+                            }
+                        });
+
+                        cid = value;
+                    }
                     window.location.href = `http://localhost:8080/views/carts/${cid}`;
                 });
             }
