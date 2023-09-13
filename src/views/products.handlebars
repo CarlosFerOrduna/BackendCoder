@@ -16,7 +16,7 @@
                         <form>
                             {{#if this.status}}
                                 <input type="hidden" id="pid" value={{this._id}}>
-                                <button type="submit" id="btn-add-cart" class="btn btn-success">Agregar al carrito</button>
+                                <button type="submit" class="btn btn-success btn-add-cart">Agregar al carrito</button>
                             {{/if}}
                             <a href="http://localhost:8080/views/products/{{this._id}}" class="btn btn-primary">Ver</a>
                         </form>
@@ -37,5 +37,3 @@
         </nav>
     </div>
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/main.js"></script>

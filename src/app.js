@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import productManager from './dao/fileSystem/ProductManager.js';
 import apiCartsRouter from './routers/carts.api.routes.js';
 import viewsCartsRouter from './routers/carts.views.routes.js';
-import { router as viewsChatRouter } from './routers/char.views.routes.js';
+import viewsChatRouter from './routers/char.views.routes.js';
 import apiProductsRouter from './routers/products.api.routes.js';
 import viewsProductRouter from './routers/products.views.routes.js';
 import messageService from './services/messages.service.js';

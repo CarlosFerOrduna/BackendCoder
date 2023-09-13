@@ -9,25 +9,28 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="/styles/main.css">
     <title>{{title}}</title>
 </head>
     <body>
-        <nav class="navbar bg-body-tertiary">
-            <div class="container-fluid">
-            <form class="d-flex">
-                <div class="d-flex justify-content-start">
-                    <input class="form-control me-2" type="search" placeholder="Enter your cart id" aria-label="Search" name="cid" id="cid">
+        <div class="container">
+            <nav class="navbar bg-body-tertiary">
+                <div class="container-fluid">
+                <form class="d-flex">
+                    <div class="d-flex justify-content-start">
+                        <input class="form-control me-2" type="search" placeholder="Enter your cart id" aria-label="Search" name="cid" id="cid">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <a class="btn btn-outline-primary" href="http://localhost:8080/views/products">Home</a>
+                    </div>
+                    &nbsp;
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-outline-danger" id="btn-go-cart">Cart</button>
+                    </div>
+                </form>
                 </div>
-                <div class="d-flex justify-content-end">
-                    <a class="btn btn-outline-primary" href="http://localhost:8080/views/products">Home</a>
-                </div>
-                &nbsp;
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-outline-danger" id="btn-go-cart">Cart</button>
-                </div>
-            </form>
-            </div>
-        </nav>
+            </nav>
+        </div>
         <div>
             {{{body}}}
         </div>
@@ -36,5 +39,8 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"
         ></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/main.js" type="module"></script>
     </body>
 </html>

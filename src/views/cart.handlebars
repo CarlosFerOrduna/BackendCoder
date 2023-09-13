@@ -4,12 +4,14 @@
             <th>Name</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Quantity</th>
         </tr>
         {{#each cart.products}}
         <tr>
             <td>{{this.product.title}}</td>
             <td>{{this.product.price}}</td>
             <td>{{this.product.stock}}</td>
+            <td>{{this.quantity}}</td>
         </tr>
         {{/each}}
     </table>
