@@ -4,7 +4,7 @@ const connectMongo = async (connectionString) => {
     try {
         await connect(connectionString);
 
-        console.log('plug to mongo!');
+        console.log('connected successfully');
     } catch (e) {
         console.error(e);
 

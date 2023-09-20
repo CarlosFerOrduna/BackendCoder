@@ -1,4 +1,4 @@
-import { productModel } from '../DAO/models/products.model.js';
+import { productModel } from '../dao/models/products.model.js';
 
 const productService = {
     addProduct: async (product) => {

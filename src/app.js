@@ -1,5 +1,6 @@
 import MongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser';
+import { format } from 'date-fns';
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
@@ -19,29 +20,21 @@ const connectionString =
     'mongodb+srv://fernandoorduna:nBUXrvkY5aVVjpcL@backend.zofjiwj.mongodb.net/ecommerce?retryWrites=true&w=majority';
 
 connectMongo(connectionString);
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
-
 app.use(cookieParser());
 app.use(
     session({
-        store: MongoStore.create({
-            mongoUrl: connectionString,
-            ttl: 15
-        }),
-        secret: 'fernandoorduna',
+        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 }),
+        secret: JSON.stringify(format(new Date(), 'ddMMyyyyHHmmssSSS')),
         resave: false,
         saveUninitialized: false
     })
 );
-
 app.use(express.static('public'));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.use('/api/products', apiProductsRouter);
 app.use('/api/carts', apiCartsRouter);
 app.use('/api/users', apiUserRouter);
