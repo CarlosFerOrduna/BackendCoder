@@ -23,7 +23,7 @@ connectMongo(connectionString);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', handlebars.engine());
-app.set('views', `${__dirname}/views`);
+app.set('views', './views');
 app.set('view engine', 'handlebars');
 app.use(cookieParser());
 app.use(
