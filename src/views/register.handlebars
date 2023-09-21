@@ -1,0 +1,29 @@
+<div class="container">
+    <form action="http://localhost:8080/api/users/register" method="post">
+        <div class="form-floating m-3">
+            <input type="text" class="form-control" name="firstName" id="firstName">
+            <label for="firstName">First Name</label>
+        </div>
+        <div class="form-floating m-3">
+            <input type="text" class="form-control" name="lastName" id="lastName">
+            <label for="lastName">Last Name</label>
+        </div>
+        <div class="form-floating m-3">
+            <input type="email" class="form-control" id="email" name="email">
+            <label for="email">Email address</label>
+        </div>
+        <div class="form-floating m-3">
+            <input type="number" class="form-control" name="age" id="age">
+            <label for="age">Age</label>
+        </div>
+        <select class="form-select m-3" aria-label="Default select example" name="rol">
+            <option value="user" selected>User</option>
+            <option value="admin">Admin</option>
+        </select>
+        <div class="form-floating m-3">
+            <input type="password" class="form-control" name="password" id="password">
+            <label for="password">Password</label>
+        </div>
+        <button type="submit" class="btn btn-primary m-3">Enviar</button>
+    </form>
+</div>

@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema({
@@ -10,7 +11,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', function () {
-    console.log(this);
+    this.password = crypto.createHash('sha256').update(this.password).digest('hex');
 });
 
 const userModel = model('users', userSchema);

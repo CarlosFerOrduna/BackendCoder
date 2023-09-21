@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import userService from '../services/users.service.js';
 
 const userController = {
@@ -5,13 +6,9 @@ const userController = {
         try {
             const { firstName, lastName, email, age, password, rol } = req.body;
             const newUser = { firstName, lastName, email, age, password, rol };
-            const result = await userService.createUser(newUser);
+            await userService.createUser(newUser);
 
-            return res.status(201).json({
-                status: 'success',
-                message: 'user successfully created',
-                data: result
-            });
+            return res.redirect('/views/products');
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
@@ -86,16 +83,15 @@ const userController = {
     },
     login: async (req, res) => {
         try {
-            const { email, password } = req.query;
-            const result = await userService.login(email, password);
+            const { email, password } = req.body;
+            await userService.login(
+                email,
+                crypto.createHash('sha256').update(password).digest('hex')
+            );
 
             req.session.registerSuccess = true;
 
-            return res.status(200).json({
-                status: 'success',
-                message: 'login success',
-                data: result
-            });
+            return res.redirect('/views/products');
         } catch (error) {
             req.session.registerFailed = true;
 

@@ -10,6 +10,7 @@ import viewsChatRouter from './routers/char.views.routes.js';
 import apiProductsRouter from './routers/products.api.routes.js';
 import viewsProductRouter from './routers/products.views.routes.js';
 import apiUserRouter from './routers/user.api.routes.js';
+import viewsUserRouter from './routers/user.views.routes.js';
 import connectMongo from './utils/connections.utils.js';
 import __dirname from './utils/dirname.utils.js';
 import socketServer from './utils/socket.utils.js';
@@ -20,10 +21,11 @@ const connectionString =
     'mongodb+srv://fernandoorduna:nBUXrvkY5aVVjpcL@backend.zofjiwj.mongodb.net/ecommerce?retryWrites=true&w=majority';
 
 connectMongo(connectionString);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', handlebars.engine());
-app.set('views', './views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 app.use(cookieParser());
 app.use(
@@ -40,6 +42,7 @@ app.use('/api/carts', apiCartsRouter);
 app.use('/api/users', apiUserRouter);
 app.use('/views/products', viewsProductRouter);
 app.use('/views/carts', viewsCartsRouter);
+app.use('/views/users', viewsUserRouter);
 app.use('/views/chat', viewsChatRouter);
 app.use('*', (req, res) => {
     return res.status(400).json({
