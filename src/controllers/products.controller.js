@@ -91,7 +91,8 @@ const productController = {
                 hasNextPage: result.hasNextPage,
                 prevLink: `http://localhost:8080/views/products/?page=${result.prevPage}`,
                 nextLink: `http://localhost:8080/views/products/?page=${result.nextPage}`,
-                title: 'Products'
+                title: 'Products',
+                firstName: req.session.firstName
             });
         } catch (error) {
             return res.status(400).json({

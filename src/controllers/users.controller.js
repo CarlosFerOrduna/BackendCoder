@@ -6,7 +6,9 @@ const userController = {
         try {
             const { firstName, lastName, email, age, password, rol } = req.body;
             const newUser = { firstName, lastName, email, age, password, rol };
-            await userService.createUser(newUser);
+            const result = await userService.createUser(newUser);
+
+            req.session.firstName = result.firstName;
 
             return res.redirect('/views/products');
         } catch (error) {
