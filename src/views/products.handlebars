@@ -1,7 +1,9 @@
 <div class="container">
-    <div class="row">
-        <h2>Bienvenido {{firstName}}</h2>
-    </div>
+    {{#if userLog}}
+        <div class="row">
+            <h2>Bienvenido {{firstName}}</h2>
+        </div>
+    {{/if}}
     <div class="row">
         {{#each payload}}
             <div class="col-4">

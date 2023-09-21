@@ -91,12 +91,8 @@ const userController = {
                 crypto.createHash('sha256').update(password).digest('hex')
             );
 
-            req.session.registerSuccess = true;
-
             return res.redirect('/views/products');
         } catch (error) {
-            req.session.registerFailed = true;
-
             return res.status(400).json({
                 status: 'error',
                 message: error.message,
@@ -105,21 +101,13 @@ const userController = {
         }
     },
     logout: async (req, res) => {
-        try {
-            return res.status(200).json({
-                status: 'proccess',
-                message: 'login proccess',
-                data: {}
-            });
-        } catch (error) {
-            req.session.registerFailed = true;
-
-            return res.status(400).json({
-                status: 'error',
-                message: error.message,
-                data: {}
-            });
-        }
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error al destruir la sesión:', err);
+            } else {
+                res.redirect('/views/users/login');
+            }
+        });
     }
 };
 

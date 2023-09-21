@@ -9,8 +9,9 @@ const auth = async (req, res, next) => {
             email,
             password: crypto.createHash('sha256').update(password).digest('hex')
         });
+
         if (!user) {
-            throw new Error('login failed, user not exists');
+            return res.redirect('/views/users/register');
         }
 
         req.session.firstName = user.firstName;

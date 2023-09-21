@@ -16,18 +16,23 @@
         <div class="container">
             <nav class="navbar bg-body-tertiary">
                 <div class="container-fluid">
-                <form class="d-flex">
-                    <div class="d-flex justify-content-start">
-                        <input class="form-control me-2" type="search" placeholder="Enter your cart id" aria-label="Search" name="cid" id="cid">
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <a class="btn btn-outline-primary" href="http://localhost:8080/views/products">Home</a>
-                    </div>
-                    &nbsp;
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-outline-danger" id="btn-go-cart">Cart</button>
-                    </div>
-                </form>
+                    <form class="d-flex">
+                        <div class="d-flex justify-content-start">
+                            <input class="form-control me-2" type="search" placeholder="Enter your cart id" aria-label="Search" name="cid" id="cid">
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-outline-primary" href="http://localhost:8080/views/products">Home</a>
+                        </div>
+                        &nbsp;
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-outline-danger" id="btn-go-cart">Cart</button>
+                        </div>
+                    </form>
+                    {{#if userLog}}
+                        <form class="justify-content-end" method="post" action="http://localhost:8080/api/users/logout">
+                            <button class="btn btn-outline-danger me-2" type="submit">logout</button>
+                        </form>
+                    {{/if}}
                 </div>
             </nav>
         </div>

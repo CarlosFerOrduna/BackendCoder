@@ -92,7 +92,8 @@ const productController = {
                 prevLink: `http://localhost:8080/views/products/?page=${result.prevPage}`,
                 nextLink: `http://localhost:8080/views/products/?page=${result.nextPage}`,
                 title: 'Products',
-                firstName: req.session.firstName
+                firstName: req.session.firstName,
+                userLog: req.session.firstName ? true : false
             });
         } catch (error) {
             return res.status(400).json({
