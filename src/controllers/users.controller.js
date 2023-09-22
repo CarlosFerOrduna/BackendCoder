@@ -39,7 +39,6 @@ const userController = {
     },
     updateUser: async (req, res) => {
         try {
-            const { uid } = req.params;
             const { firstName, lastName, email, age, password, rol } = req.body;
             let newUser = {};
 
@@ -47,16 +46,12 @@ const userController = {
             if (lastName) newUser.lastName = lastName;
             if (email) newUser.email = email;
             if (age) newUser.age = age;
-            if (password) newUser.password = password;
+            if (password) newUser.password = bcriptWrapper.createHash(password);
             if (rol) newUser.rol = rol;
 
-            const result = await userService.updateUser(uid, newUser);
+            const result = await userService.updateUser(newUser);
 
-            return res.status(201).json({
-                status: 'success',
-                message: 'user successfully found',
-                data: result
-            });
+            return res.redirect('/views/products');
         } catch (error) {
             return res.status(400).json({
                 status: 'error',

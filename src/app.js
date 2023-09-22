@@ -1,6 +1,5 @@
 import MongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser';
-import { format } from 'date-fns';
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
@@ -30,7 +29,7 @@ app.set('view engine', 'handlebars');
 app.use(cookieParser());
 app.use(
     session({
-        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 * 60 }),
+        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 }),
         secret: 'coderhouse',
         resave: false,
         saveUninitialized: true

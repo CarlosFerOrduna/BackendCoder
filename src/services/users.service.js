@@ -23,10 +23,10 @@ const userService = {
             throw new Error('getUser: ' + error.message);
         }
     },
-    updateUser: async (uid, user) => {
+    updateUser: async (user) => {
         try {
-            const user = await userModel.findByIdAndUpdate(uid, user);
-            if (!user) {
+            const result = await userModel.findOneAndUpdate({ email: user.email }, user);
+            if (!result) {
                 throw new Error('user not exists');
             }
 
