@@ -1,5 +1,5 @@
-import crypto from 'crypto';
 import userService from '../services/users.service.js';
+import bcriptWrapper from '../utils/bcript.utils.js';
 
 const userController = {
     createUser: async (req, res) => {
@@ -86,12 +86,13 @@ const userController = {
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
-            await userService.login(
-                email,
-                crypto.createHash('sha256').update(password).digest('hex')
-            );
+            const user = await userService.login(email);
 
-            return res.redirect('/views/products');
+            if (bcriptWrapper.isValidPassword(user, password)) {
+                return res.redirect('/views/products');
+            }
+
+            return res.redirect('/views/users/login');
         } catch (error) {
             return res.status(400).json({
                 status: 'error',

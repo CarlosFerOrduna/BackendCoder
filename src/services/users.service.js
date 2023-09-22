@@ -47,9 +47,9 @@ const userService = {
             throw new Error('deleteUser: ' + error.message);
         }
     },
-    login: async (email, password) => {
+    login: async (email) => {
         try {
-            const user = await userModel.findOne({ email, password });
+            const user = await userModel.findOne({ email });
             if (!user) {
                 throw new Error('User not exists');
             }

@@ -1,14 +1,10 @@
-import crypto from 'crypto';
 import userModel from '../dao/models/users.model.js';
 
 const auth = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { email } = req.body;
 
-        const user = await userModel.findOne({
-            email,
-            password: crypto.createHash('sha256').update(password).digest('hex')
-        });
+        const user = await userModel.findOne({ email });
 
         if (!user) {
             return res.redirect('/views/users/register');

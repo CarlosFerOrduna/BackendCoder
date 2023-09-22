@@ -1,5 +1,5 @@
-import crypto from 'crypto';
 import { Schema, model } from 'mongoose';
+import bcriptWrapper from '../../utils/bcript.utils.js';
 
 const userSchema = new Schema({
     firstName: { type: String, required: true, minLength: 3 },
@@ -11,7 +11,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', function () {
-    this.password = crypto.createHash('sha256').update(this.password).digest('hex');
+    this.password = bcriptWrapper.createHash(this.password);
 });
 
 const userModel = model('users', userSchema);

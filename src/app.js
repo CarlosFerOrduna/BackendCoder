@@ -30,10 +30,10 @@ app.set('view engine', 'handlebars');
 app.use(cookieParser());
 app.use(
     session({
-        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 }),
-        secret: JSON.stringify(format(new Date(), 'ddMMyyyyHHmmssSSS')),
+        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 * 60 }),
+        secret: 'coderhouse',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: true
     })
 );
 app.use(express.static('public'));
