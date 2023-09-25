@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-const bcriptWrapper = {
+const bcryptWrapper = {
     createHash: (password) => {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
     },
@@ -9,4 +9,4 @@ const bcriptWrapper = {
     }
 };
 
-export default bcriptWrapper;
+export default bcryptWrapper;

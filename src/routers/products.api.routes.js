@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import productController from '../controllers/products.controller.js';
-import { uploader } from '../utils/multer.utils.js';
+import { uploader } from '../utils/multer.util.js';
 
 const router = Router();
 

@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
+import passport from 'passport';
+import initializatePassport from './config/passport.config.js';
 import apiCartsRouter from './routers/carts.api.routes.js';
 import viewsCartsRouter from './routers/carts.views.routes.js';
 import viewsChatRouter from './routers/char.views.routes.js';
@@ -10,9 +12,9 @@ import apiProductsRouter from './routers/products.api.routes.js';
 import viewsProductRouter from './routers/products.views.routes.js';
 import apiUserRouter from './routers/user.api.routes.js';
 import viewsUserRouter from './routers/user.views.routes.js';
-import connectMongo from './utils/connections.utils.js';
-import __dirname from './utils/dirname.utils.js';
-import socketServer from './utils/socket.utils.js';
+import connectMongo from './utils/connections.util.js';
+import __dirname from './utils/dirname.util.js';
+import socketServer from './utils/socket.util.js';
 
 const app = express();
 const port = 8080;
@@ -35,6 +37,9 @@ app.use(
         saveUninitialized: true
     })
 );
+initializatePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static('public'));
 app.use('/api/products', apiProductsRouter);
 app.use('/api/carts', apiCartsRouter);

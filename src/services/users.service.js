@@ -11,12 +11,21 @@ const userService = {
             throw new Error('insertUser: ' + error.message);
         }
     },
-    getUser: async (uid) => {
+    getUserById: async (uid) => {
         try {
             const user = await userModel.findById(uid);
             if (!user) {
                 throw new Error('user not exists');
             }
+
+            return user;
+        } catch (error) {
+            throw new Error('getUser: ' + error.message);
+        }
+    },
+    getUserByEmail: async (email) => {
+        try {
+            const user = await userModel.findOne({ email });
 
             return user;
         } catch (error) {

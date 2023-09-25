@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProductModel } from '../DAO/models/products.model.js';
+import { ProductModel } from '../dao/models/products.model.js';
 
 export const save = async () => {
     for (let i = 0; i < 20000; i++) {

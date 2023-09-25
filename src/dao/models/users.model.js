@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import bcriptWrapper from '../../utils/bcript.utils.js';
+import bcriptWrapper from '../../utils/bcrypt.util.js';
 
 const userSchema = new Schema({
     firstName: { type: String, required: true, minLength: 3 },

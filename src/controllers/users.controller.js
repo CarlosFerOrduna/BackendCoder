@@ -1,20 +1,14 @@
 import userService from '../services/users.service.js';
-import bcriptWrapper from '../utils/bcript.utils.js';
+import bcryptWrapper from '../utils/bcrypt.util.js';
 
 const userController = {
-    createUser: async (req, res) => {
+    createUser: (req, res) => {
         try {
-            const { firstName, lastName, email, age, password, rol } = req.body;
-            const newUser = { firstName, lastName, email, age, password, rol };
-            const result = await userService.createUser(newUser);
-
-            req.session.firstName = result.firstName;
-
-            return res.redirect('/views/products');
+            return res.send({ status: 'success', message: 'user registered' });
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: {}
             });
         }
@@ -22,7 +16,7 @@ const userController = {
     getUser: async (req, res) => {
         try {
             const { uid } = req.params;
-            const result = await userService.getUser(uid);
+            const result = await userService.getUserById(uid);
 
             return res.status(201).json({
                 status: 'success',
@@ -32,7 +26,7 @@ const userController = {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: {}
             });
         }
@@ -46,7 +40,7 @@ const userController = {
             if (lastName) newUser.lastName = lastName;
             if (email) newUser.email = email;
             if (age) newUser.age = age;
-            if (password) newUser.password = bcriptWrapper.createHash(password);
+            if (password) newUser.password = bcryptWrapper.createHash(password);
             if (rol) newUser.rol = rol;
 
             const result = await userService.updateUser(newUser);
@@ -55,7 +49,7 @@ const userController = {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: {}
             });
         }
@@ -73,25 +67,36 @@ const userController = {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: {}
             });
         }
     },
     login: async (req, res) => {
         try {
-            const { email, password } = req.body;
-            const user = await userService.login(email);
-
-            if (bcriptWrapper.isValidPassword(user, password)) {
-                return res.redirect('/views/products');
+            if (!req.user) {
+                return res.status(400).send({
+                    status: 'error',
+                    message: 'invalid credentials'
+                });
             }
 
-            return res.redirect('/views/users/login');
+            req.session.user = {
+                firstName: req.user.firstName,
+                lastName: req.user.lastName,
+                email: req.user.email,
+                age: req.user.age,
+                rol: req.user.rol
+            };
+
+            res.send({
+                status: 'success',
+                payload: req.user
+            });
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: {}
             });
         }
@@ -104,6 +109,12 @@ const userController = {
                 res.redirect('/views/users/login');
             }
         });
+    },
+    failLogin: (req, res) => {
+        return res.send({ status: 'error', message: 'failed login' });
+    },
+    failRegister: (req, res) => {
+        return res.send({ status: 'error', message: 'failed register' });
     }
 };
 
