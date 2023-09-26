@@ -2,6 +2,7 @@ import passport from 'passport';
 import local from 'passport-local';
 import bcryptWrapper from '../utils/bcrypt.util.js';
 import userService from '../services/users.service.js';
+import GitHubStrategy from 'passport-github2';
 
 const localStrategy = local.Strategy;
 const initializatePassport = () => {
@@ -55,6 +56,33 @@ const initializatePassport = () => {
                     }
 
                     if (bcryptWrapper.isValidPassword(user, password)) return done(null, user);
+                } catch (error) {
+                    return done(error);
+                }
+            }
+        )
+    );
+
+    passport.use(
+        'github',
+        new GitHubStrategy(
+            {
+                clientID: 'Iv1.39bf5d4c3002000b',
+                clientSecret: 'f9fe881813c19f6923b9a746849aa7aa78d02606',
+                callbackURL: 'http://localhost:8080/api/users/githubcallback'
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                try {
+                    let user = await userService.getUserByUsername(profile._json.login);
+                    if (!user) {
+                        const newUser = {
+                            username: profile._json.login
+                        };
+                        const result = await userService.createUser(newUser);
+                        return done(null, result);
+                    }
+
+                    return done(null, user);
                 } catch (error) {
                     return done(error);
                 }

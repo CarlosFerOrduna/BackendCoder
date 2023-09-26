@@ -32,6 +32,15 @@ const userService = {
             throw new Error('getUser: ' + error.message);
         }
     },
+    getUserByUsername: async (username) => {
+        try {
+            const user = await userModel.findOne({ username });
+
+            return user;
+        } catch (error) {
+            throw new Error('getUser: ' + error.message);
+        }
+    },
     updateUser: async (user) => {
         try {
             const result = await userModel.findOneAndUpdate({ email: user.email }, user);
