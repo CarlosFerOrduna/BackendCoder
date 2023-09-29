@@ -1,5 +1,6 @@
 import MongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
@@ -16,12 +17,11 @@ import connectMongo from './utils/connections.util.js';
 import __dirname from './utils/dirname.util.js';
 import socketServer from './utils/socket.util.js';
 
+dotenv.config();
 const app = express();
 const port = 8080;
-const connectionString =
-    'mongodb+srv://fernandoorduna:nBUXrvkY5aVVjpcL@backend.zofjiwj.mongodb.net/ecommerce?retryWrites=true&w=majority';
 
-connectMongo(connectionString);
+connectMongo();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +31,7 @@ app.set('view engine', 'handlebars');
 app.use(cookieParser());
 app.use(
     session({
-        store: MongoStore.create({ mongoUrl: connectionString, ttl: 15 }),
+        store: MongoStore.create({ mongoUrl: process.env.CONNECTION_STRING, ttl: 15 }),
         secret: 'coderhouse',
         resave: false,
         saveUninitialized: true
@@ -62,3 +62,4 @@ const httpServer = app.listen(port, () => {
 
 socketServer.init(httpServer);
 socketServer.run();
+//21:20

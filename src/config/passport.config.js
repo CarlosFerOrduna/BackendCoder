@@ -1,8 +1,8 @@
 import passport from 'passport';
-import local from 'passport-local';
-import bcryptWrapper from '../utils/bcrypt.util.js';
-import userService from '../services/users.service.js';
 import GitHubStrategy from 'passport-github2';
+import local from 'passport-local';
+import userService from '../services/users.service.js';
+import { createHash, isValidPassword } from '../utils/bcrypt.util.js';
 
 const localStrategy = local.Strategy;
 const initializatePassport = () => {
@@ -28,7 +28,7 @@ const initializatePassport = () => {
                         email,
                         age,
                         rol,
-                        password: bcryptWrapper.createHash(password)
+                        password: createHash(password)
                     };
                     console.log(newUser);
                     let result = await userService.createUser(newUser);
@@ -55,7 +55,7 @@ const initializatePassport = () => {
                         return done(null, false);
                     }
 
-                    if (bcryptWrapper.isValidPassword(user, password)) return done(null, user);
+                    if (isValidPassword(user, password)) return done(null, user);
                 } catch (error) {
                     return done(error);
                 }
@@ -67,9 +67,9 @@ const initializatePassport = () => {
         'github',
         new GitHubStrategy(
             {
-                clientID: 'Iv1.39bf5d4c3002000b',
-                clientSecret: 'f9fe881813c19f6923b9a746849aa7aa78d02606',
-                callbackURL: 'http://localhost:8080/api/users/githubcallback'
+                clientID: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                callbackURL: process.env.CALL_BACK_URL
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
@@ -99,5 +99,5 @@ const initializatePassport = () => {
         done(null, user);
     });
 };
-//01:45
+
 export default initializatePassport;

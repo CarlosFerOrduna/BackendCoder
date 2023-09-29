@@ -1,7 +1,9 @@
 import userModel from '../dao/models/users.model.js';
 
-const userService = {
-    createUser: async (user) => {
+class UserService {
+    constructor() {}
+
+    createUser = async (user) => {
         try {
             const newUser = new userModel(user);
             await newUser.validate();
@@ -10,8 +12,9 @@ const userService = {
         } catch (error) {
             throw new Error('insertUser: ' + error.message);
         }
-    },
-    getUserById: async (uid) => {
+    };
+
+    getUserById = async (uid) => {
         try {
             const user = await userModel.findById(uid);
             if (!user) {
@@ -22,8 +25,9 @@ const userService = {
         } catch (error) {
             throw new Error('getUser: ' + error.message);
         }
-    },
-    getUserByEmail: async (email) => {
+    };
+
+    getUserByEmail = async (email) => {
         try {
             const user = await userModel.findOne({ email });
 
@@ -31,8 +35,8 @@ const userService = {
         } catch (error) {
             throw new Error('getUser: ' + error.message);
         }
-    },
-    getUserByUsername: async (username) => {
+    };
+    getUserByUsername = async (username) => {
         try {
             const user = await userModel.findOne({ username });
 
@@ -40,8 +44,9 @@ const userService = {
         } catch (error) {
             throw new Error('getUser: ' + error.message);
         }
-    },
-    updateUser: async (user) => {
+    };
+
+    updateUser = async (user) => {
         try {
             const result = await userModel.findOneAndUpdate({ email: user.email }, user);
             if (!result) {
@@ -52,8 +57,9 @@ const userService = {
         } catch (error) {
             throw new Error('updateUser: ' + error.message);
         }
-    },
-    deleteUser: async (uid) => {
+    };
+
+    deleteUser = async (uid) => {
         try {
             const user = await userModel.findByIdAndDelete(uid);
             if (!user) {
@@ -64,8 +70,9 @@ const userService = {
         } catch (error) {
             throw new Error('deleteUser: ' + error.message);
         }
-    },
-    login: async (email) => {
+    };
+
+    login = async (email) => {
         try {
             const user = await userModel.findOne({ email });
             if (!user) {
@@ -76,7 +83,9 @@ const userService = {
         } catch (error) {
             throw new Error('login: ' + error.message);
         }
-    }
-};
+    };
+}
+
+const userService = new UserService();
 
 export default userService;

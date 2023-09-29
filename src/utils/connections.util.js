@@ -1,8 +1,8 @@
 import { connect } from 'mongoose';
 
-const connectMongo = async (connectionString) => {
+const connectMongo = async () => {
     try {
-        await connect(connectionString);
+        await connect(process.env.CONNECTION_STRING);
 
         console.log('connected successfully');
     } catch (e) {

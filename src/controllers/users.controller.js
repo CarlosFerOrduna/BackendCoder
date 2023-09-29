@@ -1,8 +1,10 @@
 import userService from '../services/users.service.js';
-import bcryptWrapper from '../utils/bcrypt.util.js';
+import { createHash } from '../utils/bcrypt.util.js';
 
-const userController = {
-    createUser: (req, res) => {
+class UserController {
+    constructor() {}
+
+    createUser = (req, res) => {
         try {
             return res.send({ status: 'success', message: 'user registered' });
         } catch (error) {
@@ -12,8 +14,9 @@ const userController = {
                 data: {}
             });
         }
-    },
-    getUser: async (req, res) => {
+    };
+
+    getUser = async (req, res) => {
         try {
             const { uid } = req.params;
             const result = await userService.getUserById(uid);
@@ -30,8 +33,9 @@ const userController = {
                 data: {}
             });
         }
-    },
-    updateUser: async (req, res) => {
+    };
+
+    updateUser = async (req, res) => {
         try {
             const { firstName, lastName, email, age, password, rol } = req.body;
             let newUser = {};
@@ -40,10 +44,10 @@ const userController = {
             if (lastName) newUser.lastName = lastName;
             if (email) newUser.email = email;
             if (age) newUser.age = age;
-            if (password) newUser.password = bcryptWrapper.createHash(password);
+            if (password) newUser.password = createHash(password);
             if (rol) newUser.rol = rol;
 
-            const result = await userService.updateUser(newUser);
+            await userService.updateUser(newUser);
 
             return res.redirect('/views/products');
         } catch (error) {
@@ -53,8 +57,9 @@ const userController = {
                 data: {}
             });
         }
-    },
-    deleteUser: async (req, res) => {
+    };
+
+    deleteUser = async (req, res) => {
         try {
             const { uid } = req.params;
             const result = await userService.deleteUser(uid);
@@ -71,8 +76,9 @@ const userController = {
                 data: {}
             });
         }
-    },
-    login: async (req, res) => {
+    };
+
+    login = async (req, res) => {
         try {
             if (!req.user) {
                 return res.status(400).send({
@@ -100,8 +106,9 @@ const userController = {
                 data: {}
             });
         }
-    },
-    logout: async (req, res) => {
+    };
+
+    logout = async (req, res) => {
         req.session.destroy((err) => {
             if (err) {
                 console.error('Error al destruir la sesión:', err);
@@ -109,13 +116,17 @@ const userController = {
                 res.redirect('/views/users/login');
             }
         });
-    },
-    failLogin: (req, res) => {
+    };
+
+    failLogin = (req, res) => {
         return res.send({ status: 'error', message: 'failed login' });
-    },
-    failRegister: (req, res) => {
+    };
+
+    failRegister = (req, res) => {
         return res.send({ status: 'error', message: 'failed register' });
-    }
-};
+    };
+}
+
+const userController = new UserController();
 
 export default userController;

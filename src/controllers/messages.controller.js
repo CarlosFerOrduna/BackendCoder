@@ -1,7 +1,9 @@
 import messageService from '../services/messages.service.js';
 
-const messagesControlles = {
-    getMessages: async (req, res) => {
+class MessagesControlles {
+    constructor() {}
+
+    getMessages = async (req, res) => {
         try {
             const messages = messageService.getMessages();
 
@@ -12,7 +14,9 @@ const messagesControlles = {
         } catch {
             return res.render('bad-request', {});
         }
-    }
-};
+    };
+}
+
+const messagesControlles = new MessagesControlles();
 
 export default messagesControlles;

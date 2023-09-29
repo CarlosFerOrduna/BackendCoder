@@ -1,7 +1,9 @@
 import productService from '../services/products.service.js';
 
-const productController = {
-    addProduct: async (req, res) => {
+class ProductController {
+    constructor() {}
+
+    addProduct = async (req, res) => {
         try {
             const { title, description, code, price, status, stock, category } = req.body;
             const thumbnails = req?.file?.filename;
@@ -28,8 +30,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    getProducts: async (req, res) => {
+    };
+
+    getProducts = async (req, res) => {
         try {
             const { limit, page, sort, status, category } = req.query;
             const sortCase = { asc: 1, desc: -1 };
@@ -64,8 +67,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    getProductsForViews: async (req, res) => {
+    };
+
+    getProductsForViews = async (req, res) => {
         try {
             const { limit, page, sort, status, category } = req.query;
             const sortCase = { asc: 1, desc: -1 };
@@ -102,8 +106,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    getProductByIdForViews: async (req, res) => {
+    };
+
+    getProductByIdForViews = async (req, res) => {
         try {
             const { pid } = req.params;
             const product = await productService.getProductById(pid);
@@ -119,8 +124,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    getProductById: async (req, res) => {
+    };
+
+    getProductById = async (req, res) => {
         try {
             const { pid } = req.params;
             const product = await productService.getProductById(pid);
@@ -137,8 +143,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    updateProduct: async (req, res) => {
+    };
+
+    updateProduct = async (req, res) => {
         try {
             const { title, description, code, price, status, stock, category } = req.body;
             const { pid } = req.params;
@@ -166,8 +173,9 @@ const productController = {
                 data: {}
             });
         }
-    },
-    deleteProduct: async (req, res) => {
+    };
+
+    deleteProduct = async (req, res) => {
         try {
             const { pid } = req.params;
             await productService.deleteProduct(pid);
@@ -180,7 +188,9 @@ const productController = {
                 data: {}
             });
         }
-    }
-};
+    };
+}
+
+const productController = new ProductController();
 
 export default productController;

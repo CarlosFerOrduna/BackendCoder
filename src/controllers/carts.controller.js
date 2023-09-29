@@ -1,7 +1,9 @@
 import cartService from '../services/carts.service.js';
 
-const cartController = {
-    createCart: async (req, res) => {
+class CartController {
+    constructor() {}
+
+    createCart = async (req, res) => {
         const cartCreated = await cartService.createCart();
 
         return res.status(201).json({
@@ -9,8 +11,9 @@ const cartController = {
             message: 'cart created with success',
             data: cartCreated
         });
-    },
-    getCartById: async (req, res) => {
+    };
+
+    getCartById = async (req, res) => {
         try {
             const { cid } = req.params;
 
@@ -28,8 +31,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    getViewCartById: async (req, res) => {
+    };
+
+    getViewCartById = async (req, res) => {
         try {
             const { cid } = req.params;
             const cart = await cartService.getCartById(cid);
@@ -45,8 +49,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    addProductInCart: async (req, res) => {
+    };
+
+    addProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params;
             const cart = await cartService.addProductInCart(cid, pid);
@@ -63,8 +68,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    updateQuantityById: async (req, res) => {
+    };
+
+    updateQuantityById = async (req, res) => {
         try {
             const { cid, pid } = req.params;
             const { quantity } = req.body;
@@ -82,8 +88,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    AddProductsInCart: async (req, res) => {
+    };
+
+    AddProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params;
             const { products } = req.body;
@@ -101,8 +108,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    removeProductInCart: async (req, res) => {
+    };
+
+    removeProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params;
             const cart = await cartService.removeProductInCart(cid, pid);
@@ -119,8 +127,9 @@ const cartController = {
                 data: []
             });
         }
-    },
-    removeAllProductsInCart: async (req, res) => {
+    };
+
+    removeAllProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params;
             const cart = await cartService.removeAllProductsInCart(cid);
@@ -137,7 +146,9 @@ const cartController = {
                 data: []
             });
         }
-    }
-};
+    };
+}
+
+const cartController = new CartController();
 
 export default cartController;

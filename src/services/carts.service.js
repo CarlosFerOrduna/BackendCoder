@@ -1,19 +1,23 @@
 import { cartModel } from '../dao/models/carts.model.js';
 import productService from './products.service.js';
 
-const cartService = {
-    createCart: async () => {
+class CartService {
+    constructor() {}
+
+    createCart = async () => {
         return await cartModel.create({});
-    },
-    getCartById: async (id) => {
+    };
+
+    getCartById = async (id) => {
         const cart = await cartModel.findById(id).populate('products.product');
         if (!cart) {
             throw new Error('The Cart does not exist');
         }
 
         return cart;
-    },
-    addProductInCart: async (cid, pid) => {
+    };
+
+    addProductInCart = async (cid, pid) => {
         const cart = await cartModel.findById(cid);
         if (!cart) {
             throw new Error('Cart does not exist');
@@ -35,8 +39,9 @@ const cartService = {
         }
 
         return await cart.save();
-    },
-    updateQuantityById: async (cid, pid, quantity) => {
+    };
+
+    updateQuantityById = async (cid, pid, quantity) => {
         try {
             const result = await cartModel.updateOne(
                 { _id: cid, 'products.product': pid },
@@ -51,8 +56,9 @@ const cartService = {
         } catch (error) {
             throw new Error(`updateQuantityById: ${error.message}`);
         }
-    },
-    AddProductsInCart: async (cid, products) => {
+    };
+
+    addProductsInCart = async (cid, products) => {
         try {
             return await cartModel.findByIdAndUpdate(cid, {
                 $set: { products }
@@ -60,8 +66,9 @@ const cartService = {
         } catch (error) {
             throw new Error(`AddProductsInCart: ${error.message}`);
         }
-    },
-    removeProductInCart: async (cid, pid) => {
+    };
+
+    removeProductInCart = async (cid, pid) => {
         try {
             let cart = await cartModel.findById(cid);
             if (!cart) {
@@ -74,8 +81,9 @@ const cartService = {
         } catch (error) {
             throw new Error(`removeProductInCart: ${error.message}`);
         }
-    },
-    removeAllProductsInCart: async (cid) => {
+    };
+
+    removeAllProductsInCart = async (cid) => {
         try {
             let cart = await cartModel.findById(cid);
             if (!cart) {
@@ -88,7 +96,9 @@ const cartService = {
         } catch (error) {
             throw new Error(`removeProductInCart: ${error.message}`);
         }
-    }
-};
+    };
+}
+
+const cartService = new CartService();
 
 export default cartService;

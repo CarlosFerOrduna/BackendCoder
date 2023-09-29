@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import bcriptWrapper from '../../utils/bcrypt.util.js';
+import { createHash } from '../../utils/bcrypt.util.js';
 
 const userSchema = new Schema({
     firstName: { type: String },
@@ -13,7 +13,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', function () {
     if (this.password) {
-        this.password = bcriptWrapper.createHash(this.password);
+        this.password = createHash(this.password);
     }
 });
 

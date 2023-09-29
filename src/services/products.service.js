@@ -1,7 +1,9 @@
 import { productModel } from '../dao/models/products.model.js';
 
-const productService = {
-    addProduct: async (product) => {
+class ProductService {
+    constructor() {}
+
+    addProduct = async (product) => {
         try {
             const newProduct = new productModel(product);
 
@@ -11,8 +13,9 @@ const productService = {
         } catch (error) {
             throw new Error(`addProduct: ${error.message}.`);
         }
-    },
-    getProducts: async (limit, sort, page, query) => {
+    };
+
+    getProducts = async (limit, sort, page, query) => {
         try {
             return productModel.paginate(query, {
                 limit: limit ?? 6,
@@ -22,8 +25,9 @@ const productService = {
         } catch (error) {
             throw new Error(`getProducts: ${error.message}`);
         }
-    },
-    getProductById: async (id) => {
+    };
+
+    getProductById = async (id) => {
         try {
             const product = await productModel.findById(id);
             if (!product) {
@@ -34,8 +38,8 @@ const productService = {
         } catch (error) {
             throw new Error(`getProductById: ${error.message}`);
         }
-    },
-    updateProduct: async (pid, product) => {
+    };
+    updateProduct = async (pid, product) => {
         try {
             const update = {};
 
@@ -82,8 +86,9 @@ const productService = {
         } catch (error) {
             throw new Error(`getProductById: ${error.message}`);
         }
-    },
-    deleteProduct: async (id) => {
+    };
+
+    deleteProduct = async (id) => {
         try {
             const deletedProduct = await productModel.findByIdAndDelete(id);
             if (!deletedProduct) {
@@ -94,7 +99,9 @@ const productService = {
         } catch (error) {
             throw new Error(`updateProduct: ${error.message}`);
         }
-    }
-};
+    };
+}
+
+const productService = new ProductService();
 
 export default productService;
