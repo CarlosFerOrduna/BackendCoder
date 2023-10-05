@@ -19,7 +19,7 @@ import socketServer from './utils/socket.util.js';
 
 dotenv.config();
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
 connectMongo();
 
@@ -62,4 +62,3 @@ const httpServer = app.listen(port, () => {
 
 socketServer.init(httpServer);
 socketServer.run();
-//21:20

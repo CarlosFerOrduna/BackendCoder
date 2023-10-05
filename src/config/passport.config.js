@@ -1,11 +1,29 @@
 import passport from 'passport';
 import GitHubStrategy from 'passport-github2';
+import jwt, { ExtractJwt } from 'passport-jwt';
 import local from 'passport-local';
 import userService from '../services/users.service.js';
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js';
 
+const JWTStrategy = jwt.Strategy;
 const localStrategy = local.Strategy;
+
 const initializatePassport = () => {
+    passport.use(
+        'jwt',
+        new JWTStrategy({
+            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: process.env.PRIVATE_KEY
+        }),
+        async (jwtPayload, done) => {
+            try {
+                return done(null, jwtPayload);
+            } catch (error) {
+                return done(error);
+            }
+        }
+    );
+
     passport.use(
         'register',
         new localStrategy(
@@ -34,8 +52,8 @@ const initializatePassport = () => {
                     let result = await userService.createUser(newUser);
 
                     return done(null, result);
-                } catch (e) {
-                    return done('Error when register user: ' + e);
+                } catch (error) {
+                    return done(error);
                 }
             }
         )
@@ -98,6 +116,10 @@ const initializatePassport = () => {
         const user = await userService.getUserById(id);
         done(null, user);
     });
+};
+
+const cookieExtractor = () => {
+    return req?.cookies?.coderCookieToken ?? null;
 };
 
 export default initializatePassport;
