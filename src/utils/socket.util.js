@@ -1,8 +1,9 @@
 import { Server } from 'socket.io'
 import productManager from '../dao/fileSystem/ProductManager.js'
-import messageService from '../services/messages.service.js'
+import MessageService from '../services/messages.service.js'
 
 let server
+const messageService = new MessageService()
 
 const socketServer = {
     init: (httpServer) => {

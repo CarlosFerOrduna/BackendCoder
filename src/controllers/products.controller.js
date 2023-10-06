@@ -30,7 +30,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -67,7 +67,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -106,7 +106,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -124,7 +124,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -143,7 +143,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -209,7 +209,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }
@@ -224,7 +224,7 @@ class ProductController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error.toString().message,
                 data: {}
             })
         }

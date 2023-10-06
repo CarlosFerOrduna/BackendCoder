@@ -17,7 +17,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }
@@ -37,7 +37,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }
@@ -74,7 +74,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }
@@ -94,7 +94,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }
@@ -114,7 +114,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }
@@ -152,7 +152,7 @@ class CartController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }

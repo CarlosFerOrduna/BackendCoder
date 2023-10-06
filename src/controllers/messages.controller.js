@@ -16,7 +16,7 @@ class MessagesControlles {
         } catch {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: []
             })
         }

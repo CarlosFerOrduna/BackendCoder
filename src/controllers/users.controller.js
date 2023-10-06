@@ -1,5 +1,5 @@
 import UserService from '../services/users.service.js'
-import { createHash } from '../utils/bcrypt.util.js'
+import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 import { generateToken } from '../utils/jwt.util.js'
 
 class UserController {
@@ -21,7 +21,7 @@ class UserController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: {}
             })
         }
@@ -40,7 +40,7 @@ class UserController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: {}
             })
         }
@@ -68,7 +68,7 @@ class UserController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: {}
             })
         }
@@ -83,7 +83,7 @@ class UserController {
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: {}
             })
         }
@@ -93,7 +93,11 @@ class UserController {
         try {
             const { email, password } = req.body
 
-            const data = this.userService.login(email, createHash(password))
+            const data = await this.userService.login(email)
+
+            if (!isValidPassword(data, password)) {
+                throw new Error('something went wrong: ' + data)
+            }
 
             const token = generateToken(data)
 
@@ -106,15 +110,15 @@ class UserController {
                 rol: req.user.rol
             }
 
-            return res.status(200).cookies(token).json({
+            return res.status(200).cookie(token).json({
                 accessToken: token,
                 expiresIn: '10m',
-                user: result
+                user: data
             })
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
-                message: error,
+                message: error.toString(),
                 data: {}
             })
         }

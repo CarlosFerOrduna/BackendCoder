@@ -73,7 +73,7 @@ export default class UserService {
 
     login = async (email, password) => {
         try {
-            const user = await userModel.findOne({ email, password })
+            const user = await userModel.findOne({ email })
             if (!user) {
                 throw new Error('User not exists')
             }

@@ -47,7 +47,7 @@ const initializatePassport = () => {
                     rol,
                     password: createHash(password)
                 }
-                console.log(newUser)
+
                 let result = await userService.createUser(newUser)
 
                 return done(null, result)
@@ -64,7 +64,6 @@ const initializatePassport = () => {
             try {
                 const user = await userService.getUserByEmail(username)
                 if (!user) {
-                    console.log('user does not exists')
                     return done(null, false)
                 }
 
