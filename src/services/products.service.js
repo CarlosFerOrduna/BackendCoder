@@ -1,8 +1,6 @@
 import { productModel } from '../dao/models/products.model.js';
 
 export default class ProductService {
-    constructor() {}
-
     addProduct = async (product) => {
         try {
             const newProduct = new productModel(product);
@@ -11,7 +9,7 @@ export default class ProductService {
 
             return await newProduct.save();
         } catch (error) {
-            throw new Error(`addProduct: ${error.message}.`);
+            throw new Error('addProduct: ' + error);
         }
     };
 
@@ -23,7 +21,7 @@ export default class ProductService {
                 sort: { price: sort }
             });
         } catch (error) {
-            throw new Error(`getProducts: ${error.message}`);
+            throw new Error('getProducts: ' + error);
         }
     };
 
@@ -36,46 +34,12 @@ export default class ProductService {
 
             return product;
         } catch (error) {
-            throw new Error(`getProductById: ${error.message}`);
+            throw new Error('getProductById: ' + error);
         }
     };
     updateProduct = async (pid, product) => {
         try {
-            const update = {};
-
-            if (product?.title && isNaN(product?.title)) {
-                update.title = product?.title;
-            }
-
-            if (product?.description && isNaN(product?.description)) {
-                update.description = product?.description;
-            }
-
-            if (product?.code && isNaN(product?.code)) {
-                update.code = product?.code;
-            }
-
-            if (product?.price && !isNaN(product?.price)) {
-                update.price = product?.price;
-            }
-
-            if (product?.status && isNaN(product?.status)) {
-                update.status = product?.status;
-            }
-
-            if (product?.stock && !isNaN(product?.stock)) {
-                update.stock = product?.stock;
-            }
-
-            if (product?.category && isNaN(product?.category)) {
-                update.category = product?.category;
-            }
-
-            if (product?.thumbnails && isNaN(product?.thumbnails)) {
-                update.$push = { thumbnails: product?.thumbnail };
-            }
-
-            const updatedProduct = await productModel.findByIdAndUpdate(pid, update, {
+            const updatedProduct = await productModel.findByIdAndUpdate(pid, product, {
                 new: true
             });
             if (!updatedProduct) {
@@ -84,7 +48,7 @@ export default class ProductService {
 
             return updatedProduct;
         } catch (error) {
-            throw new Error(`getProductById: ${error.message}`);
+            throw new Error('updateProduct: ' + error);
         }
     };
 
@@ -97,7 +61,7 @@ export default class ProductService {
 
             return deletedProduct;
         } catch (error) {
-            throw new Error(`updateProduct: ${error.message}`);
+            throw new Error('deleteProduct: ' + error);
         }
     };
 }

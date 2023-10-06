@@ -165,7 +165,41 @@ class ProductController {
                 thumbnails
             };
 
-            const data = await this.productService.updateProduct(pid, product);
+            const update = {};
+
+            if (product?.title && isNaN(product?.title)) {
+                update.title = product?.title;
+            }
+
+            if (product?.description && isNaN(product?.description)) {
+                update.description = product?.description;
+            }
+
+            if (product?.code && isNaN(product?.code)) {
+                update.code = product?.code;
+            }
+
+            if (product?.price && !isNaN(product?.price)) {
+                update.price = product?.price;
+            }
+
+            if (product?.status && isNaN(product?.status)) {
+                update.status = product?.status;
+            }
+
+            if (product?.stock && !isNaN(product?.stock)) {
+                update.stock = product?.stock;
+            }
+
+            if (product?.category && isNaN(product?.category)) {
+                update.category = product?.category;
+            }
+
+            if (product?.thumbnails && isNaN(product?.thumbnails)) {
+                update.$push = { thumbnails: product?.thumbnail };
+            }
+
+            const data = await this.productService.updateProduct(pid, update);
 
             return res.status(200).json({
                 status: 'success',

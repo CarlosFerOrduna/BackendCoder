@@ -2,43 +2,53 @@ import { cartModel } from '../dao/models/carts.model.js';
 import productService from './products.service.js';
 
 export default class CartService {
-    constructor() {}
-
     createCart = async () => {
-        return await cartModel.create({});
+        try {
+            return await cartModel.create({});
+        } catch (error) {
+            throw new Error('createCart: ' + error);
+        }
     };
 
     getCartById = async (id) => {
-        const cart = await cartModel.findById(id).populate('products.product');
-        if (!cart) {
-            throw new Error('The Cart does not exist');
-        }
+        try {
+            const cart = await cartModel.findById(id).populate('products.product');
+            if (!cart) {
+                throw new Error('The Cart does not exist');
+            }
 
-        return cart;
+            return cart;
+        } catch (error) {
+            throw new Error('getCartById: ' + error);
+        }
     };
 
     addProductInCart = async (cid, pid) => {
-        const cart = await cartModel.findById(cid);
-        if (!cart) {
-            throw new Error('Cart does not exist');
+        try {
+            const cart = await cartModel.findById(cid);
+            if (!cart) {
+                throw new Error('Cart does not exist');
+            }
+
+            const product = await productService.getProductById(pid);
+            if (!product) {
+                throw new Error('Product does not exist');
+            }
+
+            const existingProductIndex = cart.products.findIndex(
+                (p) => p.product && p.product.toString() === pid.toString()
+            );
+
+            if (existingProductIndex !== -1) {
+                cart.products[existingProductIndex].quantity += 1;
+            } else {
+                cart.products.push({ product: pid, quantity: 1 });
+            }
+
+            return await cart.save();
+        } catch (error) {
+            throw new Error('addProductInCart: ' + error);
         }
-
-        const product = await productService.getProductById(pid);
-        if (!product) {
-            throw new Error('Product does not exist');
-        }
-
-        const existingProductIndex = cart.products.findIndex(
-            (p) => p.product && p.product.toString() === pid.toString()
-        );
-
-        if (existingProductIndex !== -1) {
-            cart.products[existingProductIndex].quantity += 1;
-        } else {
-            cart.products.push({ product: pid, quantity: 1 });
-        }
-
-        return await cart.save();
     };
 
     updateQuantityById = async (cid, pid, quantity) => {
@@ -54,7 +64,7 @@ export default class CartService {
 
             return await cartModel.findById(cid);
         } catch (error) {
-            throw new Error(`updateQuantityById: ${error.message}`);
+            throw new Error('updateQuantityById: ' + error);
         }
     };
 
@@ -64,7 +74,7 @@ export default class CartService {
                 $set: { products }
             });
         } catch (error) {
-            throw new Error(`AddProductsInCart: ${error.message}`);
+            throw new Error('addProductsInCart: ' + error);
         }
     };
 
@@ -79,7 +89,7 @@ export default class CartService {
                 $pull: { products: { product: pid } }
             });
         } catch (error) {
-            throw new Error(`removeProductInCart: ${error.message}`);
+            throw new Error('removeProductInCart: ' + error);
         }
     };
 
@@ -94,7 +104,7 @@ export default class CartService {
                 $set: { products: [] }
             });
         } catch (error) {
-            throw new Error(`removeProductInCart: ${error.message}`);
+            throw new Error('removeProductInCart: ' + error);
         }
     };
 }

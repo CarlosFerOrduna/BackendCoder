@@ -8,7 +8,7 @@ export default class UserService {
 
             return await newUser.save();
         } catch (error) {
-            throw new Error('insertUser: ' + error);
+            throw new Error('createUser: ' + error);
         }
     };
 
@@ -21,7 +21,7 @@ export default class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error);
+            throw new Error('getUserById: ' + error);
         }
     };
 
@@ -31,7 +31,7 @@ export default class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error);
+            throw new Error('getUserByEmail: ' + error);
         }
     };
     getUserByUsername = async (username) => {
@@ -40,7 +40,7 @@ export default class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error);
+            throw new Error('getUserByUsername: ' + error);
         }
     };
 
@@ -51,7 +51,7 @@ export default class UserService {
                 throw new Error('user not exists');
             }
 
-            return user;
+            return result;
         } catch (error) {
             throw new Error('updateUser: ' + error);
         }

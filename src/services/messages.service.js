@@ -1,8 +1,6 @@
 import { MessageModel } from '../dao/models/messages.model.js';
 
 export default class MessageService {
-    constructor() {}
-
     insertMessage = async (message) => {
         try {
             const newMessage = new MessageModel({
@@ -14,7 +12,7 @@ export default class MessageService {
 
             return await newMessage.save();
         } catch (error) {
-            throw new Error(`ERROR: ${error.message}. DETAIL: ${error.errors}`);
+            throw new Error('insertMessage: ' + error);
         }
     };
 
@@ -22,7 +20,7 @@ export default class MessageService {
         try {
             return await MessageModel.find({});
         } catch (error) {
-            throw new Error(`Error searching Messages: ${error.message}`);
+            throw new Error('getMessages: ' + error);
         }
     };
 }

@@ -100,7 +100,7 @@ class CartController {
         }
     };
 
-    AddProductsInCart = async (req, res) => {
+    addProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params;
             const { products } = req.body;
