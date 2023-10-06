@@ -1,5 +1,5 @@
-import { faker } from '@faker-js/faker';
-import { ProductModel } from '../dao/models/products.model.js';
+import { faker } from '@faker-js/faker'
+import { ProductModel } from '../dao/models/products.model.js'
 
 export const save = async () => {
     for (let i = 0; i < 20000; i++) {
@@ -11,8 +11,8 @@ export const save = async () => {
             status: true,
             stock: faker.number.int({ max: 100 }),
             category: faker.commerce.productAdjective()
-        });
+        })
 
-        await product.save();
+        await product.save()
     }
-};
+}

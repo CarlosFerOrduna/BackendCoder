@@ -1,80 +1,80 @@
-import { readFile, writeFile } from 'fs/promises';
-import { resolve } from 'path';
+import { readFile, writeFile } from 'fs/promises'
+import { resolve } from 'path'
 
 class ProductManager {
-    #products;
-    #path;
+    #products
+    #path
 
     constructor() {
-        this.#path = resolve('./src/dao/data/products.json');
-        this.#products = [];
+        this.#path = resolve('./src/dao/data/products.json')
+        this.#products = []
     }
 
     addProduct = async (product) => {
-        await this.#loadProducts();
+        await this.#loadProducts()
 
         if (!product?.title || !isNaN(product.title)) {
-            throw new Error(`El titulo es ${product.title}, cuando debe ser un string`);
+            throw new Error(`El titulo es ${product.title}, cuando debe ser un string`)
         }
 
         if (!product?.description || !isNaN(product.description)) {
-            throw new Error(`La description es ${product.title}, cuando debe ser un string`);
+            throw new Error(`La description es ${product.title}, cuando debe ser un string`)
         }
 
         if (!product?.code || !isNaN(product.code)) {
-            throw new Error(`El codigo es ${product.code}, cuando debe ser un string`);
+            throw new Error(`El codigo es ${product.code}, cuando debe ser un string`)
         }
 
         if (!product?.price || isNaN(product.price)) {
-            throw new Error(`El precio es ${product.price}, cuando debe ser un int`);
+            throw new Error(`El precio es ${product.price}, cuando debe ser un int`)
         }
 
         if (!product?.status || !typeof product.status == 'boolean') {
-            product.status = true;
+            product.status = true
         }
 
         if (!product?.stock || isNaN(product.stock)) {
-            throw new Error(`El stock es ${product.stock}, cuando debe ser un int`);
+            throw new Error(`El stock es ${product.stock}, cuando debe ser un int`)
         }
 
         if (!product?.category || !isNaN(product.category)) {
-            throw new Error(`El category es ${product.category}, cuando debe ser un string`);
+            throw new Error(`El category es ${product.category}, cuando debe ser un string`)
         }
 
         product.thumbnails = product?.thumbnails
             ? [`http://localhost:8080/assets/${product.thumbnails}`]
-            : [];
+            : []
 
-        const codeExists = this.#products.some((p) => p.code === product.code);
+        const codeExists = this.#products.some((p) => p.code === product.code)
         if (codeExists) {
-            throw new Error(`El codigo ya existe`);
+            throw new Error(`El codigo ya existe`)
         }
 
-        const id = Math.max(...this.#products.map((p) => p.id)) + 1 ?? 1;
+        const id = Math.max(...this.#products.map((p) => p.id)) + 1 ?? 1
 
-        const newProduct = { id: id == -Infinity ? 1 : id, ...product };
+        const newProduct = { id: id == -Infinity ? 1 : id, ...product }
 
-        this.#products.push(newProduct);
+        this.#products.push(newProduct)
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'))
 
-        return newProduct;
-    };
+        return newProduct
+    }
 
     getProducts = async () => {
-        await this.#loadProducts();
+        await this.#loadProducts()
 
-        return this.#products;
-    };
+        return this.#products
+    }
 
     getProductById = async (pid) => {
-        await this.productExists(pid);
+        await this.productExists(pid)
 
-        return this.#products.find((p) => p.id == pid) ?? console.error(`Not found`);
-    };
+        return this.#products.find((p) => p.id == pid) ?? console.error(`Not found`)
+    }
 
     updateProduct = async (product) => {
-        await this.productExists(product.id);
+        await this.productExists(product.id)
 
         this.#products = this.#products.map((p) => {
             return p.id == product.id
@@ -94,42 +94,42 @@ class ProductManager {
                             ]
                           : [...p.thumbnails]
                   }
-                : p;
-        });
+                : p
+        })
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'))
 
-        return this.#products.filter((p) => p.id == product.id);
-    };
+        return this.#products.filter((p) => p.id == product.id)
+    }
 
     deleteProduct = async (pid) => {
-        await this.productExists(pid);
+        await this.productExists(pid)
 
-        this.#products = this.#products.filter((p) => p.id != pid);
+        this.#products = this.#products.filter((p) => p.id != pid)
 
-        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'));
-    };
+        await writeFile(this.#path, JSON.stringify(this.#products, null, '\t'))
+    }
 
     productExists = async (pid) => {
-        await this.#loadProducts();
+        await this.#loadProducts()
 
         if (!pid || isNaN(pid)) {
-            throw new Error(`El pid es ${pid}, cuando tiene que ser un int`);
+            throw new Error(`El pid es ${pid}, cuando tiene que ser un int`)
         }
 
-        const existsProduct = this.#products.some((p) => p.id == pid);
+        const existsProduct = this.#products.some((p) => p.id == pid)
         if (!existsProduct) {
-            throw new Error(`No existe el producto con id: ${pid}`);
+            throw new Error(`No existe el producto con id: ${pid}`)
         }
-    };
+    }
 
     #loadProducts = async () => {
         try {
-            this.#products = JSON.parse(await readFile(this.#path, 'utf-8'));
+            this.#products = JSON.parse(await readFile(this.#path, 'utf-8'))
         } catch {
-            this.#products = [];
+            this.#products = []
         }
-    };
+    }
 }
-const productManager = new ProductManager();
-export default productManager;
+const productManager = new ProductManager()
+export default productManager

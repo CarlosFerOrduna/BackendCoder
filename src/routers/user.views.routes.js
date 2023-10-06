@@ -1,17 +1,17 @@
-import { Router } from 'express';
+import { Router } from 'express'
 
-const router = Router();
+const router = Router()
 
 router.get('/login', (req, res) => {
-    return res.render('login', { title: 'form-login' });
-});
+    return res.render('login', { title: 'form-login' })
+})
 
 router.get('/register', (req, res) => {
-    return res.render('register', { title: 'form-register' });
-});
+    return res.render('register', { title: 'form-register' })
+})
 
 router.get('/restore', (req, res) => {
-    return res.render('restore-password', { title: 'restore-password' });
-});
+    return res.render('restore-password', { title: 'restore-password' })
+})
 
-export default router;
+export default router

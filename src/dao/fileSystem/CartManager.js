@@ -1,42 +1,42 @@
-import { readFile, writeFile } from 'fs/promises';
-import { resolve } from 'path';
-import productManager from './ProductManager.js';
+import { readFile, writeFile } from 'fs/promises'
+import { resolve } from 'path'
+import productManager from './ProductManager.js'
 
 class CartManager {
-    #carts;
-    #path;
+    #carts
+    #path
     constructor() {
-        this.#path = resolve('./src/dao/data/carts.json');
-        this.#carts = [];
+        this.#path = resolve('./src/dao/data/carts.json')
+        this.#carts = []
     }
 
     createCart = async () => {
-        await this.#loadCarts();
+        await this.#loadCarts()
 
-        const id = Math.max(...this.#carts.map((p) => p.id)) + 1 ?? 1;
+        const id = Math.max(...this.#carts.map((p) => p.id)) + 1 ?? 1
 
-        const newCart = { id: id == -Infinity ? 1 : id, products: [] };
+        const newCart = { id: id == -Infinity ? 1 : id, products: [] }
 
-        this.#carts.push(newCart);
+        this.#carts.push(newCart)
 
-        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'));
+        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'))
 
-        return newCart;
-    };
+        return newCart
+    }
 
     getCartById = async (cid) => {
-        await this.cartExists(cid);
+        await this.cartExists(cid)
 
-        return this.#carts.find((c) => c.id == cid);
-    };
+        return this.#carts.find((c) => c.id == cid)
+    }
 
     addProductInCart = async (cid, pid) => {
-        await this.cartExists(cid);
-        await productManager.productExists(pid);
+        await this.cartExists(cid)
+        await productManager.productExists(pid)
 
-        const product = await productManager.getProductById(pid);
+        const product = await productManager.getProductById(pid)
         if (product.stock - 1 < 0) {
-            throw new Error('El producto no cuenta con el stock suficiente');
+            throw new Error('El producto no cuenta con el stock suficiente')
         }
 
         this.#carts.map((c) => {
@@ -44,35 +44,35 @@ class CartManager {
                 ? c.products.some((p) => p.product == pid)
                     ? c.products.map((p) => p.product == pid && p.quantity++)
                     : c.products.push({ product: parseInt(pid), quantity: 1 })
-                : c;
-        });
+                : c
+        })
 
-        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'));
+        await writeFile(this.#path, JSON.stringify(this.#carts, null, '\t'))
 
-        return this.#carts.filter((c) => c.id == cid);
-    };
+        return this.#carts.filter((c) => c.id == cid)
+    }
 
     cartExists = async (cid) => {
-        await this.#loadCarts();
+        await this.#loadCarts()
 
         if (!cid || isNaN(cid)) {
-            throw new Error(`El cid es ${cid}, cuando debe ser un int`);
+            throw new Error(`El cid es ${cid}, cuando debe ser un int`)
         }
 
-        const existsCart = this.#carts.some((c) => c.id == cid);
+        const existsCart = this.#carts.some((c) => c.id == cid)
         if (!existsCart) {
-            throw new Error(`No existe el cart con id ${cid}`);
+            throw new Error(`No existe el cart con id ${cid}`)
         }
-    };
+    }
 
     #loadCarts = async () => {
         try {
-            this.#carts = JSON.parse(await readFile(this.#path, 'utf-8'));
+            this.#carts = JSON.parse(await readFile(this.#path, 'utf-8'))
         } catch {
-            this.#carts = [];
+            this.#carts = []
         }
-    };
+    }
 }
 
-const cartManager = new CartManager();
-export default cartManager;
+const cartManager = new CartManager()
+export default cartManager
