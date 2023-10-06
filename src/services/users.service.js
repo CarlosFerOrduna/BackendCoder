@@ -8,7 +8,7 @@ export default class UserService {
 
             return await newUser.save()
         } catch (error) {
-            throw new Error('createUser: ' + error)
+            throw new Error('createUser: ' + error.toString())
         }
     }
 
@@ -21,7 +21,7 @@ export default class UserService {
 
             return user
         } catch (error) {
-            throw new Error('getUserById: ' + error)
+            throw new Error('getUserById: ' + error.toString())
         }
     }
 
@@ -31,7 +31,7 @@ export default class UserService {
 
             return user
         } catch (error) {
-            throw new Error('getUserByEmail: ' + error)
+            throw new Error('getUserByEmail: ' + error.toString())
         }
     }
 
@@ -41,7 +41,7 @@ export default class UserService {
 
             return user
         } catch (error) {
-            throw new Error('getUserByUsername: ' + error)
+            throw new Error('getUserByUsername: ' + error.toString())
         }
     }
 
@@ -54,7 +54,7 @@ export default class UserService {
 
             return result
         } catch (error) {
-            throw new Error('updateUser: ' + error)
+            throw new Error('updateUser: ' + error.toString())
         }
     }
 
@@ -67,20 +67,7 @@ export default class UserService {
 
             return user
         } catch (error) {
-            throw new Error('deleteUser: ' + error)
-        }
-    }
-
-    login = async (email, password) => {
-        try {
-            const user = await userModel.findOne({ email })
-            if (!user) {
-                throw new Error('User not exists')
-            }
-
-            return user
-        } catch (error) {
-            throw new Error('login: ' + error)
+            throw new Error('deleteUser: ' + error.toString())
         }
     }
 }

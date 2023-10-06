@@ -31,7 +31,7 @@ app.set('view engine', 'handlebars')
 app.use(cookieParser())
 app.use(
     session({
-        store: MongoStore.create({ mongoUrl: process.env.CONNECTION_STRING, ttl: 15 }),
+        store: MongoStore.create({ mongoUrl: process.env.CONNECTION_STRING, ttl: 10 * 60 }),
         secret: 'coderhouse',
         resave: false,
         saveUninitialized: true

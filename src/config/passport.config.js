@@ -35,7 +35,6 @@ const initializatePassport = () => {
                 const { firstName, lastName, email, age, rol } = req.body
                 let user = await userService.getUserByEmail(username)
                 if (user) {
-                    console.log('user already exists')
                     return done(null, false)
                 }
 

@@ -93,7 +93,7 @@ class UserController {
         try {
             const { email, password } = req.body
 
-            const data = await this.userService.login(email)
+            const data = await this.userService.getUserByEmail(email)
 
             if (!isValidPassword(data, password)) {
                 throw new Error('something went wrong: ' + data)
@@ -101,7 +101,6 @@ class UserController {
 
             const token = generateToken(data)
 
-            // todo: tengo dudas de si esto esta bien o mal que lo siga haciendo
             req.session.user = {
                 firstName: req.user.firstName,
                 lastName: req.user.lastName,
@@ -110,11 +109,10 @@ class UserController {
                 rol: req.user.rol
             }
 
-            return res.status(200).cookie(token).json({
-                accessToken: token,
-                expiresIn: '10m',
-                user: data
-            })
+            return res
+                .status(200)
+                .cookie('authorization', token)
+                .redirect('/api/users/current')
         } catch (error) {
             return res.status(400).json({
                 status: 'error',
@@ -125,12 +123,8 @@ class UserController {
     }
 
     current = async (req, res) => {
-        const { email } = req.body
-        if (!email) {
-            return res.redirect('/login')
-        }
-
-        const data = await this.userService.getUserByEmail(email)
+        const { user } = req.session
+        const data = await this.userService.getUserByEmail(user.email)
 
         return res.render('current', {
             firstName: data.firstName,
@@ -158,7 +152,6 @@ class UserController {
     }
 
     githubCallBack = async (req, res) => {
-        console.log(req)
         req.session.user = req.user
         return res.redirect('/views/products')
     }
