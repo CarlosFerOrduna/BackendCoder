@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const key = process.env.PRIVATE_KEY;
 
 const generateToken = (user) => {
-    return jwt.sign({ user }, key, { expiresIn: '10m' });
+    return jwt.sign(user.email, key, { expiresIn: '10m' });
 };
 
 const authToken = (req, res, next) => {

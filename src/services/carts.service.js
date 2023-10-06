@@ -1,7 +1,7 @@
 import { cartModel } from '../dao/models/carts.model.js';
 import productService from './products.service.js';
 
-class CartService {
+export default class CartService {
     constructor() {}
 
     createCart = async () => {
@@ -98,7 +98,3 @@ class CartService {
         }
     };
 }
-
-const cartService = new CartService();
-
-export default cartService;

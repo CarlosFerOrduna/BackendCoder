@@ -1,18 +1,24 @@
-import messageService from '../services/messages.service.js';
+import MessageService from '../services/messages.service.js';
 
 class MessagesControlles {
-    constructor() {}
+    constructor() {
+        this.messageService = new MessageService();
+    }
 
     getMessages = async (req, res) => {
         try {
-            const messages = messageService.getMessages();
+            const messages = await this.messageService.getMessages();
 
             return res.render('chat', {
                 title: 'ChatSocket',
                 messages
             });
         } catch {
-            return res.render('bad-request', {});
+            return res.status(400).json({
+                status: 'error',
+                message: error,
+                data: []
+            });
         }
     };
 }

@@ -1,8 +1,6 @@
 import userModel from '../dao/models/users.model.js';
 
-class UserService {
-    constructor() {}
-
+export default class UserService {
     createUser = async (user) => {
         try {
             const newUser = new userModel(user);
@@ -10,7 +8,7 @@ class UserService {
 
             return await newUser.save();
         } catch (error) {
-            throw new Error('insertUser: ' + error.message);
+            throw new Error('insertUser: ' + error);
         }
     };
 
@@ -23,7 +21,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error.message);
+            throw new Error('getUser: ' + error);
         }
     };
 
@@ -33,7 +31,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error.message);
+            throw new Error('getUser: ' + error);
         }
     };
     getUserByUsername = async (username) => {
@@ -42,7 +40,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('getUser: ' + error.message);
+            throw new Error('getUser: ' + error);
         }
     };
 
@@ -55,7 +53,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('updateUser: ' + error.message);
+            throw new Error('updateUser: ' + error);
         }
     };
 
@@ -68,7 +66,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('deleteUser: ' + error.message);
+            throw new Error('deleteUser: ' + error);
         }
     };
 
@@ -81,11 +79,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            throw new Error('login: ' + error.message);
+            throw new Error('login: ' + error);
         }
     };
 }
-
-const userService = new UserService();
-
-export default userService;

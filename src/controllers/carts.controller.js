@@ -1,33 +1,43 @@
-import cartService from '../services/carts.service.js';
+import CartService from '../services/carts.service.js';
 
 class CartController {
-    constructor() {}
+    constructor() {
+        this.cartService = new CartService();
+    }
 
     createCart = async (req, res) => {
-        const cartCreated = await cartService.createCart();
+        try {
+            const cartCreated = await this.cartService.createCart();
 
-        return res.status(201).json({
-            status: 'success',
-            message: 'cart created with success',
-            data: cartCreated
-        });
+            return res.status(201).json({
+                status: 'success',
+                message: 'cart created with success',
+                data: cartCreated
+            });
+        } catch (error) {
+            return res.status(400).json({
+                status: 'error',
+                message: error,
+                data: []
+            });
+        }
     };
 
     getCartById = async (req, res) => {
         try {
             const { cid } = req.params;
 
-            const cart = await cartService.getCartById(cid);
+            const cart = await this.cartService.getCartById(cid);
 
-            res.status(200).json({
+            return res.status(200).json({
                 status: 'success',
                 message: 'cart found successful',
                 data: cart
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -36,7 +46,7 @@ class CartController {
     getViewCartById = async (req, res) => {
         try {
             const { cid } = req.params;
-            const cart = await cartService.getCartById(cid);
+            const cart = await this.cartService.getCartById(cid);
 
             return res.render('cart', {
                 cart: JSON.parse(JSON.stringify(cart)),
@@ -45,7 +55,7 @@ class CartController {
         } catch (error) {
             res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -54,7 +64,7 @@ class CartController {
     addProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params;
-            const cart = await cartService.addProductInCart(cid, pid);
+            const cart = await this.cartService.addProductInCart(cid, pid);
 
             return res.status(201).json({
                 status: 'success',
@@ -62,9 +72,9 @@ class CartController {
                 data: cart
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -74,7 +84,7 @@ class CartController {
         try {
             const { cid, pid } = req.params;
             const { quantity } = req.body;
-            const cart = await cartService.updateQuantityById(cid, pid, quantity);
+            const cart = await this.cartService.updateQuantityById(cid, pid, quantity);
 
             return res.status(201).json({
                 status: 'success',
@@ -82,9 +92,9 @@ class CartController {
                 data: cart
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -94,7 +104,7 @@ class CartController {
         try {
             const { cid } = req.params;
             const { products } = req.body;
-            const cart = await cartService.AddProductsInCart(cid, products);
+            const cart = await this.cartService.addProductsInCart(cid, products);
 
             return res.status(201).json({
                 status: 'success',
@@ -102,9 +112,9 @@ class CartController {
                 data: cart
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -113,7 +123,7 @@ class CartController {
     removeProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params;
-            const cart = await cartService.removeProductInCart(cid, pid);
+            const cart = await this.cartService.removeProductInCart(cid, pid);
 
             return res.status(200).json({
                 status: 'success',
@@ -123,7 +133,7 @@ class CartController {
         } catch (error) {
             res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }
@@ -132,7 +142,7 @@ class CartController {
     removeAllProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params;
-            const cart = await cartService.removeAllProductsInCart(cid);
+            const cart = await this.cartService.removeAllProductsInCart(cid);
 
             return res.status(200).json({
                 status: 'success',
@@ -140,9 +150,9 @@ class CartController {
                 data: cart
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
-                message: error.message,
+                message: error,
                 data: []
             });
         }

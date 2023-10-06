@@ -1,6 +1,6 @@
 import { productModel } from '../dao/models/products.model.js';
 
-class ProductService {
+export default class ProductService {
     constructor() {}
 
     addProduct = async (product) => {
@@ -101,7 +101,3 @@ class ProductService {
         }
     };
 }
-
-const productService = new ProductService();
-
-export default productService;

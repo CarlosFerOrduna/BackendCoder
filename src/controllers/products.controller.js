@@ -1,13 +1,15 @@
-import productService from '../services/products.service.js';
+import ProductService from '../services/products.service.js';
 
 class ProductController {
-    constructor() {}
+    constructor() {
+        this.productService = new ProductService();
+    }
 
     addProduct = async (req, res) => {
         try {
             const { title, description, code, price, status, stock, category } = req.body;
             const thumbnails = req?.file?.filename;
-            const product = await productService.addProduct({
+            const product = {
                 title,
                 description,
                 code,
@@ -16,15 +18,17 @@ class ProductController {
                 stock,
                 category,
                 thumbnails
-            });
+            };
+
+            const data = await this.productService.addProduct(product);
 
             return res.status(201).json({
                 status: 'success',
                 message: 'product created with success',
-                data: product
+                data
             });
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: 'error',
                 message: error.message,
                 data: {}
@@ -41,7 +45,7 @@ class ProductController {
             if (status) query.status = status;
             if (category) query.category = category;
 
-            const result = await productService.getProducts(
+            const result = await this.productService.getProducts(
                 limit,
                 sortCase[sort],
                 page,
@@ -78,7 +82,7 @@ class ProductController {
             if (status) query.status = status;
             if (category) query.category = category;
 
-            const result = await productService.getProducts(
+            const result = await this.productService.getProducts(
                 limit,
                 sortCase[sort],
                 page,
@@ -111,7 +115,7 @@ class ProductController {
     getProductByIdForViews = async (req, res) => {
         try {
             const { pid } = req.params;
-            const product = await productService.getProductById(pid);
+            const product = await this.productService.getProductById(pid);
 
             return res.render('product', {
                 product: JSON.parse(JSON.stringify(product)),
@@ -129,7 +133,7 @@ class ProductController {
     getProductById = async (req, res) => {
         try {
             const { pid } = req.params;
-            const product = await productService.getProductById(pid);
+            const product = await this.productService.getProductById(pid);
 
             return res.status(200).json({
                 status: 'success',
@@ -150,7 +154,7 @@ class ProductController {
             const { title, description, code, price, status, stock, category } = req.body;
             const { pid } = req.params;
             const thumbnails = req?.file?.filename;
-            const product = await productService.updateProduct(pid, {
+            const product = {
                 title,
                 description,
                 code,
@@ -159,12 +163,14 @@ class ProductController {
                 stock,
                 category,
                 thumbnails
-            });
+            };
+
+            const data = await this.productService.updateProduct(pid, product);
 
             return res.status(200).json({
                 status: 'success',
                 message: 'product updated with success',
-                data: product
+                data
             });
         } catch (error) {
             return res.status(400).json({
@@ -178,7 +184,7 @@ class ProductController {
     deleteProduct = async (req, res) => {
         try {
             const { pid } = req.params;
-            await productService.deleteProduct(pid);
+            await this.productService.deleteProduct(pid);
 
             return res.status(204).json({});
         } catch (error) {

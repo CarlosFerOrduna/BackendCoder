@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import userController from '../controllers/users.controller.js';
+import { authToken } from '../utils/jwt.util.js';
 
 const router = Router();
 
@@ -21,21 +22,12 @@ router.post('/restore', userController.updateUser);
 router.get(
     '/github',
     passport.authenticate('github', { scope: ['user:email'] }),
-    (req, res) => {
-        return res.send({
-            status: 'success',
-            message: 'success'
-        });
-    }
+    userController.github
 );
 router.get(
     '/githubcallback',
     passport.authenticate('github', { failureRedirect: '/login' }),
-    (req, res) => {
-        console.log(req);
-        req.session.user = req.user;
-        return res.redirect('/views/products');
-    }
+    userController.githubCallBack
 );
-
+router.get('/current', authToken, userController.current);
 export default router;

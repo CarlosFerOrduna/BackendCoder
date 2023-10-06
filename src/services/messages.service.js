@@ -1,6 +1,6 @@
 import { MessageModel } from '../dao/models/messages.model.js';
 
-class MessageService {
+export default class MessageService {
     constructor() {}
 
     insertMessage = async (message) => {
@@ -26,7 +26,3 @@ class MessageService {
         }
     };
 }
-
-const messageService = new MessageService();
-
-export default messageService;
