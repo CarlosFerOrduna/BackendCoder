@@ -28,25 +28,21 @@ export default class ProductService {
     getProductById = async (id) => {
         try {
             const product = await productModel.findById(id)
-            if (!product) {
-                throw new Error('The product does not exist')
-            }
+            if (!product) throw new Error('product does not exist')
 
             return product
         } catch (error) {
             throw new Error('getProductById: ' + error)
         }
     }
-    updateProduct = async (pid, product) => {
+    updateProduct = async (pid, productUpdated) => {
         try {
-            const updatedProduct = await productModel.findByIdAndUpdate(pid, product, {
+            const product = await productModel.findByIdAndUpdate(pid, productUpdated, {
                 new: true
             })
-            if (!updatedProduct) {
-                throw new Error('The product does not exist')
-            }
+            if (!product) throw new Error('product does not exist')
 
-            return updatedProduct
+            return product
         } catch (error) {
             throw new Error('updateProduct: ' + error)
         }
@@ -55,9 +51,7 @@ export default class ProductService {
     deleteProduct = async (id) => {
         try {
             const deletedProduct = await productModel.findByIdAndDelete(id)
-            if (!deletedProduct) {
-                throw new Error('The product does not exist')
-            }
+            if (!deletedProduct) throw new Error('product does not exist')
 
             return deletedProduct
         } catch (error) {

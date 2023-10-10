@@ -10,6 +10,14 @@ class UserController {
     createUser = async (req, res) => {
         try {
             const { firstName, lastName, email, age, username, password, rol } = req.body
+            if (!firstName || !isNaN(firstName)) throw new Error('firstName is not valid')
+            if (!lastName || !isNaN(lastName)) throw new Error('lastName is not valid')
+            if (!email || !isNaN(email)) throw new Error('email is not valid')
+            if (!age || isNaN(age)) throw new Error('age is not valid')
+            if (!username || !isNaN(username)) throw new Error('username is not valid')
+            if (!password || !isNaN(password)) throw new Error('password is not valid')
+            if (!rol || !isNaN(rol)) throw new Error('rol is not valid')
+
             const user = { firstName, lastName, email, age, username, password, rol }
             const result = await this.userService.createUser(user)
 
@@ -19,17 +27,15 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
     getUser = async (req, res) => {
         try {
             const { uid } = req.params
+            if (!uid || !isNaN(uid)) throw new Error('uid is not valid')
+
             const result = await this.userService.getUserById(uid)
 
             return res.status(201).json({
@@ -38,11 +44,7 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
@@ -66,38 +68,33 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
     deleteUser = async (req, res) => {
         try {
             const { uid } = req.params
+            if (!uid || !isNaN(uid)) throw new Error('uid is not valid')
+
             await this.userService.deleteUser(uid)
 
             return res.status(204).json({})
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
     login = async (req, res) => {
         try {
             const { email, password } = req.body
+            if (!email || !email.includes('@')) throw new Error('email is not valid')
+            if (!password || !isNaN(password)) throw new Error('password is not valid')
 
             const data = await this.userService.getUserByEmail(email)
 
-            if (!isValidPassword(data, password)) {
+            if (!isValidPassword(data, password))
                 throw new Error('something went wrong: ' + data)
-            }
 
             const token = generateToken(data)
 
@@ -114,16 +111,14 @@ class UserController {
                 .cookie('authorization', token)
                 .redirect('/api/users/current')
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
     current = async (req, res) => {
         const { user } = req.session
+        if (!user) throw new Error('user is not exists')
+
         const data = await this.userService.getUserByEmail(user.email)
 
         return res.render('current', {
@@ -162,6 +157,14 @@ class UserController {
 
     failRegister = (req, res) => {
         return res.send({ status: 'error', message: 'failed register' })
+    }
+
+    #returnError = (error) => {
+        return res.status(400).json({
+            status: 'error',
+            message: error.message,
+            data: {}
+        })
     }
 }
 
