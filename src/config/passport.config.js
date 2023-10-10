@@ -62,9 +62,7 @@ const initializatePassport = () => {
         async (username, password, done) => {
             try {
                 const user = await userService.getUserByEmail(username)
-                if (!user) {
-                    return done(null, false)
-                }
+                if (!user) return done(null, false)
 
                 if (isValidPassword(user, password)) return done(null, user)
             } catch (error) {
@@ -110,7 +108,7 @@ const initializatePassport = () => {
 }
 
 const cookieExtractor = () => {
-    return req?.cookies?.coderCookieToken ?? null
+    return req?.cookies?.authorization ?? null
 }
 
 export default initializatePassport

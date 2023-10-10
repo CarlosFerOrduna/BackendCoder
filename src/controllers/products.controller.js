@@ -9,7 +9,8 @@ class ProductController {
         try {
             const { title, description, code, price, status, stock, category } = req.body
             const thumbnails = req?.file?.filename
-            const product = {
+
+            const result = await this.productService.addProduct({
                 title,
                 description,
                 code,
@@ -18,21 +19,15 @@ class ProductController {
                 stock,
                 category,
                 thumbnails
-            }
-
-            const data = await this.productService.addProduct(product)
+            })
 
             return res.status(201).json({
                 status: 'success',
                 message: 'product created with success',
-                data
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
@@ -65,11 +60,81 @@ class ProductController {
                 nextLink: `http://localhost:8080/api/products/?page=${result.nextPage}`
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
+            this.#returnError(error)
+        }
+    }
+
+    getProductById = async (req, res) => {
+        try {
+            const { pid } = req.params
+            if (!pid || !isNaN(pid)) throw new Error('pid is not valid')
+
+            const product = await this.productService.getProductById(pid)
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'Product found successful',
+                data: product
             })
+        } catch (error) {
+            this.#returnError(error)
+        }
+    }
+
+    updateProduct = async (req, res) => {
+        try {
+            const { title, description, code, price, status, stock, category } = req.body
+            const { pid } = req.params
+            if (!pid || isNaN(pid)) throw new Error('pid is not valid')
+
+            const thumbnails = req?.file?.filename
+            const product = {
+                title,
+                description,
+                code,
+                price,
+                status,
+                stock,
+                category,
+                thumbnails
+            }
+
+            const update = {}
+
+            if (product?.title && isNaN(product?.title)) update.title = product?.title
+            if (product?.description && isNaN(product?.description))
+                update.description = product?.description
+            if (product?.code && isNaN(product?.code)) update.code = product?.code
+            if (product?.price && !isNaN(product?.price)) update.price = product?.price
+            if (product?.status && isNaN(product?.status)) update.status = product?.status
+            if (product?.stock && !isNaN(product?.stock)) update.stock = product?.stock
+            if (product?.category && isNaN(product?.category))
+                update.category = product?.category
+            if (product?.thumbnails && isNaN(product?.thumbnails))
+                update.$push = { thumbnails: product?.thumbnail }
+
+            const data = await this.productService.updateProduct(pid, update)
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'product updated with success',
+                data
+            })
+        } catch (error) {
+            this.#returnError(error)
+        }
+    }
+
+    deleteProduct = async (req, res) => {
+        try {
+            const { pid } = req.params
+            if (!pid || isNaN(pid)) throw new Error('pid is not valid')
+
+            await this.productService.deleteProduct(pid)
+
+            return res.status(204).send({})
+        } catch (error) {
+            this.#returnError(error)
         }
     }
 
@@ -104,11 +169,7 @@ class ProductController {
                 userLog: req.session.firstName ? true : false
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
@@ -122,112 +183,16 @@ class ProductController {
                 title: `Product: ${product.title}`
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
+            this.#returnError(error)
         }
     }
 
-    getProductById = async (req, res) => {
-        try {
-            const { pid } = req.params
-            const product = await this.productService.getProductById(pid)
-
-            return res.status(200).json({
-                status: 'success',
-                message: 'Product found successful',
-                data: product
-            })
-        } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
-        }
-    }
-
-    updateProduct = async (req, res) => {
-        try {
-            const { title, description, code, price, status, stock, category } = req.body
-            const { pid } = req.params
-            const thumbnails = req?.file?.filename
-            const product = {
-                title,
-                description,
-                code,
-                price,
-                status,
-                stock,
-                category,
-                thumbnails
-            }
-
-            const update = {}
-
-            if (product?.title && isNaN(product?.title)) {
-                update.title = product?.title
-            }
-
-            if (product?.description && isNaN(product?.description)) {
-                update.description = product?.description
-            }
-
-            if (product?.code && isNaN(product?.code)) {
-                update.code = product?.code
-            }
-
-            if (product?.price && !isNaN(product?.price)) {
-                update.price = product?.price
-            }
-
-            if (product?.status && isNaN(product?.status)) {
-                update.status = product?.status
-            }
-
-            if (product?.stock && !isNaN(product?.stock)) {
-                update.stock = product?.stock
-            }
-
-            if (product?.category && isNaN(product?.category)) {
-                update.category = product?.category
-            }
-
-            if (product?.thumbnails && isNaN(product?.thumbnails)) {
-                update.$push = { thumbnails: product?.thumbnail }
-            }
-
-            const data = await this.productService.updateProduct(pid, update)
-
-            return res.status(200).json({
-                status: 'success',
-                message: 'product updated with success',
-                data
-            })
-        } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
-        }
-    }
-
-    deleteProduct = async (req, res) => {
-        try {
-            const { pid } = req.params
-            await this.productService.deleteProduct(pid)
-
-            return res.status(204).json({})
-        } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString().message,
-                data: {}
-            })
-        }
+    #returnError = (error) => {
+        return res.status(400).json({
+            status: 'error',
+            message: error.message,
+            data: {}
+        })
     }
 }
 

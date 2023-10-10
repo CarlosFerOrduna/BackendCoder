@@ -7,76 +7,50 @@ class CartController {
 
     createCart = async (req, res) => {
         try {
-            const cartCreated = await this.cartService.createCart()
+            const result = await this.cartService.createCart()
 
-            return res.status(201).json({
+            return res.status(201).send({
                 status: 'success',
                 message: 'cart created with success',
-                data: cartCreated
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
     getCartById = async (req, res) => {
         try {
             const { cid } = req.params
+            if (!cid || !isNaN(cid)) throw new Error('cid not valid')
 
-            const cart = await this.cartService.getCartById(cid)
+            const result = await this.cartService.getCartById(cid)
 
             return res.status(200).json({
                 status: 'success',
-                message: 'cart found successful',
-                data: cart
+                message: 'cart found with success',
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
-        }
-    }
-
-    getViewCartById = async (req, res) => {
-        try {
-            const { cid } = req.params
-            const cart = await this.cartService.getCartById(cid)
-
-            return res.render('cart', {
-                cart: JSON.parse(JSON.stringify(cart)),
-                title: 'Cart'
-            })
-        } catch (error) {
-            res.status(400).json({
-                status: 'error',
-                message: error,
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
     addProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params
-            const cart = await this.cartService.addProductInCart(cid, pid)
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
+            if (!pid || !isNaN(pid)) throw new Error('pid is not valid')
+
+            const result = await this.cartService.addProductInCart(cid, pid)
 
             return res.status(201).json({
                 status: 'success',
                 message: 'product added with success',
-                data: cart
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
@@ -84,78 +58,98 @@ class CartController {
         try {
             const { cid, pid } = req.params
             const { quantity } = req.body
-            const cart = await this.cartService.updateQuantityById(cid, pid, quantity)
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
+            if (!pid || !isNaN(pid)) throw new Error('pid is not valid')
+            if (!quantity || parseInt(quantity) < 0) throw new Error('quantity is not valid')
+
+            const result = await this.cartService.updateQuantityById(cid, pid, quantity)
 
             return res.status(201).json({
                 status: 'success',
                 message: 'product added with success',
-                data: cart
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
     addProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
             const { products } = req.body
-            const cart = await this.cartService.addProductsInCart(cid, products)
+            if (!products || products.length < 1) throw new Error('products is not valid')
+
+            const result = await this.cartService.addProductsInCart(cid, products)
 
             return res.status(201).json({
                 status: 'success',
                 message: 'product added with success',
-                data: cart
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
     removeProductInCart = async (req, res) => {
         try {
             const { cid, pid } = req.params
-            const cart = await this.cartService.removeProductInCart(cid, pid)
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
+            if (!pid || !isNaN(pid)) throw new Error('pid is not valid')
+
+            const result = await this.cartService.removeProductInCart(cid, pid)
 
             return res.status(200).json({
                 status: 'success',
                 message: 'product removed with success',
-                data: cart
+                data: result
             })
         } catch (error) {
-            res.status(400).json({
-                status: 'error',
-                message: error,
-                data: []
-            })
+            return this.#returnError()
         }
     }
 
     removeAllProductsInCart = async (req, res) => {
         try {
             const { cid } = req.params
-            const cart = await this.cartService.removeAllProductsInCart(cid)
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
+
+            const result = await this.cartService.removeAllProductsInCart(cid)
 
             return res.status(200).json({
                 status: 'success',
                 message: 'all products removed with success',
-                data: cart
+                data: result
             })
         } catch (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.toString(),
-                data: []
-            })
+            return this.#returnError()
         }
+    }
+
+    getViewCartById = async (req, res) => {
+        try {
+            const { cid } = req.params
+            if (!cid || !isNaN(cid)) throw new Error('cid not valid')
+
+            const result = await this.cartService.getCartById(cid)
+
+            return res.render('cart', {
+                cart: JSON.parse(JSON.stringify(result)),
+                title: 'Cart'
+            })
+        } catch (error) {
+            return this.#returnError()
+        }
+    }
+
+    #returnError = (error) => {
+        return res.status(400).json({
+            status: 'error',
+            message: error.message,
+            data: []
+        })
     }
 }
 
