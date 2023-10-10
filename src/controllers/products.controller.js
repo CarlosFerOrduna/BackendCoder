@@ -9,6 +9,13 @@ class ProductController {
         try {
             const { title, description, code, price, status, stock, category } = req.body
             const thumbnails = req?.file?.filename
+            if (!title || !isNaN(title)) throw new Error('title is not valid')
+            if (!description || !isNaN(description))
+                throw new Error('description is not valid')
+            if (!code || !isNaN(code)) throw new Error('code is not valid')
+            if (!price || isNaN(price)) throw new Error('price is not valid')
+            if (!stock || isNaN(stock)) throw new Error('stock is not valid')
+            if (!category || !isNaN(category)) throw new Error('category is not valid')
 
             const result = await this.productService.addProduct({
                 title,
@@ -111,7 +118,7 @@ class ProductController {
             if (product?.category && isNaN(product?.category))
                 update.category = product?.category
             if (product?.thumbnails && isNaN(product?.thumbnails))
-                update.$push = { thumbnails: product?.thumbnail }
+                update.$push = { thumbnails: product.thumbnails }
 
             const data = await this.productService.updateProduct(pid, update)
 
@@ -176,6 +183,8 @@ class ProductController {
     getProductByIdForViews = async (req, res) => {
         try {
             const { pid } = req.params
+            if (!pid || !isNaN(pid)) throw new Error('pid is not valid')
+
             const product = await this.productService.getProductById(pid)
 
             return res.render('product', {
