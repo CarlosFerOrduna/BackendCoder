@@ -6,16 +6,15 @@ const generateToken = (user) => {
     return jwt.sign({ user }, key, { expiresIn: '6000000' })
 }
 
-const authToken = (req, res, next) => {
+const authToken = (res, authorization) => {
     const key = process.env.PRIVATE_KEY
-    const { authorization } = req.cookies
 
     if (!authorization) return res.status(401).send({ message: 'not autenticated' })
 
     const token = authorization.replace('Bearer ', '')
-    jwt.verify(token, key, (error, credentiales) => {
+
+    return jwt.verify(token, key, (error, credentiales) => {
         if (error) return res.status(403).send({ message: 'forbidden' })
-        next()
     })
 }
 

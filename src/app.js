@@ -17,8 +17,8 @@ import {
 } from './routers/index.js'
 import connectMongo from './utils/connections.util.js'
 import __dirname from './utils/dirname.util.js'
-import socketServer from './utils/socket.util.js'
 import handlerError from './utils/handler.error.util.js'
+import socketServer from './utils/socket.util.js'
 
 dotenv.config()
 const app = express()

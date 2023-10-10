@@ -27,7 +27,7 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -44,7 +44,7 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -68,7 +68,7 @@ class UserController {
                 data: result
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -81,7 +81,7 @@ class UserController {
 
             return res.status(204).json({})
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -89,7 +89,7 @@ class UserController {
         try {
             const { email, password } = req.body
             if (!email || !email.includes('@')) throw new Error('email is not valid')
-            if (!password || !isNaN(password)) throw new Error('password is not valid')
+            if (!password) throw new Error('password is not valid')
 
             const data = await this.userService.getUserByEmail(email)
 
@@ -99,33 +99,37 @@ class UserController {
             const token = generateToken(data)
 
             req.session.user = {
-                firstName: req.user.firstName,
-                lastName: req.user.lastName,
-                email: req.user.email,
-                age: req.user.age,
-                rol: req.user.rol
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                age: data.age,
+                rol: data.rol
             }
 
-            return res
-                .status(200)
-                .cookie('authorization', token)
-                .redirect('/api/users/current')
+            return res.status(200).header('authorization', token).json({
+                user: data,
+                accessToken: token
+            })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
     current = async (req, res) => {
-        const { user } = req.session
-        if (!user) throw new Error('user is not exists')
+        try {
+            const { user } = req.session
+            if (!user) throw new Error('user is not exists')
 
-        const data = await this.userService.getUserByEmail(user.email)
+            const data = await this.userService.getUserByEmail(user.email)
 
-        return res.render('current', {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email
-        })
+            return res.json({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email
+            })
+        } catch (error) {
+            this.#returnError(res, error)
+        }
     }
 
     logout = async (req, res) => {
@@ -159,7 +163,7 @@ class UserController {
         return res.send({ status: 'error', message: 'failed register' })
     }
 
-    #returnError = (error) => {
+    #returnError = (res, error) => {
         return res.status(400).json({
             status: 'error',
             message: error.message,

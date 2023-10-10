@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { authToken } from '../utils/jwt.util.js'
 
 export default class BaseRouter {
     constructor() {
@@ -22,7 +23,7 @@ export default class BaseRouter {
     }
 
     post(path, policies, ...callbacks) {
-        this.router.get(
+        this.router.post(
             path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
@@ -31,7 +32,7 @@ export default class BaseRouter {
     }
 
     put(path, policies, ...callbacks) {
-        this.router.get(
+        this.router.put(
             path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
@@ -40,7 +41,7 @@ export default class BaseRouter {
     }
 
     delete(path, policies, ...callbacks) {
-        this.router.get(
+        this.router.delete(
             path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
@@ -72,14 +73,7 @@ export default class BaseRouter {
                 if (policies.includes('public')) return next()
 
                 const { authorization } = req.headers
-                if (!authorization)
-                    return res.status(401).send({ status: 'error', error: 'unauthorized' })
-
-                const token = authorization.replace('Bearer ', '')
-                const user = jwt.verify(token, process.env.PRIVATE_KEY)
-
-                if (!policies.includes(user.role.toLowerCase()))
-                    return res.status(403).send({ status: 'error', error: 'forbidden' })
+                const user = authToken(res, authorization)
 
                 req.user = user
 

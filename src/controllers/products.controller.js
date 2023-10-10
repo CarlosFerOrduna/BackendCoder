@@ -34,7 +34,7 @@ class ProductController {
                 data: result
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -67,7 +67,7 @@ class ProductController {
                 nextLink: `http://localhost:8080/api/products/?page=${result.nextPage}`
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -84,7 +84,7 @@ class ProductController {
                 data: product
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -128,7 +128,7 @@ class ProductController {
                 data
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -141,7 +141,7 @@ class ProductController {
 
             return res.status(204).send({})
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -176,7 +176,7 @@ class ProductController {
                 userLog: req.session.firstName ? true : false
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
@@ -192,11 +192,11 @@ class ProductController {
                 title: `Product: ${product.title}`
             })
         } catch (error) {
-            this.#returnError(error)
+            this.#returnError(res, error)
         }
     }
 
-    #returnError = (error) => {
+    #returnError = (res, error) => {
         return res.status(400).json({
             status: 'error',
             message: error.message,
