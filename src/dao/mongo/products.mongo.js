@@ -15,7 +15,7 @@ export default class Products {
 
     getProducts = async (limit, sort, page, query) => {
         try {
-            return productModel.paginate(query, {
+            return await productModel.paginate(query, {
                 limit: limit ?? 6,
                 page: page ?? 1,
                 sort: { price: sort }

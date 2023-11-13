@@ -47,7 +47,7 @@ export default class Users {
 
     updateUser = async (user) => {
         try {
-            const result = await userModel.findOneAndUpdate({ email: user.email }, user)
+            const result = await userModel.findByIdAndUpdate(user._id, user, { new: true })
             if (!result) throw new Error('user is not exists')
 
             return result

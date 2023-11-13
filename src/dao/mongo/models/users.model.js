@@ -2,13 +2,15 @@ import { Schema, model } from 'mongoose'
 import { createHash } from '../../../utils/bcrypt.util.js'
 
 const userSchema = new Schema({
-    firstName: { type: String },
-    lastName: { type: String },
+    firstName: { type: String, require: true },
+    lastName: { type: String, require: true },
     email: { type: String, unique: true, index: true },
-    age: { type: Number },
+    age: { type: Number, require: true },
     username: { type: String },
-    password: { type: String },
-    rol: { type: String, enum: ['admin', 'user'] }
+    password: { type: String, require: true },
+    rol: { type: String, enum: ['admin', 'user'], default: 'user' },
+    cart: { type: Schema.Types.ObjectId, ref: 'carts' },
+    tickets: [{ type: Schema.Types.ObjectId, ref: 'tickets' }]
 })
 
 userSchema.pre('save', function () {

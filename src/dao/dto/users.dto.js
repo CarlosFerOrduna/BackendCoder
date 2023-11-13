@@ -9,6 +9,8 @@ export default class UserDTO {
                 this.username = user.username || null
                 this.password = user.password || null
                 this.rol = user.rol || null
+                this.cart = null
+                this.tickets = []
 
                 break
             case 'response':
@@ -18,6 +20,8 @@ export default class UserDTO {
                 this.username = user.username || null
                 this.email = user.email || null
                 this.age = user.age || null
+                this.cart = user.cart || null
+                this.tickets = user.tickets || []
 
                 break
 

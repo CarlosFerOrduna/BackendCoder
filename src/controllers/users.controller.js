@@ -50,8 +50,9 @@ class UserController {
 
     updateUser = async (req, res) => {
         try {
-            const { firstName, lastName, email, age, password, rol } = req.body
-            let newUser = {}
+            const { firstName, lastName, email, age, password, rol, cart, tickets } = req.body
+            const { _id } = req.session.user
+            let newUser = { _id }
 
             if (firstName) newUser.firstName = firstName
             if (lastName) newUser.lastName = lastName
@@ -59,6 +60,8 @@ class UserController {
             if (age) newUser.age = age
             if (password) newUser.password = createHash(password)
             if (rol) newUser.rol = rol
+            if (cart) newUser.cart = cart
+            if (tickets) newUser.tickets = tickets
 
             const result = await this.userService.updateUser(newUser)
 
@@ -104,7 +107,8 @@ class UserController {
                 lastName: user.lastName,
                 email: user.email,
                 age: user.age,
-                rol: data.rol
+                rol: data.rol,
+                tickets: user.tickets
             }
 
             return res.status(200).header('authorization', token).json({
@@ -122,7 +126,6 @@ class UserController {
             if (!user) throw new Error('user is not exists')
 
             const data = await this.userService.getUserById(user._id)
-
             return res.json(data)
         } catch (error) {
             this.#returnError(res, error)

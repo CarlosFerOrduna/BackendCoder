@@ -4,6 +4,7 @@ import BaseRouter from '../BaseRouter.js'
 export default class ApiRouterCarts extends BaseRouter {
     init() {
         this.get('/:cid', ['user'], cartController.getCartById)
+        this.get('/:cid/purchase', ['user'], cartController.checkout)
         this.post('/:cid/products/:pid', ['user'], cartController.addProductInCart)
         this.post('/', ['user'], cartController.createCart)
         this.put('/:cid/products/:pid', ['user'], cartController.updateQuantityById)

@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
-import { Schema } from 'mongoose'
+import { Schema, model } from 'mongoose'
+import paginate from 'mongoose-paginate-v2'
 import { v4 } from 'uuid'
 
 const ticketSchema = new Schema({
@@ -9,7 +10,13 @@ const ticketSchema = new Schema({
     purchaser: { type: String, require: true }
 })
 
+ticketSchema.plugin(paginate)
+
 ticketSchema.pre('save', function () {
     this.code = v4()
     this.purchase_datetime = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
 })
+
+const ticketModel = model('tickets', ticketSchema)
+
+export default ticketModel

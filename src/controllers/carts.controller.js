@@ -1,4 +1,9 @@
-import { cartService } from '../repositories/index.js'
+import {
+    cartService,
+    productService,
+    ticketService,
+    userService
+} from '../repositories/index.js'
 
 class CartController {
     constructor() {
@@ -8,6 +13,9 @@ class CartController {
     createCart = async (req, res) => {
         try {
             const result = await this.cartService.createCart()
+            const { user } = req.session
+            user.cart = result._id
+            await userService.updateUser(user)
 
             return res.status(201).send({
                 status: 'success',
@@ -15,7 +23,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -32,7 +44,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -50,7 +66,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -70,7 +90,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -89,7 +113,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -107,7 +135,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -124,7 +156,11 @@ class CartController {
                 data: result
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
@@ -140,16 +176,82 @@ class CartController {
                 title: 'Cart'
             })
         } catch (error) {
-            return this.#returnError()
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
         }
     }
 
-    #returnError = (error) => {
-        return res.status(400).json({
-            status: 'error',
-            message: error.message,
-            data: []
-        })
+    checkout = async (req, res) => {
+        try {
+            const { cid } = req.params
+            if (!cid || !isNaN(cid)) throw new Error('cid is not valid')
+
+            const cart = await cartService.getCartById(cid)
+            const { products } = cart
+
+            const productsOk = []
+            const productsError = []
+
+            const { user } = req.session
+            let amount = 0
+            for (const p of products) {
+                const product = await productService.getProductById(p.product._id)
+                if (product.stock >= p.quantity) {
+                    await productService.updateProduct(
+                        p.product._id,
+                        (product.stock -= p.product.quantity)
+                    )
+
+                    amount += product.price * p.quantity
+
+                    productsOk.push({
+                        title: product.title,
+                        description: product.description,
+                        code: product.code,
+                        price: product.price,
+                        status: product.status,
+                        stock: product.stock,
+                        category: product.category,
+                        thumbnails: product.thumbnails,
+                        quantity: p.product.quantity,
+                        amount: product.price * p.product.quantity
+                    })
+                } else {
+                    productsError.push({
+                        title: product.title,
+                        description: product.description,
+                        code: product.code,
+                        price: product.price,
+                        status: product.status,
+                        stock: product.stock,
+                        category: product.category,
+                        thumbnails: product.thumbnails,
+                        quantity: p.product.quantity,
+                        amount: product.price * p.product.quantity
+                    })
+                }
+            }
+
+            const result = await ticketService.createTicket({ amount, purchaser: user.email })
+            user.tickets.push(result._id)
+            await userService.updateUser(user)
+            await cartService.removeAllProductsInCart(cid)
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'ticket created with success',
+                data: { result, productsOk, productsError }
+            })
+        } catch (error) {
+            return res.status(400).json({
+                status: 'error',
+                message: error.message,
+                data: []
+            })
+        }
     }
 }
 

@@ -23,7 +23,7 @@ app.set('view engine', 'handlebars')
 app.use(cookieParser())
 app.use(
     session({
-        store: MongoStore.create({ mongoUrl: process.env.CONNECTION_STRING, ttl: 10 * 60 }),
+        store: MongoStore.create({ mongoUrl: config.connectionString, ttl: 10 * 60 }),
         secret: 'coderhouse',
         resave: false,
         saveUninitialized: true
@@ -33,13 +33,7 @@ initializatePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static('public'))
-app.use('/api/products', router.apiRouterProducts)
-app.use('/api/carts', router.apiRoutercarts)
-app.use('/api/users', router.apiRouterUsers)
-app.use('/views/products', router.viewsRouterProducts)
-app.use('/views/carts', router.viewsRouterCarts)
-app.use('/views/users', router.viewsRouterUsers)
-app.use('/views/chat', router.viewsRouterChats)
+app.use('/', router)
 app.use('*', handlerError)
 
 const httpServer = app.listen(config.port, () => {

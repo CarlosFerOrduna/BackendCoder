@@ -1,6 +1,6 @@
 import { MessageModel } from './models/messages.model.js'
 
-export default class MessageService {
+export default class Message {
     insertMessage = async (message) => {
         try {
             const newMessage = new MessageModel({
