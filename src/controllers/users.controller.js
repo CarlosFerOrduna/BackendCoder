@@ -92,22 +92,23 @@ class UserController {
             if (!password) throw new Error('password is not valid')
 
             const data = await this.userService.getUserByEmail(email)
-
             if (!isValidPassword(data, password))
                 throw new Error('something went wrong: ' + data)
 
-            const token = generateToken(data)
+            const user = await this.userService.getUserById(data._id)
+            const token = generateToken(user)
 
             req.session.user = {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                age: data.age,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                age: user.age,
                 rol: data.rol
             }
 
             return res.status(200).header('authorization', token).json({
-                user: data,
+                user: user,
                 accessToken: token
             })
         } catch (error) {
@@ -120,13 +121,9 @@ class UserController {
             const { user } = req.session
             if (!user) throw new Error('user is not exists')
 
-            const data = await this.userService.getUserByEmail(user.email)
+            const data = await this.userService.getUserById(user._id)
 
-            return res.json({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email
-            })
+            return res.json(data)
         } catch (error) {
             this.#returnError(res, error)
         }

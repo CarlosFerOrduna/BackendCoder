@@ -12,9 +12,7 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', function () {
-    if (this.password) {
-        this.password = createHash(this.password)
-    }
+    if (this.password) this.password = createHash(this.password)
 })
 
 const userModel = model('users', userSchema)

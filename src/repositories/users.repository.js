@@ -6,27 +6,32 @@ export default class UserRepository {
     }
 
     createUser = async (user) => {
-        const userDto = new UserDTO(user)
+        const userDto = new UserDTO(user, 'database')
         return await this.dao.createUser(userDto)
     }
 
     getUserById = async (uid) => {
-        return await this.dao.getUserById(uid)
+        const userDto = await this.dao.getUserById(uid)
+        return new UserDTO(userDto, 'response')
     }
 
     getUserByEmail = async (email) => {
-        return await this.dao.getUserByEmail(email)
+        const userDto = await this.dao.getUserByEmail(email)
+        return new UserDTO(userDto, 'bcrypt')
     }
 
     getUserByUsername = async (username) => {
-        return this.dao.getUserByUsername(username)
+        const userDto = await this.dao.getUserByUsername(username)
+        return new UserDTO(userDto, 'response')
     }
 
     updateUser = async (user) => {
-        return this.dao.updateUser(user)
+        const userDto = await this.dao.updateUser(user)
+        return new UserDTO(userDto, 'response')
     }
 
     deleteUser = async (uid) => {
-        return await this.dao.deleteUser(uid)
+        const userDto = await this.dao.deleteUser(uid)
+        return new UserDTO(userDto, 'response')
     }
 }
