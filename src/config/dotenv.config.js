@@ -1,5 +1,5 @@
-import dotenv from 'dotenv'
 import { Command } from 'commander'
+import dotenv from 'dotenv'
 
 const program = new Command()
 

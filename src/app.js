@@ -11,7 +11,7 @@ import connectMongo from './utils/connections.util.js'
 import __dirname from './utils/dirname.util.js'
 import handlerError from './utils/handler.error.util.js'
 import socketServer from './utils/socket.util.js'
-import config from './config/env.config.js'
+import config from './config/dotenv.config.js'
 
 const app = express()
 
