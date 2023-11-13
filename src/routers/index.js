@@ -17,7 +17,7 @@ const viewsRouterChats = new ViewsRouterChats().getRouter()
 const viewsRouterProducts = new ViewsRouterProducts().getRouter()
 const viewsRouterUsers = new ViewsRouterUsers().getRouter()
 
-export {
+export default {
     apiRoutercarts,
     apiRouterProducts,
     apiRouterUsers,

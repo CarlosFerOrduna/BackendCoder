@@ -10,4 +10,3 @@ export default class ApiRouterProducts extends BaseRouter {
         this.delete('/:pid', ['admin'], productController.deleteProduct)
     }
 }
-// TODO: ver como implementar multer

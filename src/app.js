@@ -1,31 +1,23 @@
 import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
-import dotenv from 'dotenv'
+import cors from 'cors'
 import express from 'express'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import passport from 'passport'
 import initializatePassport from './config/passport.config.js'
-import {
-    apiRouterProducts,
-    apiRouterUsers,
-    apiRoutercarts,
-    viewsRouterCarts,
-    viewsRouterChats,
-    viewsRouterProducts,
-    viewsRouterUsers
-} from './routers/index.js'
+import router from './routers/index.js'
 import connectMongo from './utils/connections.util.js'
 import __dirname from './utils/dirname.util.js'
 import handlerError from './utils/handler.error.util.js'
 import socketServer from './utils/socket.util.js'
+import config from './config/env.config.js'
 
-dotenv.config()
 const app = express()
-const port = process.env.PORT
 
 connectMongo()
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.engine('handlebars', handlebars.engine())
@@ -44,17 +36,17 @@ initializatePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static('public'))
-app.use('/api/products', apiRouterProducts)
-app.use('/api/carts', apiRoutercarts)
-app.use('/api/users', apiRouterUsers)
-app.use('/views/products', viewsRouterProducts)
-app.use('/views/carts', viewsRouterCarts)
-app.use('/views/users', viewsRouterUsers)
-app.use('/views/chat', viewsRouterChats)
+app.use('/api/products', router.apiRouterProducts)
+app.use('/api/carts', router.apiRoutercarts)
+app.use('/api/users', router.apiRouterUsers)
+app.use('/views/products', router.viewsRouterProducts)
+app.use('/views/carts', router.viewsRouterCarts)
+app.use('/views/users', router.viewsRouterUsers)
+app.use('/views/chat', router.viewsRouterChats)
 app.use('*', handlerError)
 
-const httpServer = app.listen(port, () => {
-    console.log(`Listen port: ${port}`)
+const httpServer = app.listen(config.port, () => {
+    console.log(`Listen port: ${config.port}`)
 })
 
 socketServer.init(httpServer)
