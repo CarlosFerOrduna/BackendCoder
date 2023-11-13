@@ -1,4 +1,4 @@
-import { productModel } from '../dao/models/products.model.js'
+import { productModel } from './models/products.model.js'
 
 export default class Products {
     addProduct = async (product) => {
@@ -25,9 +25,9 @@ export default class Products {
         }
     }
 
-    getProductById = async (id) => {
+    getProductById = async (pid) => {
         try {
-            const product = await productModel.findById(id)
+            const product = await productModel.findById(pid)
             if (!product) throw new Error('product does not exist')
 
             return product
@@ -35,6 +35,7 @@ export default class Products {
             throw new Error('getProductById: ' + error)
         }
     }
+
     updateProduct = async (pid, productUpdated) => {
         try {
             const product = await productModel.findByIdAndUpdate(pid, productUpdated, {
@@ -48,9 +49,9 @@ export default class Products {
         }
     }
 
-    deleteProduct = async (id) => {
+    deleteProduct = async (pid) => {
         try {
-            const deletedProduct = await productModel.findByIdAndDelete(id)
+            const deletedProduct = await productModel.findByIdAndDelete(pid)
             if (!deletedProduct) throw new Error('product does not exist')
 
             return deletedProduct

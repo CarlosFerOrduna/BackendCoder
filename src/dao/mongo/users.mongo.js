@@ -1,4 +1,4 @@
-import userModel from '../dao/models/users.model.js'
+import userModel from './models/users.model.js'
 
 export default class Users {
     createUser = async (user) => {

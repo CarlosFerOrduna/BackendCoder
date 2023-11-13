@@ -1,8 +1,8 @@
-import ProductService from '../services/products.service.js'
+import { productService } from '../repositories/index.js'
 
 class ProductController {
     constructor() {
-        this.productService = new ProductService()
+        this.productService = productService
     }
 
     addProduct = async (req, res) => {

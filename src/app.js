@@ -5,17 +5,14 @@ import express from 'express'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import passport from 'passport'
+import config from './config/dotenv.config.js'
 import initializatePassport from './config/passport.config.js'
 import router from './routers/index.js'
-import connectMongo from './utils/connections.util.js'
 import __dirname from './utils/dirname.util.js'
 import handlerError from './utils/handler.error.util.js'
 import socketServer from './utils/socket.util.js'
-import config from './config/dotenv.config.js'
 
 const app = express()
-
-connectMongo()
 
 app.use(cors())
 app.use(express.json())

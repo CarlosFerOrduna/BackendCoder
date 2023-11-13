@@ -1,4 +1,4 @@
-import userModel from '../dao/models/users.model.js'
+import userModel from '../dao/mongo/models/users.model.js'
 
 export default class UserService {
     createUser = async (user) => {

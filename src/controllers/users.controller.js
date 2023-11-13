@@ -1,10 +1,10 @@
-import UserService from '../services/users.service.js'
+import { userService } from '../repositories/index.js'
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 import { generateToken } from '../utils/jwt.util.js'
 
 class UserController {
     constructor() {
-        this.userService = new UserService()
+        this.userService = userService
     }
 
     createUser = async (req, res) => {

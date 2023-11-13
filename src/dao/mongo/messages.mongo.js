@@ -1,4 +1,4 @@
-import { MessageModel } from '../dao/mongo/models/messages.model.js'
+import { MessageModel } from './models/messages.model.js'
 
 export default class MessageService {
     insertMessage = async (message) => {

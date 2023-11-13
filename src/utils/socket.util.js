@@ -1,5 +1,5 @@
 import { Server } from 'socket.io'
-import productManager from '../dao/fileSystem/ProductManager.js'
+import productManager from '../dao/memory/fileSystem/ProductManager.js'
 import MessageService from '../services/messages.service.js'
 
 let server

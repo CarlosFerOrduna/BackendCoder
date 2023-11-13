@@ -1,8 +1,8 @@
-import CartService from '../services/carts.service.js'
+import { cartService } from '../repositories/index.js'
 
 class CartController {
     constructor() {
-        this.cartService = new CartService()
+        this.cartService = cartService
     }
 
     createCart = async (req, res) => {
