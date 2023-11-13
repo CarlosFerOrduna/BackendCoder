@@ -1,11 +1,10 @@
 import productController from '../../controllers/products.controller.js'
-import ProductService from '../../services/products.service.js'
+import { productService } from '../../repositories/index.js'
 import BaseRouter from '../BaseRouter.js'
 
 export default class ViewsRouterProducts extends BaseRouter {
     init() {
         this.get('/realtimeproducts', ['public'], async (req, res) => {
-            const productService = new ProductService()
             const products = await productService.getProducts()
 
             return res.render('realTimeProducts', {

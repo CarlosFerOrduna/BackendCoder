@@ -1,8 +1,8 @@
-import MessageService from '../services/messages.service.js'
+import { messageService } from '../repositories/index.js'
 
 class MessagesControlles {
     constructor() {
-        this.messageService = new MessageService()
+        this.messageService = messageService
     }
 
     getMessages = async (req, res) => {

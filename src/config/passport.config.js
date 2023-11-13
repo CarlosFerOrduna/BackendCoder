@@ -2,12 +2,11 @@ import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import jwt, { ExtractJwt } from 'passport-jwt'
 import local from 'passport-local'
-import UserService from '../services/users.service.js'
+import { userService } from '../repositories/index.js'
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 
 const JWTStrategy = jwt.Strategy
 const localStrategy = local.Strategy
-const userService = new UserService()
 
 const initializatePassport = () => {
     const jwtStrategy = new JWTStrategy(
