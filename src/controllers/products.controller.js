@@ -1,4 +1,5 @@
 import { productService } from '../repositories/index.js'
+import { generateProductMock } from '../utils/faker.util.js'
 
 class ProductController {
     constructor() {
@@ -194,6 +195,18 @@ class ProductController {
         } catch (error) {
             this.#returnError(res, error)
         }
+    }
+
+    getProductsMocks = async (req, res) => {
+        const products = []
+        for (let i = 0; i < 100; i++) {
+            products.push(await generateProductMock())
+        }
+
+        return res.status(200).json({
+            status: 'success',
+            payload: products
+        })
     }
 
     #returnError = (res, error) => {

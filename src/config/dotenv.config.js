@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 const program = new Command()
 
-program.requiredOption('--mode <mode>', 'mode app', 'development')
+program.requiredOption('--mode <mode>', 'mode app', 'prd')
 program.parse()
 
 const env = program.opts().mode

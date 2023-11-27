@@ -1,18 +1,26 @@
 import { faker } from '@faker-js/faker'
-import { ProductModel } from '../dao/models/products.model.js'
 
-export const save = async () => {
-    for (let i = 0; i < 20000; i++) {
-        const product = new ProductModel({
-            title: faker.commerce.product(),
-            description: faker.commerce.productDescription(),
-            code: `abc${i}`,
-            price: faker.commerce.price(),
-            status: true,
-            stock: faker.number.int({ max: 100 }),
-            category: faker.commerce.productAdjective()
-        })
+export const generateProductMock = async () => {
+    return new Promise((resolve, reject) => {
+        try {
+            const thumbnails = []
+            for (let i = 0; i < faker.number.int({ min: 0, max: 4 }); i++) {
+                thumbnails.push(faker.image.avatar())
+            }
 
-        await product.save()
-    }
+            resolve({
+                _id: faker.database.mongodbObjectId(),
+                title: faker.commerce.product(),
+                description: faker.commerce.productDescription(),
+                code: faker.commerce.isbn(10),
+                price: faker.commerce.price({ min: 100, max: 200, dec: 2, symbol: '$' }),
+                status: faker.datatype.boolean({ probability: 0.1 }),
+                stock: faker.number.int({ min: 0, max: 25 }),
+                category: faker.commerce.productAdjective(),
+                thumbnails
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
 }

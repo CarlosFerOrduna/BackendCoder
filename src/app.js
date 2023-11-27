@@ -2,6 +2,7 @@ import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
+import compression from 'express-compression'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import passport from 'passport'
@@ -15,6 +16,11 @@ import socketServer from './utils/socket.util.js'
 const app = express()
 
 app.use(cors())
+app.use(
+    compression({
+        brotli: { enabled: true, zlib: {} }
+    })
+)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.engine('handlebars', handlebars.engine())
