@@ -1,135 +1,148 @@
 import { userService } from '../repositories/index.js'
+import CustomError from '../services/errors/CostumError.js'
+import errorCodes from '../services/errors/enum.errors.js'
+import { invalidFieldErrorInfo } from '../services/errors/info.errors.js'
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 import { generateToken } from '../utils/jwt.util.js'
 
 class UserController {
-    constructor() {
-        this.userService = userService
-    }
-
     createUser = async (req, res) => {
-        try {
-            const { firstName, lastName, email, age, username, password, rol } = req.body
-            if (!firstName || !isNaN(firstName)) throw new Error('firstName is not valid')
-            if (!lastName || !isNaN(lastName)) throw new Error('lastName is not valid')
-            if (!email || !isNaN(email)) throw new Error('email is not valid')
-            if (!age || isNaN(age)) throw new Error('age is not valid')
-            if (!username || !isNaN(username)) throw new Error('username is not valid')
-            if (!password || !isNaN(password)) throw new Error('password is not valid')
-            if (!rol || !isNaN(rol)) throw new Error('rol is not valid')
+        const { firstName, lastName, email, age, username, password, rol } = req.body
+        if (!firstName || !isNaN(firstName)) throw new Error('firstName is not valid')
+        if (!lastName || !isNaN(lastName)) throw new Error('lastName is not valid')
+        if (!email || !isNaN(email)) throw new Error('email is not valid')
+        if (!age || isNaN(age)) throw new Error('age is not valid')
+        if (!username || !isNaN(username)) throw new Error('username is not valid')
+        if (!password || !isNaN(password)) throw new Error('password is not valid')
+        if (!rol || !isNaN(rol)) throw new Error('rol is not valid')
 
-            const user = { firstName, lastName, email, age, username, password, rol }
-            const result = await this.userService.createUser(user)
+        const user = { firstName, lastName, email, age, username, password, rol }
+        const result = await userService.createUser(user)
 
-            return res.status(201).json({
-                status: 'success',
-                message: 'user successfully created',
-                data: result
-            })
-        } catch (error) {
-            this.#returnError(res, error)
-        }
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully created',
+            data: result
+        })
     }
 
     getUser = async (req, res) => {
-        try {
-            const { uid } = req.params
-            if (!uid || !isNaN(uid)) throw new Error('uid is not valid')
-
-            const result = await this.userService.getUserById(uid)
-
-            return res.status(201).json({
-                status: 'success',
-                message: 'user successfully found',
-                data: result
+        const { uid } = req.params
+        if (!uid || !isNaN(uid)) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to get user',
+                code: errorCodes.INVALID_TYPES_ERROR
             })
-        } catch (error) {
-            this.#returnError(res, error)
         }
+
+        const result = await userService.getUserById(uid)
+
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully found',
+            data: result
+        })
     }
 
     updateUser = async (req, res) => {
-        try {
-            const { firstName, lastName, email, age, password, rol, cart, tickets } = req.body
-            const { _id } = req.session.user
-            let newUser = { _id }
+        const { firstName, lastName, email, age, password, rol, cart, tickets } = req.body
+        const { _id } = req.session.user
+        let newUser = { _id }
 
-            if (firstName) newUser.firstName = firstName
-            if (lastName) newUser.lastName = lastName
-            if (email) newUser.email = email
-            if (age) newUser.age = age
-            if (password) newUser.password = createHash(password)
-            if (rol) newUser.rol = rol
-            if (cart) newUser.cart = cart
-            if (tickets) newUser.tickets = tickets
+        if (firstName) newUser.firstName = firstName
+        if (lastName) newUser.lastName = lastName
+        if (email) newUser.email = email
+        if (age) newUser.age = age
+        if (password) newUser.password = createHash(password)
+        if (rol) newUser.rol = rol
+        if (cart) newUser.cart = cart
+        if (tickets) newUser.tickets = tickets
 
-            const result = await this.userService.updateUser(newUser)
+        const result = await userService.updateUser(newUser)
 
-            return res.status(201).json({
-                status: 'success',
-                message: 'user successfully updated',
-                data: result
-            })
-        } catch (error) {
-            this.#returnError(res, error)
-        }
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully updated',
+            data: result
+        })
     }
 
     deleteUser = async (req, res) => {
-        try {
-            const { uid } = req.params
-            if (!uid || !isNaN(uid)) throw new Error('uid is not valid')
-
-            await this.userService.deleteUser(uid)
-
-            return res.status(204).json({})
-        } catch (error) {
-            this.#returnError(res, error)
+        const { uid } = req.params
+        if (!uid || !isNaN(uid)) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to delete user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
         }
+
+        await userService.deleteUser(uid)
+
+        return res.status(204).json({})
     }
 
     login = async (req, res) => {
-        try {
-            const { email, password } = req.body
-            if (!email || !email.includes('@')) throw new Error('email is not valid')
-            if (!password) throw new Error('password is not valid')
-
-            const data = await this.userService.getUserByEmail(email)
-            if (!isValidPassword(data, password))
-                throw new Error('something went wrong: ' + data)
-
-            const user = await this.userService.getUserById(data._id)
-            const token = generateToken(user)
-
-            req.session.user = {
-                _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                age: user.age,
-                rol: data.rol,
-                tickets: user.tickets
-            }
-
-            return res.status(200).header('authorization', token).json({
-                user: user,
-                accessToken: token
+        const { email, password } = req.body
+        if (!email || !email.includes('@')) {
+            CustomError.createError({
+                name: 'email is not valid',
+                cause: invalidFieldErrorInfo({ name: 'email', type: 'string', value: email }),
+                message: 'Error to login user',
+                code: errorCodes.INVALID_TYPES_ERROR
             })
-        } catch (error) {
-            this.#returnError(res, error)
         }
+        if (!password) {
+            CustomError.createError({
+                name: 'password is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'password',
+                    type: 'string',
+                    value: password
+                }),
+                message: 'Error to login user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        const data = await userService.getUserByEmail(email)
+        if (!isValidPassword(data, password)) throw new Error('something went wrong: ' + data)
+
+        const user = await userService.getUserById(data._id)
+        const token = generateToken(user)
+
+        req.session.user = {
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            age: user.age,
+            rol: data.rol,
+            tickets: user.tickets
+        }
+
+        return res.status(200).header('authorization', token).json({
+            user: user,
+            accessToken: token
+        })
     }
 
     current = async (req, res) => {
-        try {
-            const { user } = req.session
-            if (!user) throw new Error('user is not exists')
-
-            const data = await this.userService.getUserById(user._id)
-            return res.json(data)
-        } catch (error) {
-            this.#returnError(res, error)
+        const { user } = req.session
+        if (!user) {
+            CustomError.createError({
+                name: 'user is not valid',
+                cause: invalidFieldErrorInfo({ name: 'user', type: 'string', value: user }),
+                message: 'Error to current user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
         }
+
+        const data = await userService.getUserById(user._id)
+        return res.json(data)
     }
 
     logout = async (req, res) => {
@@ -161,14 +174,6 @@ class UserController {
 
     failRegister = (req, res) => {
         return res.send({ status: 'error', message: 'failed register' })
-    }
-
-    #returnError = (res, error) => {
-        return res.status(400).json({
-            status: 'error',
-            message: error.message,
-            data: {}
-        })
     }
 }
 

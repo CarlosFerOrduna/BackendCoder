@@ -8,19 +8,15 @@ import session from 'express-session'
 import passport from 'passport'
 import config from './config/dotenv.config.js'
 import initializatePassport from './config/passport.config.js'
+import handlerError from './middlewares/errors/index.js'
 import router from './routers/index.js'
 import __dirname from './utils/dirname.util.js'
-import handlerError from './utils/handler.error.util.js'
 import socketServer from './utils/socket.util.js'
 
 const app = express()
 
 app.use(cors())
-app.use(
-    compression({
-        brotli: { enabled: true, zlib: {} }
-    })
-)
+app.use(compression({ brotli: { enabled: true, zlib: {} } }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.engine('handlebars', handlebars.engine())
@@ -40,7 +36,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static('public'))
 app.use('/', router)
-app.use('*', handlerError)
+app.use(handlerError)
 
 const httpServer = app.listen(config.port, () => {
     console.log(`Listen port: ${config.port}`)

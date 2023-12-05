@@ -1,111 +1,204 @@
 import { cartModel } from './models/carts.model.js'
 import { productModel } from './models/products.model.js'
+import CustomError from '../../services/errors/CostumError.js'
+import errorCodes from '../../services/errors/enum.errors.js'
 
 export default class Carts {
     createCart = async () => {
-        try {
-            return await cartModel.create({})
-        } catch (error) {
-            throw new Error('createCart: ' + error)
-        }
+        return await cartModel.create({})
     }
 
     getCartById = async (cid) => {
-        try {
-            const result = await cartModel.findById(cid).populate('products.product')
-            if (!result) throw new Error('cart does not exist')
-
-            return result
-        } catch (error) {
-            throw new Error('getCartById: ' + error)
+        const result = await cartModel.findById(cid).populate('products.product')
+        if (!result) {
+            CustomError.createError({
+                name: 'cart does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'result',
+                    type: 'string',
+                    value: result
+                }),
+                message: 'Error to get cart',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return result
     }
 
     addProductInCart = async (cid, pid) => {
-        try {
-            const cart = await cartModel.findById(cid)
-            if (!cart) throw new Error('cart does not exist')
-
-            const product = await productModel.findById(pid)
-            if (!product) throw new Error('Product does not exist')
-
-            const existsProduct = cart.products.findIndex(
-                (p) => p.product && p.product.toString() === pid.toString()
-            )
-
-            if (existsProduct !== -1) cart.products[existsProduct].quantity += 1
-            else cart.products.push({ product: pid, quantity: 1 })
-
-            return await cart.save()
-        } catch (error) {
-            throw new Error('addProductInCart: ' + error)
+        const cart = await cartModel.findById(cid)
+        if (!cart) {
+            CustomError.createError({
+                name: 'cart does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'cart',
+                    type: 'string',
+                    value: cart
+                }),
+                message: 'Error to add product in cart',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        const product = await productModel.findById(pid)
+        if (!product) {
+            CustomError.createError({
+                name: 'Product does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'product',
+                    type: 'string',
+                    value: product
+                }),
+                message: 'Error to add product in cart',
+                code: errorCodes.DATABASE_ERROR
+            })
+        }
+
+        const existsProduct = cart.products.findIndex(
+            (p) => p.product && p.product.toString() === pid.toString()
+        )
+
+        if (existsProduct !== -1) cart.products[existsProduct].quantity += 1
+        else cart.products.push({ product: pid, quantity: 1 })
+
+        return await cart.save()
     }
 
     updateQuantityById = async (cid, pid, quantity) => {
-        try {
-            const cart = await cartModel.findById(cid)
-            if (!cart) throw new Error('cart does not exists')
-
-            const product = await productModel.findById(pid)
-            if (!product) throw new Error('product does not exists')
-
-            const result = await cartModel.updateOne(
-                { _id: cid, 'products.product': pid },
-                { $set: { 'products.$.quantity': quantity } }
-            )
-            if (result.modifiedCount < 1) throw new Error('Product not modified')
-
-            return await cartModel.findById(cid)
-        } catch (error) {
-            throw new Error('updateQuantityById: ' + error)
+        const cart = await cartModel.findById(cid)
+        if (!cart) {
+            CustomError.createError({
+                name: 'cart does not exists',
+                cause: invalidFieldErrorInfo({
+                    name: 'cart',
+                    type: 'string',
+                    value: cart
+                }),
+                message: 'Error to update quantity in cart',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        const product = await productModel.findById(pid)
+        if (!product) {
+            CustomError.createError({
+                name: 'product does not exists',
+                cause: invalidFieldErrorInfo({
+                    name: 'product',
+                    type: 'string',
+                    value: product
+                }),
+                message: 'Error to update quantity in cart',
+                code: errorCodes.DATABASE_ERROR
+            })
+        }
+        const result = await cartModel.updateOne(
+            { _id: cid, 'products.product': pid },
+            { $set: { 'products.$.quantity': quantity } }
+        )
+        if (result.modifiedCount < 1) {
+            CustomError.createError({
+                name: 'Product not modified',
+                cause: invalidFieldErrorInfo({
+                    name: 'result',
+                    type: 'string',
+                    value: result
+                }),
+                message: 'Error to get cart',
+                code: errorCodes.DATABASE_ERROR
+            })
+        }
+
+        return await cartModel.findById(cid)
     }
 
     addProductsInCart = async (cid, products) => {
-        try {
-            const cart = cartModel.findById(cid)
-            if (!cart) throw new Error('cart does not exist')
-
-            products.forEach(async (p) => {
-                const aux = await productModel.findById(p._id)
-                if (!aux) throw new Error('products not exists: ' + p._id)
+        const cart = cartModel.findById(cid)
+        if (!cart) {
+            CustomError.createError({
+                name: 'cart does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'cart',
+                    type: 'string',
+                    value: cart
+                }),
+                message: 'Error to add products in cart',
+                code: errorCodes.DATABASE_ERROR
             })
-
-            return await cartModel.findByIdAndUpdate(cid, {
-                $set: { products }
-            })
-        } catch (error) {
-            throw new Error('addProductsInCart: ' + error)
         }
+
+        products.forEach(async (p) => {
+            const aux = await productModel.findById(p._id)
+            if (!aux) {
+                CustomError.createError({
+                    name: 'aux not exists: ' + p._id,
+                    cause: invalidFieldErrorInfo({
+                        name: 'aux',
+                        type: 'string',
+                        value: aux
+                    }),
+                    message: 'Error to add products in cart',
+                    code: errorCodes.DATABASE_ERROR
+                })
+            }
+        })
+
+        return await cartModel.findByIdAndUpdate(cid, {
+            $set: { products }
+        })
     }
 
     removeProductInCart = async (cid, pid) => {
-        try {
-            const cart = await cartModel.findById(cid)
-            if (!cart) throw new Error('cart does not exist')
-
-            const product = await productModel.findById(pid)
-            if (!product) throw new Error('product does not exists')
-
-            return await cartModel.findByIdAndUpdate(cid, {
-                $pull: { products: { product: pid } }
+        const cart = await cartModel.findById(cid)
+        if (!cart) {
+            CustomError.createError({
+                name: 'cart does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'cart',
+                    type: 'string',
+                    value: cart
+                }),
+                message: 'Error to remove product in cart',
+                code: errorCodes.DATABASE_ERROR
             })
-        } catch (error) {
-            throw new Error('removeProductInCart: ' + error)
         }
+        const product = await productModel.findById(pid)
+        if (!product) {
+            CustomError.createError({
+                name: 'product does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'product',
+                    type: 'string',
+                    value: product
+                }),
+                message: 'Error to remove product in cart',
+                code: errorCodes.DATABASE_ERROR
+            })
+        }
+
+        return await cartModel.findByIdAndUpdate(cid, {
+            $pull: { products: { product: pid } }
+        })
     }
 
     removeAllProductsInCart = async (cid) => {
-        try {
-            const cart = await cartModel.findById(cid)
-            if (!cart) throw new Error('cart does not exist')
-
-            return await cartModel.findByIdAndUpdate(cid, {
-                $set: { products: [] }
+        const cart = await cartModel.findById(cid)
+        if (!cart) {
+            CustomError.createError({
+                name: 'cart does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'cart',
+                    type: 'string',
+                    value: cart
+                }),
+                message: 'Error to remove all products in cart',
+                code: errorCodes.DATABASE_ERROR
             })
-        } catch (error) {
-            throw new Error('removeProductInCart: ' + error)
         }
+
+        return await cartModel.findByIdAndUpdate(cid, {
+            $set: { products: [] }
+        })
     }
 }

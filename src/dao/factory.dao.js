@@ -1,5 +1,7 @@
 import { connect } from 'mongoose'
 import config from '../config/dotenv.config.js'
+import CustomError from '../services/errors/CostumError.js'
+import errorCodes from '../services/errors/enum.errors.js'
 
 export let Cart
 export let Product
@@ -24,8 +26,12 @@ switch (config.persistence) {
             const { default: TicketsMongo } = await import('./mongo/tickets.mongo.js')
             Ticket = TicketsMongo
         } catch (error) {
-            console.error(error)
-            throw new Error('can not connect to the db')
+            CustomError.createError({
+                name: 'can not connect to the db',
+                cause: error,
+                message: error.message,
+                code: errorCodes.DATABASE_ERROR
+            })
         }
         break
 

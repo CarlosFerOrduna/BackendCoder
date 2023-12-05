@@ -1,61 +1,77 @@
+import CustomError from '../../services/errors/CostumError.js'
+import errorCodes from '../../services/errors/enum.errors.js'
+import { invalidFieldErrorInfo } from '../../services/errors/info.errors.js'
 import ticketModel from './models/tickets.model.js'
 
 export default class Ticket {
     createTicket = async (ticket) => {
-        try {
-            const newTicket = new ticketModel(ticket)
-            await newTicket.validate()
+        const newTicket = new ticketModel(ticket)
+        await newTicket.validate()
 
-            return await newTicket.save()
-        } catch (error) {
-            throw new Error('createTicket: ' + error)
-        }
+        return await newTicket.save()
     }
 
     getTicketById = async (tid) => {
-        try {
-            const ticket = await ticketModel.findById(tid)
-            if (!ticket) throw new Error('ticket not exists')
-
-            return ticket
-        } catch (error) {
-            throw new Error('getTicketById: ' + error)
+        const ticket = await ticketModel.findById(tid)
+        if (!ticket) {
+            CustomError.createError({
+                name: 'ticket does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'ticket',
+                    type: 'string',
+                    value: ticket
+                }),
+                message: 'Error to get ticket',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return ticket
     }
 
     searchTicket = async (limit, sort, page, query) => {
-        try {
-            return await ticketModel.paginate(query, {
-                limit: limit ?? 10,
-                page: page ?? 1,
-                sort: { purchase_datetime: sort }
-            })
-        } catch (error) {
-            throw new Error('searchTicket:' + error)
-        }
+        return await ticketModel.paginate(query, {
+            limit: limit ?? 10,
+            page: page ?? 1,
+            sort: { purchase_datetime: sort }
+        })
     }
 
     updateTicket = async (ticket) => {
-        try {
-            const ticketUpdated = await ticketModel.findByIdAndUpdate(ticket._id, ticket, {
-                new: true
+        const ticketUpdated = await ticketModel.findByIdAndUpdate(ticket._id, ticket, {
+            new: true
+        })
+        if (!ticketUpdated) {
+            CustomError.createError({
+                name: 'ticket does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'ticketUpdated',
+                    type: 'string',
+                    value: ticketUpdated
+                }),
+                message: 'Error to update ticket',
+                code: errorCodes.DATABASE_ERROR
             })
-            if (!ticketUpdated) throw new Error('ticket not exists')
-
-            return ticketUpdated
-        } catch (error) {
-            throw new Error('updateTicket: ' + error)
         }
+
+        return ticketUpdated
     }
 
     deleteTicket = async (tid) => {
-        try {
-            const ticketDeleted = await ticketModel.findByIdAndDelete(tid)
-            if (!ticketDeleted) throw new Error('ticket not exists')
-
-            return ticketDeleted
-        } catch (error) {
-            throw new Error('deleteTicket: ' + error)
+        const ticketDeleted = await ticketModel.findByIdAndDelete(tid)
+        if (!ticketDeleted) {
+            CustomError.createError({
+                name: 'ticket does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'ticketDeleted',
+                    type: 'string',
+                    value: ticketDeleted
+                }),
+                message: 'Error to delete ticket',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return ticketDeleted
     }
 }

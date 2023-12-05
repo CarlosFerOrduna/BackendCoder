@@ -1,69 +1,103 @@
+import CustomError from '../../services/errors/CostumError.js'
+import errorCodes from '../../services/errors/enum.errors.js'
+import { invalidFieldErrorInfo } from '../../services/errors/info.errors.js'
 import userModel from './models/users.model.js'
 
 export default class Users {
     createUser = async (user) => {
-        try {
-            const newUser = new userModel(user)
-            await newUser.validate()
+        const newUser = new userModel(user)
+        await newUser.validate()
 
-            return await newUser.save()
-        } catch (error) {
-            throw new Error('createUser: ' + error)
-        }
+        return await newUser.save()
     }
 
     getUserById = async (uid) => {
-        try {
-            const user = await userModel.findById(uid)
-            if (!user) throw new Error('user not exists')
-
-            return user
-        } catch (error) {
-            throw new Error('getUserById: ' + error)
+        const user = await userModel.findById(uid)
+        if (!user) {
+            CustomError.createError({
+                name: 'user does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'user',
+                    type: 'string',
+                    value: user
+                }),
+                message: 'Error to get user',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return user
     }
 
     getUserByEmail = async (email) => {
-        try {
-            const user = await userModel.findOne({ email })
-            if (!user) throw new Error('user is not exists')
-
-            return user
-        } catch (error) {
-            throw new Error('getUserByEmail: ' + error)
+        const user = await userModel.findOne({ email })
+        if (!user) {
+            CustomError.createError({
+                name: 'user does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'user',
+                    type: 'string',
+                    value: user
+                }),
+                message: 'Error to get user',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return user
     }
 
     getUserByUsername = async (username) => {
-        try {
-            const user = await userModel.findOne({ username })
-            if (!user) throw new Error('user is not exists')
-
-            return user
-        } catch (error) {
-            throw new Error('getUserByUsername: ' + error)
+        const user = await userModel.findOne({ username })
+        if (!user) {
+            CustomError.createError({
+                name: 'user does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'user',
+                    type: 'string',
+                    value: user
+                }),
+                message: 'Error to get user',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return user
     }
 
     updateUser = async (user) => {
-        try {
-            const result = await userModel.findByIdAndUpdate(user._id, user, { new: true })
-            if (!result) throw new Error('user is not exists')
-
-            return result
-        } catch (error) {
-            throw new Error('updateUser: ' + error)
+        const result = await userModel.findByIdAndUpdate(user._id, user, { new: true })
+        if (!user) {
+            CustomError.createError({
+                name: 'user does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'user',
+                    type: 'string',
+                    value: user
+                }),
+                message: 'Error to update user',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return result
     }
 
     deleteUser = async (uid) => {
-        try {
-            const user = await userModel.findByIdAndDelete(uid)
-            if (!user) throw new Error('user is not exists')
-
-            return user
-        } catch (error) {
-            throw new Error('deleteUser: ' + error)
+        const user = await userModel.findByIdAndDelete(uid)
+        if (!user) {
+            CustomError.createError({
+                name: 'user does not exist',
+                cause: invalidFieldErrorInfo({
+                    name: 'user',
+                    type: 'string',
+                    value: user
+                }),
+                message: 'Error to delete user',
+                code: errorCodes.DATABASE_ERROR
+            })
         }
+
+        return user
     }
 }
