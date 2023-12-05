@@ -90,7 +90,7 @@ class ProductController {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
-                message: 'Error to create product',
+                message: 'Error to get product',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
@@ -111,7 +111,7 @@ class ProductController {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
-                message: 'Error to create product',
+                message: 'Error to update product',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
@@ -156,7 +156,7 @@ class ProductController {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
-                message: 'Error to create product',
+                message: 'Error to delete product',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
@@ -198,7 +198,7 @@ class ProductController {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
-                message: 'Error to create product',
+                message: 'Error to get product',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }

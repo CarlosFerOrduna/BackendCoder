@@ -1,17 +1,7 @@
-import CustomError from '../../services/errors/CostumError.js'
 import errorCodes from '../../services/errors/enum.errors.js'
 
-export default (error, req, res, next) => {
-    req.use(
-        '*',
-        CustomError.createError({
-            name: 'invalid route',
-            cause: 'invalid route',
-            message: 'invalid route',
-            code: errorCodes.ROUTING_ERROR
-        })
-    )
-    console.error(error.cause)
+export default async (error, req, res, next) => {
+    console.error(error)
 
     switch (error.code) {
         case errorCodes.INVALID_TYPES_ERROR:

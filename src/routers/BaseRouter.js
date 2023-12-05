@@ -14,76 +14,43 @@ export default class BaseRouter {
     init() {}
 
     get(path, policies, ...callbacks) {
-        this.router.get(
-            path,
-            this.handlePolicies(policies),
-            this.generateCustomResponses,
-            this.applyCallbacks(callbacks)
-        )
+        this.router.get(path, this.handlePolicies(policies), this.applyCallbacks(callbacks))
     }
 
     post(path, policies, ...callbacks) {
-        this.router.post(
-            path,
-            this.handlePolicies(policies),
-            this.generateCustomResponses,
-            this.applyCallbacks(callbacks)
-        )
+        this.router.post(path, this.handlePolicies(policies), this.applyCallbacks(callbacks))
     }
 
     put(path, policies, ...callbacks) {
-        this.router.put(
-            path,
-            this.handlePolicies(policies),
-            this.generateCustomResponses,
-            this.applyCallbacks(callbacks)
-        )
+        this.router.put(path, this.handlePolicies(policies), this.applyCallbacks(callbacks))
     }
 
     delete(path, policies, ...callbacks) {
-        this.router.delete(
-            path,
-            this.handlePolicies(policies),
-            this.generateCustomResponses,
-            this.applyCallbacks(callbacks)
-        )
+        this.router.delete(path, this.handlePolicies(policies), this.applyCallbacks(callbacks))
     }
 
     applyCallbacks(callbacks) {
-        return callbacks.map((callback) => async (...params) => {
+        return async (req, res, next) => {
             try {
-                await callback.apply(this, params)
+                for (const callback of callbacks) {
+                    await callback.call(this, req, res, next)
+                }
             } catch (error) {
-                params[1].status(500).send(error.message)
+                next(error)
             }
-        })
-    }
-
-    generateCustomResponses(req, res, next) {
-        res.sendSuccess = (payload) => res.send({ status: 'success', payload })
-        res.sendServerError = (error) => res.status(500).send({ status: 'error', error })
-        res.sendClientError = (error) => res.status(400).send({ status: 'error', error })
-
-        next()
+        }
     }
 
     handlePolicies(policies) {
         return (req, res, next) => {
-            try {
-                if (policies.includes('public')) return next()
+            if (policies.includes('public')) return next()
 
-                const { authorization } = req.headers
-                const user = authToken(res, authorization)
+            const { authorization } = req.headers
+            const user = authToken(res, authorization)
 
-                req.user = user
+            req.user = user
 
-                next()
-            } catch (error) {
-                res.status(400).send({
-                    status: 'error',
-                    error: error.message
-                })
-            }
+            next()
         }
     }
 }

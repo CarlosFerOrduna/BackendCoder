@@ -10,6 +10,8 @@ import config from './config/dotenv.config.js'
 import initializatePassport from './config/passport.config.js'
 import handlerError from './middlewares/errors/index.js'
 import router from './routers/index.js'
+import CustomError from './services/errors/CostumError.js'
+import errorCodes from './services/errors/enum.errors.js'
 import __dirname from './utils/dirname.util.js'
 import socketServer from './utils/socket.util.js'
 
@@ -36,6 +38,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static('public'))
 app.use('/', router)
+app.use('*', (req, res) => {
+    CustomError.createError({
+        name: 'invalid route',
+        cause: 'invalid route',
+        message: 'invalid route',
+        code: errorCodes.ROUTING_ERROR
+    })
+})
+
 app.use(handlerError)
 
 const httpServer = app.listen(config.port, () => {
