@@ -29,5 +29,6 @@ export default {
     emailPass: process.env.EMAIL_PASS,
     twilioAccountSid: process.env.TWILIO_ACCOUNT_SID,
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
-    twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER
+    twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER,
+    logger: process.env.LOGGER
 }

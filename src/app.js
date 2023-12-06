@@ -14,6 +14,7 @@ import CustomError from './services/errors/CostumError.js'
 import errorCodes from './services/errors/enum.errors.js'
 import __dirname from './utils/dirname.util.js'
 import socketServer from './utils/socket.util.js'
+import { addLogger } from './utils/logger.util.js'
 
 const app = express()
 
@@ -37,6 +38,7 @@ initializatePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static('public'))
+app.use(addLogger)
 app.use('/', router)
 app.use('*', (req, res) => {
     CustomError.createError({

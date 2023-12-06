@@ -157,7 +157,7 @@ class UserController {
     }
 
     github = async (req, res) => {
-        return res.send({
+        return res.json({
             status: 'success',
             message: 'success'
         })
@@ -169,11 +169,11 @@ class UserController {
     }
 
     failLogin = (req, res) => {
-        return res.send({ status: 'error', message: 'failed login' })
+        return res.json({ status: 'error', message: 'failed login' })
     }
 
     failRegister = (req, res) => {
-        return res.send({ status: 'error', message: 'failed register' })
+        return res.json({ status: 'error', message: 'failed register' })
     }
 }
 
