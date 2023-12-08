@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken'
+import CustomError from '../services/errors/CostumError.js'
+import errorCodes from '../services/errors/enum.errors.js'
 
 const generateToken = (user) => {
     const key = process.env.PRIVATE_KEY
@@ -9,14 +11,34 @@ const generateToken = (user) => {
 const authToken = (res, authorization) => {
     const key = process.env.PRIVATE_KEY
 
-    if (!authorization) return res.status(401).send({ message: 'not autenticated' })
+    if (!authorization) {
+        CustomError.createError({
+            name: 'not autenticated',
+            cause: 'not autenticated',
+            message: error.message,
+            code: errorCodes.NOT_AUTENTICATE
+        })
+    }
 
     const token = authorization.replace('Bearer ', '')
 
     return jwt.verify(token, key, (error, credentiales) => {
-        if (error?.message.includes('expired'))
-            return res.status(401).send({ message: 'token expired' })
-        if (error) return res.status(403).send({ message: 'forbidden' })
+        if (error?.message.includes('expired')) {
+            CustomError.createError({
+                name: 'token expired',
+                cause: 'token expired',
+                message: error.message,
+                code: errorCodes.TOKEN_EXPIRED
+            })
+        }
+        if (error) {
+            CustomError.createError({
+                name: 'forbidden',
+                cause: 'forbidden',
+                message: error.message,
+                code: errorCodes.USER_FORBIDDEN
+            })
+        }
     })
 }
 
