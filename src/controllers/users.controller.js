@@ -8,13 +8,78 @@ import { generateToken } from '../utils/jwt.util.js'
 class UserController {
     createUser = async (req, res) => {
         const { firstName, lastName, email, age, username, password, rol } = req.body
-        if (!firstName || !isNaN(firstName)) throw new Error('firstName is not valid')
-        if (!lastName || !isNaN(lastName)) throw new Error('lastName is not valid')
-        if (!email || !isNaN(email)) throw new Error('email is not valid')
-        if (!age || isNaN(age)) throw new Error('age is not valid')
-        if (!username || !isNaN(username)) throw new Error('username is not valid')
-        if (!password || !isNaN(password)) throw new Error('password is not valid')
-        if (!rol || !isNaN(rol)) throw new Error('rol is not valid')
+        if (!firstName || !isNaN(firstName)) {
+            CustomError.createError({
+                name: 'firstName is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'firstName',
+                    type: 'string',
+                    value: firstName
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        if (!lastName || !isNaN(lastName)) {
+            CustomError.createError({
+                name: 'lastName is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'lastName',
+                    type: 'string',
+                    value: lastName
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        if (!email || !isNaN(email)) {
+            CustomError.createError({
+                name: 'email is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'email',
+                    type: 'string',
+                    value: email
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        if (!age || isNaN(age)) {
+            CustomError.createError({
+                name: 'age is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'age',
+                    type: 'string',
+                    value: age
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        if (!password || !isNaN(password)) {
+            CustomError.createError({
+                name: 'password is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'password',
+                    type: 'string',
+                    value: password
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        if (!rol || !isNaN(rol)) {
+            CustomError.createError({
+                name: 'rol is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'rol',
+                    type: 'string',
+                    value: rol
+                }),
+                message: 'Error to register user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
 
         const user = { firstName, lastName, email, age, username, password, rol }
         const result = await userService.createUser(user)

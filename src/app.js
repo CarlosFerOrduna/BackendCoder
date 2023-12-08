@@ -14,7 +14,7 @@ import CustomError from './services/errors/CostumError.js'
 import errorCodes from './services/errors/enum.errors.js'
 import __dirname from './utils/dirname.util.js'
 import socketServer from './utils/socket.util.js'
-import { addLogger } from './utils/logger.util.js'
+import { addLogger } from './middlewares/logs/index.js'
 
 const app = express()
 
@@ -51,9 +51,8 @@ app.use('*', (req, res) => {
 
 app.use(handlerError)
 
-const httpServer = app.listen(config.port, () => {
-    console.log(`Listen port: ${config.port}`)
-})
+const httpServer = app.listen(config.port, () => console.log(`Listen port: ${config.port}`))
 
 socketServer.init(httpServer)
 socketServer.run()
+// 00:20

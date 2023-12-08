@@ -1,5 +1,5 @@
 import winston from 'winston'
-import config from '../config/dotenv.config.js'
+import config from '../../config/dotenv.config.js'
 
 const customLevelsOptions = {
     levels: {
