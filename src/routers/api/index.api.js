@@ -1,10 +1,11 @@
 import { Router } from 'express'
+
 import ApiRouterCarts from './cart.routes.js'
-import ApiRouterProducts from './products.routes.js'
-import ApiRouterUsers from './user.routes.js'
-import ApiRouterTickets from './tickets.routes.js'
 import ApiRouterMailer from './email.routes.js'
 import LoggerRouter from './logger.routes.js'
+import ApiRouterProducts from './products.routes.js'
+import ApiRouterTickets from './tickets.routes.js'
+import ApiRouterUsers from './user.routes.js'
 
 const router = Router()
 

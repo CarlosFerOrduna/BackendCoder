@@ -1,66 +1,43 @@
 import errorCodes from '../../services/errors/enum.errors.js'
 
 export default async (error, req, res, next) => {
+    const logError = (status, logMethod) => {
+        req.logger[logMethod](
+            `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
+        )
+
+        if ([401, 403].includes(status) && req.originalUrl.includes('views')) {
+            return res.redirect('/views/users/login')
+        }
+
+        return res.status(status).send({
+            status: 'error',
+            error: error.name,
+            message: error.message
+        })
+    }
+
     switch (error.code) {
         case errorCodes.INVALID_TYPES_ERROR:
-            req.logger.error(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(400).send({
-                status: 'error',
-                error: error.name,
-                message: error.message
-            })
+            logError(400, 'error')
             break
-        case errorCodes.TOKEN_EXPIRED || errorCodes.NOT_AUTENTICATE:
-            req.logger.error(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(401).send({
-                status: 'error',
-                error: error.name,
-                message: error.message
-            })
+        case errorCodes.TOKEN_EXPIRED:
+        case errorCodes.NOT_AUTENTICATE:
+            logError(401, 'error')
+
             break
         case errorCodes.USER_FORBIDDEN:
-            req.logger.error(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(403).send({
-                status: 'error',
-                error: error.name,
-                message: error.message
-            })
+            logError(403, 'error')
+
             break
         case errorCodes.ROUTING_ERROR:
-            req.logger.warning(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(404).send({
-                status: 'error',
-                error: error.name,
-                message: error.message
-            })
+            logError(404, 'warning')
             break
         case errorCodes.DATABASE_ERROR:
-            req.logger.error(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(500).send({
-                status: 'error',
-                error: error.name,
-                message: error.message
-            })
+            logError(500, 'error')
             break
         default:
-            req.logger.fatal(
-                `${req.method} in ${req.url} - ${new Date().toLocaleTimeString()} ${error}`
-            )
-            res.status(500).send({
-                status: 'error',
-                error: 'Unhandler error',
-                message: error.message
-            })
+            logError(500, 'fatal')
             break
     }
 }

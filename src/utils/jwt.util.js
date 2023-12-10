@@ -1,28 +1,26 @@
 import jwt from 'jsonwebtoken'
+
+import config from '../config/dotenv.config.js'
 import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
 
 const generateToken = (user) => {
-    const key = process.env.PRIVATE_KEY
-
-    return jwt.sign({ user }, key, { expiresIn: '6000000' })
+    return jwt.sign({ user }, config.privateKey, { expiresIn: '6000000' })
 }
 
-const authToken = (res, authorization) => {
-    const key = process.env.PRIVATE_KEY
-
+const authToken = (authorization) => {
     if (!authorization) {
         CustomError.createError({
             name: 'not autenticated',
             cause: 'not autenticated',
-            message: error.message,
+            message: 'Unauthorized',
             code: errorCodes.NOT_AUTENTICATE
         })
     }
 
     const token = authorization.replace('Bearer ', '')
 
-    return jwt.verify(token, key, (error, credentiales) => {
+    return jwt.verify(token, config.privateKey, (error, credentiales) => {
         if (error?.message.includes('expired')) {
             CustomError.createError({
                 name: 'token expired',
@@ -39,7 +37,9 @@ const authToken = (res, authorization) => {
                 code: errorCodes.USER_FORBIDDEN
             })
         }
+
+        return credentiales
     })
 }
 
-export { generateToken, authToken }
+export { authToken, generateToken }

@@ -1,3 +1,6 @@
+import CustomError from '../../services/errors/CostumError.js'
+import errorCodes from '../../services/errors/enum.errors.js'
+
 export default class UserDTO {
     constructor(user, to) {
         switch (to) {
@@ -33,7 +36,12 @@ export default class UserDTO {
                 break
 
             default:
-                throw new Error('Case not valid')
+                CustomError.createError({
+                    name: 'Case not valid',
+                    cause: 'Case not valid',
+                    message: 'Case not valid',
+                    code: errorCodes.INVALID_TYPES_ERROR
+                })
         }
     }
 }

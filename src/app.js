@@ -6,15 +6,16 @@ import compression from 'express-compression'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import passport from 'passport'
+
 import config from './config/dotenv.config.js'
 import initializatePassport from './config/passport.config.js'
 import handlerError from './middlewares/errors/index.js'
+import { addLogger } from './middlewares/logs/index.js'
 import router from './routers/index.js'
 import CustomError from './services/errors/CostumError.js'
 import errorCodes from './services/errors/enum.errors.js'
 import __dirname from './utils/dirname.util.js'
 import socketServer from './utils/socket.util.js'
-import { addLogger } from './middlewares/logs/index.js'
 
 const app = express()
 
@@ -55,4 +56,3 @@ const httpServer = app.listen(config.port, () => console.log(`Listen port: ${con
 
 socketServer.init(httpServer)
 socketServer.run()
-// 00:20

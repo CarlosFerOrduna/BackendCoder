@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+
 import { createHash } from '../../../utils/bcrypt.util.js'
 
 const userSchema = new Schema({
@@ -8,7 +9,7 @@ const userSchema = new Schema({
     age: { type: Number, require: true },
     username: { type: String },
     password: { type: String, require: true },
-    rol: { type: String, enum: ['admin', 'user'], default: 'user' },
+    rol: { type: String, enum: ['admin', 'user', 'premium'], default: 'user' },
     cart: { type: Schema.Types.ObjectId, ref: 'carts' },
     tickets: [{ type: Schema.Types.ObjectId, ref: 'tickets' }]
 })

@@ -1,4 +1,5 @@
 import { connect } from 'mongoose'
+
 import config from '../config/dotenv.config.js'
 import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'

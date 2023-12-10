@@ -4,7 +4,7 @@ import BaseRouter from '../BaseRouter.js'
 
 export default class ViewsRouterProducts extends BaseRouter {
     init() {
-        this.get('/realtimeproducts', ['public'], async (req, res) => {
+        this.get('/realtimeproducts', ['user'], async (req, res) => {
             const products = await productService.getProducts()
 
             return res.render('realTimeProducts', {
@@ -12,7 +12,8 @@ export default class ViewsRouterProducts extends BaseRouter {
                 products: products
             })
         })
+        this.get('/mockingproducts', ['user'], productController.getProductsMocksForViews)
         this.get('/:pid', ['user'], productController.getProductByIdForViews)
-        this.get('/', ['user'], productController.getProductsForViews)
+        this.get('/', ['user'], productController.getProductsViews)
     }
 }

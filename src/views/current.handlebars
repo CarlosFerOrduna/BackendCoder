@@ -1,9 +1,38 @@
-<div class="container">
-    <div class="card text-bg-dark mb-3" style="max-width: 18rem;">
-        <div class="card-header">{{firstName}}</div>
-        <div class="card-body">
-            <h5 class="card-title">{{lastName}}</h5>
-            <p class="card-text">{{email}}</p>
+<div class="container-fluid" style="margin: 0; padding: 0;">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-sm">
+            <a class="navbar-brand" href="/views/products">ecommerce</a>
+            <form class="" role="search">
+                <a class="btn btn-outline-dark" href="/views/carts/userlogged">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"></path>
+                    </svg>
+                </a>
+                <a class="btn btn-outline-dark" href="/views/users/logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-closed" viewBox="0 0 16 16">
+                        <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3zm1 13h8V2H4z"></path>
+                        <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0"></path>
+                    </svg>
+                </a>
+            </form>
+        </div>
+    </nav>
+    <div class="container-fluid" style="width: 100vh;">
+        <div class="row d-flex justify-content-center align-items-center" style="height: 90vh;">
+            <div class="column d-flex justify-content-center">
+                <div class="card" style="width: 100%;">
+                    <div class="card-header">
+                        {{#if username}}
+                            <h2>Bienvenido {{username}}</h2>
+                        {{else}}
+                            <h2>Bienvenido {{firstName}} {{lastName}}</h2>
+                        {{/if}}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">email: {{email}}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

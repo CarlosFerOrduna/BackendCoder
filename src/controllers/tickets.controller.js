@@ -1,4 +1,5 @@
 import { isDate } from 'date-fns'
+
 import { ticketService } from '../repositories/index.js'
 import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
@@ -80,7 +81,18 @@ class TicketController {
 
     deleteTicket = async (req, res) => {
         const { pid: tid } = req.params
-        if (!tid || isNaN(tid)) throw new Error('tid is not valid')
+        if (!tid || isNaN(tid)) {
+            CustomError.createError({
+                name: 'tid is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'tid',
+                    type: 'string',
+                    value: tid
+                }),
+                message: 'Error to login user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
 
         await ticketService.deleteTicket(tid)
 

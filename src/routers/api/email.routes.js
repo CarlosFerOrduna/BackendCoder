@@ -1,5 +1,6 @@
 import { createTransport } from 'nodemailer'
 import twilio from 'twilio'
+
 import config from '../../config/dotenv.config.js'
 import BaseRouter from '../BaseRouter.js'
 
@@ -34,7 +35,6 @@ export default class ApiRouterMailer extends BaseRouter {
                     result
                 })
             } catch (error) {
-                console.error(error)
                 return res.status(500).send({
                     status: 'error al enviar el email',
                     error

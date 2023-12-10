@@ -2,6 +2,7 @@ import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import jwt, { ExtractJwt } from 'passport-jwt'
 import local from 'passport-local'
+
 import { userService } from '../repositories/index.js'
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 

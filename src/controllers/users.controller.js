@@ -84,11 +84,7 @@ class UserController {
         const user = { firstName, lastName, email, age, username, password, rol }
         const result = await userService.createUser(user)
 
-        return res.status(201).json({
-            status: 'success',
-            message: 'user successfully created',
-            data: result
-        })
+        return { result }
     }
 
     getUser = async (req, res) => {
@@ -150,9 +146,9 @@ class UserController {
         return res.status(204).json({})
     }
 
-    login = async (req, res) => {
+    #login = async (req, res) => {
         const { email, password } = req.body
-        if (!email || !email.includes('@')) {
+        if (!email || !email.match(/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/)) {
             CustomError.createError({
                 name: 'email is not valid',
                 cause: invalidFieldErrorInfo({ name: 'email', type: 'string', value: email }),
@@ -174,20 +170,29 @@ class UserController {
         }
 
         const data = await userService.getUserByEmail(email)
-        if (!isValidPassword(data, password)) throw new Error('something went wrong: ' + data)
-
+        if (!isValidPassword(data, password)) {
+            CustomError.createError({
+                name: 'password is not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'password',
+                    type: 'string',
+                    value: password
+                }),
+                message: 'Error to login user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
         const user = await userService.getUserById(data._id)
         const token = generateToken(user)
 
-        req.session.user = {
-            _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            age: user.age,
-            rol: data.rol,
-            tickets: user.tickets
-        }
+        const { _id, firstName, lastName, age, rol, tickets, cart } = user
+        req.session.user = { _id, firstName, lastName, email, age, rol, cart, tickets }
+
+        return { user, token }
+    }
+
+    loginApi = async (req, res) => {
+        const { user, token } = await this.#login(req, res)
 
         return res.status(200).header('authorization', token).json({
             user: user,
@@ -195,7 +200,30 @@ class UserController {
         })
     }
 
-    current = async (req, res) => {
+    loginViews = async (req, res) => {
+        const { token } = await this.#login(req, res)
+
+        res.cookie('authorization', token)
+        return res.redirect('/views/products')
+    }
+
+    registerApi = async (req, res) => {
+        const { result } = await this.createUser(req, res)
+
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully created',
+            data: result
+        })
+    }
+
+    registerViews = async (req, res) => {
+        await this.createUser(req, res)
+
+        return res.redirect('/views/users/login')
+    }
+
+    #current = async (req, res) => {
         const { user } = req.session
         if (!user) {
             CustomError.createError({
@@ -207,11 +235,24 @@ class UserController {
         }
 
         const data = await userService.getUserById(user._id)
+        return { data }
+    }
+
+    currentApi = async (req, res) => {
+        const { data } = await this.#current(req, res)
         return res.json(data)
     }
 
+    currentViews = async (req, res) => {
+        const { data } = await this.#current(req, res)
+        const { firstName, lastName, email } = data
+
+        return res.render('current', { firstName, lastName, email })
+    }
+
     logout = async (req, res) => {
-        // TODO: Analizar
+        res.clearCookie('connect.sid')
+        res.clearCookie('authorization')
         req.session.destroy((err) => {
             if (err) {
                 console.error('Error al destruir la sesión:', err)
@@ -231,14 +272,6 @@ class UserController {
     githubCallBack = async (req, res) => {
         req.session.user = req.user
         return res.redirect('/views/products')
-    }
-
-    failLogin = (req, res) => {
-        return res.json({ status: 'error', message: 'failed login' })
-    }
-
-    failRegister = (req, res) => {
-        return res.json({ status: 'error', message: 'failed register' })
     }
 }
 

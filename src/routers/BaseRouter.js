@@ -1,4 +1,5 @@
-import { Router } from 'express'
+import { Router, request } from 'express'
+
 import { authToken } from '../utils/jwt.util.js'
 
 export default class BaseRouter {
@@ -45,8 +46,8 @@ export default class BaseRouter {
         return (req, res, next) => {
             if (policies.includes('public')) return next()
 
-            const { authorization } = req.headers
-            const user = authToken(res, authorization)
+            const authorization = req?.headers?.authorization || req?.cookies?.authorization
+            const user = authToken(authorization)
 
             req.user = user
 

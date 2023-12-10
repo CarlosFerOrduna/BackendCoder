@@ -60,7 +60,7 @@ class ProductController {
         })
     }
 
-    getProducts = async (req, res) => {
+    #getProducts = async (req, res) => {
         const { limit, page, sort, status, category } = req.query
         const sortCase = { asc: 1, desc: -1 }
 
@@ -70,18 +70,7 @@ class ProductController {
 
         const result = await productService.getProducts(limit, sortCase[sort], page, query)
 
-        return res.status(200).json({
-            status: 'success',
-            payload: result.docs,
-            totalPages: result.totalPages,
-            prevPage: result.prevPage,
-            nextPage: result.nextPage,
-            page: result.page,
-            hasPrevPage: result.hasPrevPage,
-            hasNextPage: result.hasNextPage,
-            prevLink: `http://localhost:8080/api/products/?page=${result.prevPage}`,
-            nextLink: `http://localhost:8080/api/products/?page=${result.nextPage}`
-        })
+        return { result }
     }
 
     getProductById = async (req, res) => {
@@ -166,15 +155,25 @@ class ProductController {
         return res.status(204).send({})
     }
 
-    getProductsForViews = async (req, res) => {
-        const { limit, page, sort, status, category } = req.query
-        const sortCase = { asc: 1, desc: -1 }
+    getProductsApi = async (req, res) => {
+        const { result } = await this.#getProducts(req, res)
 
-        let query = {}
-        if (status) query.status = status
-        if (category) query.category = category
+        return res.status(200).json({
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: `/api/products/?page=${result.prevPage}`,
+            nextLink: `/api/products/?page=${result.nextPage}`
+        })
+    }
 
-        const result = await productService.getProducts(limit, sortCase[sort], page, query)
+    getProductsViews = async (req, res) => {
+        const { result } = await this.#getProducts(req, res)
 
         return res.render('products', {
             payload: JSON.parse(JSON.stringify(result.docs)),
@@ -184,8 +183,8 @@ class ProductController {
             page: result.page,
             hasPrevPage: result.hasPrevPage,
             hasNextPage: result.hasNextPage,
-            prevLink: `http://localhost:8080/views/products/?page=${result.prevPage}`,
-            nextLink: `http://localhost:8080/views/products/?page=${result.nextPage}`,
+            prevLink: `/views/products/?page=${result.prevPage}`,
+            nextLink: `/views/products/?page=${result.nextPage}`,
             title: 'Products',
             firstName: req.session.firstName,
             userLog: req.session.firstName ? true : false
@@ -220,6 +219,20 @@ class ProductController {
         return res.status(200).json({
             status: 'success',
             payload: products
+        })
+    }
+
+    getProductsMocksForViews = async (req, res) => {
+        const products = []
+        for (let i = 0; i < 100; i++) {
+            products.push(await generateProductMock())
+        }
+
+        return res.render('products', {
+            payload: JSON.parse(JSON.stringify(products)),
+            title: 'Products',
+            firstName: req.session.firstName,
+            userLog: req.session.firstName ? true : false
         })
     }
 }

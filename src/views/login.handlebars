@@ -1,14 +1,31 @@
-<div class="container">
-    <form action="http://localhost:8080/api/users/login" method="post">
-        <div class="form-floating m-3">
-            <input type="email" class="form-control" name="email" id="email">
-            <label for="email">Email address</label>
+<div class="container" style="width: 100vh;">
+    <div class="row d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="column d-flex justify-content-center">
+            <div class="card" style="width: 30rem;">
+                <div class="card-body">
+                    <div class="card-title m-3">
+                        <h2>Login</h2>
+                    </div>
+                    <form action="/views/users/login" method="post">
+                        <div class="form-floating m-3">
+                            <input type="email" class="form-control" name="email" id="email">
+                            <label for="email">Email address</label>
+                        </div>
+                        <div class="form-floating m-3">
+                            <input type="password" class="form-control" name="password" id="password">
+                            <label for="password">Password</label>
+                        </div>
+                        <div class="btn-group m-3">
+                            <button type="submit" class="btn btn-secondary">Enviar</button>
+                            <a href="/views/users/register" class="btn btn-outline-dark">Registrarse</a>
+                        </div>
+                    </form>
+                    <div class="btn-group m-3">
+                        <a href="/api/users/github" class="btn btn-secondary">Ingresar con GitHub</a>
+                        <a href="/views/users/restore" class="btn btn-outline-dark">Restaurar contraseña</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-floating m-3">
-            <input type="password" class="form-control" name="password" id="password">
-            <label for="password">Password</label>
-        </div>
-        <button type="submit" class="btn btn-primary m-3">Enviar</button>
-    </form>
-    <a href="http://localhost:8080/api/users/github" class="btn btn-primary m-3">Login con github</a>
+    </div>
 </div>

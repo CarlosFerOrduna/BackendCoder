@@ -42,6 +42,38 @@ class CartController {
         })
     }
 
+    #getCartOfLoggedUser = async (req, res) => {
+        const { user } = req.session
+
+        if (!user) {
+            CustomError.createError({
+                name: 'no user logged in',
+                cause: invalidFieldErrorInfo({ name: 'user', type: 'Object', value: user }),
+                message: 'error to get cart',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        const result = await cartService.getCartById(user.cart)
+
+        return { result }
+    }
+
+    getCartOfLoggedUserApi = async (req, res) => {
+        const { result } = await this.#getCartOfLoggedUser(req, res)
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'cart found with success',
+            data: result
+        })
+    }
+
+    getCartOfLoggedUserViews = async (req, res) => {
+        const { result } = await this.#getCartOfLoggedUser(req, res)
+
+        return res.render('cart', { cart: JSON.parse(JSON.stringify(result)), title: 'Cart' })
+    }
+
     addProductInCart = async (req, res) => {
         const { cid, pid } = req.params
         if (!cid || !isNaN(cid)) {
@@ -68,6 +100,25 @@ class CartController {
             message: 'product added with success',
             data: result
         })
+    }
+
+    addProductInCartUserLogged = async (req, res) => {
+        const { result } = await this.#getCartOfLoggedUser(req, res)
+        const { pid } = req.params
+
+        if (!pid || !isNaN(pid)) {
+            CustomError.createError({
+                name: 'pid not valid',
+                cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
+                message: 'Error to add product in cart',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        const data = await cartService.addProductInCart(result._id, pid)
+        const cart = await cartService.getCartById(data._id)
+
+        return res.render('cart', { cart: JSON.parse(JSON.stringify(cart)), title: 'Cart' })
     }
 
     updateQuantityById = async (req, res) => {
