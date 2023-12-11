@@ -9,7 +9,8 @@ const productSchema = new Schema({
     status: { type: Boolean, require: false, default: true },
     stock: { type: Number, require: true },
     category: { type: String, require: true, index: true },
-    thumbnails: { type: Array, require: false, default: [] }
+    thumbnails: { type: Array, require: false, default: [] },
+    owner: { type: String, default: 'admin' }
 })
 
 productSchema.plugin(paginate)

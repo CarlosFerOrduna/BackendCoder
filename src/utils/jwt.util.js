@@ -5,7 +5,7 @@ import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
 
 const generateToken = (user) => {
-    return jwt.sign({ user }, config.privateKey, { expiresIn: '6000000' })
+    return jwt.sign({ user }, config.privateKey, { expiresIn: '1h' })
 }
 
 const authToken = (authorization) => {
@@ -13,14 +13,14 @@ const authToken = (authorization) => {
         CustomError.createError({
             name: 'not autenticated',
             cause: 'not autenticated',
-            message: 'Unauthorized',
+            message: 'unauthorized',
             code: errorCodes.NOT_AUTENTICATE
         })
     }
 
     const token = authorization.replace('Bearer ', '')
 
-    return jwt.verify(token, config.privateKey, (error, credentiales) => {
+    return jwt.verify(token, config.privateKey, (error, credentials) => {
         if (error?.message.includes('expired')) {
             CustomError.createError({
                 name: 'token expired',
@@ -38,7 +38,7 @@ const authToken = (authorization) => {
             })
         }
 
-        return credentiales
+        return credentials
     })
 }
 

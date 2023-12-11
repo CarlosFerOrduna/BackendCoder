@@ -6,7 +6,7 @@ import BaseRouter from '../BaseRouter.js'
 
 export default class ApiRouterMailer extends BaseRouter {
     init() {
-        this.get('/email', ['admin'], async (req, res) => {
+        this.post('/email', ['admin'], async (req, res) => {
             try {
                 const { to } = req.body
 
@@ -41,7 +41,7 @@ export default class ApiRouterMailer extends BaseRouter {
                 })
             }
         })
-        this.get('/sms', ['admin'], async (req, res) => {
+        this.post('/sms', ['admin'], async (req, res) => {
             try {
                 const { to } = req.body
 

@@ -3,14 +3,18 @@ import BaseRouter from '../BaseRouter.js'
 
 export default class ApiRouterCarts extends BaseRouter {
     init() {
-        this.get('/userlogged', ['user'], cartController.getCartOfLoggedUserApi)
-        this.get('/:cid/purchase', ['user'], cartController.checkout)
-        this.get('/:cid', ['user'], cartController.getCartById)
-        this.post('/:cid/products/:pid', ['user'], cartController.addProductInCart)
-        this.post('/', ['user'], cartController.createCart)
-        this.put('/:cid/products/:pid', ['user'], cartController.updateQuantityById)
-        this.put('/:cid', ['user'], cartController.addProductsInCart)
-        this.delete('/:cid/products/:pid', ['user'], cartController.removeProductInCart)
-        this.delete('/:cid', ['user'], cartController.removeAllProductsInCart)
+        this.get('/userlogged', ['user', 'premium'], cartController.getCartOfLoggedUserApi)
+        this.get('/:cid/purchase', ['user', 'premium'], cartController.checkout)
+        this.get('/:cid', ['user', 'premium'], cartController.getCartById)
+        this.post('/:cid/products/:pid', ['user', 'premium'], cartController.addProductInCart)
+        this.post('/', ['user', 'premium'], cartController.createCart)
+        this.put('/:cid/products/:pid', ['user', 'premium'], cartController.updateQuantityById)
+        this.put('/:cid', ['user', 'premium'], cartController.addProductsInCart)
+        this.delete(
+            '/:cid/products/:pid',
+            ['user', 'premium'],
+            cartController.removeProductInCart
+        )
+        this.delete('/:cid', ['user', 'premium'], cartController.removeAllProductsInCart)
     }
 }

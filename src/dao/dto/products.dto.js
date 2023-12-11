@@ -8,5 +8,6 @@ export default class ProductDTO {
         this.stock = product.stock || null
         this.category = product.category || null
         this.thumbnails = product.thumbnails || null
+        this.owner = product.owner || null
     }
 }

@@ -19,16 +19,15 @@ export default async (error, req, res, next) => {
 
     switch (error.code) {
         case errorCodes.INVALID_TYPES_ERROR:
+        case errorCodes.MAILER:
             logError(400, 'error')
             break
         case errorCodes.TOKEN_EXPIRED:
         case errorCodes.NOT_AUTENTICATE:
             logError(401, 'error')
-
             break
         case errorCodes.USER_FORBIDDEN:
             logError(403, 'error')
-
             break
         case errorCodes.ROUTING_ERROR:
             logError(404, 'warning')

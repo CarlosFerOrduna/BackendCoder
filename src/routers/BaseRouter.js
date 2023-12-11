@@ -1,6 +1,8 @@
 import { Router, request } from 'express'
 
 import { authToken } from '../utils/jwt.util.js'
+import CustomError from '../services/errors/CostumError.js'
+import errorCodes from '../services/errors/enum.errors.js'
 
 export default class BaseRouter {
     constructor() {
@@ -47,6 +49,7 @@ export default class BaseRouter {
             if (policies.includes('public')) return next()
 
             const authorization = req?.headers?.authorization || req?.cookies?.authorization
+
             const user = authToken(authorization)
 
             req.user = user

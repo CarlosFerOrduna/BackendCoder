@@ -75,6 +75,7 @@ class CartController {
     }
 
     addProductInCart = async (req, res) => {
+        const { user } = req.session
         const { cid, pid } = req.params
         if (!cid || !isNaN(cid)) {
             CustomError.createError({
@@ -92,6 +93,15 @@ class CartController {
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
+        const product = await productService.getProductById(pid)
+        if (product.owner === user.email && user.rol === 'premium') {
+            CustomError.createError({
+                name: 'forbidden',
+                cause: 'can not add your product in your cart',
+                message: 'error add product in cart',
+                code: errorCodes.USER_FORBIDDEN
+            })
+        }
 
         const result = await cartService.addProductInCart(cid, pid)
 
@@ -103,6 +113,7 @@ class CartController {
     }
 
     addProductInCartUserLogged = async (req, res) => {
+        const { user } = req.session
         const { result } = await this.#getCartOfLoggedUser(req, res)
         const { pid } = req.params
 
@@ -114,11 +125,19 @@ class CartController {
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
+        const product = await productService.getProductById(pid)
+        if (product.owner === user.email && user.rol === 'premium') {
+            CustomError.createError({
+                name: 'forbidden',
+                cause: 'can not add your product in your cart',
+                message: 'error add product in cart',
+                code: errorCodes.USER_FORBIDDEN
+            })
+        }
 
-        const data = await cartService.addProductInCart(result._id, pid)
-        const cart = await cartService.getCartById(data._id)
+        await cartService.addProductInCart(result._id, pid)
 
-        return res.render('cart', { cart: JSON.parse(JSON.stringify(cart)), title: 'Cart' })
+        return res.redirect('/views/carts/' + result._id)
     }
 
     updateQuantityById = async (req, res) => {
@@ -163,6 +182,7 @@ class CartController {
     }
 
     addProductsInCart = async (req, res) => {
+        const { user } = req.session
         const { cid } = req.params
         const { products } = req.body
 
@@ -181,6 +201,17 @@ class CartController {
                 message: 'Error to add products in cart',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
+        }
+
+        for (const product of products) {
+            if (product.owner === user.email && user.rol === 'premium') {
+                CustomError.createError({
+                    name: 'forbidden',
+                    cause: 'can not add your product in your cart',
+                    message: 'error add product in cart',
+                    code: errorCodes.USER_FORBIDDEN
+                })
+            }
         }
 
         const result = await cartService.addProductsInCart(cid, products)

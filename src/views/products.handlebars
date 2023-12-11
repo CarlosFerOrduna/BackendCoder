@@ -1,56 +1,80 @@
-<div class="container-fluid" style="margin: 0; padding: 0;">
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-sm">
-            <a class="navbar-brand" href="/views/products">ecommerce</a>
-            <form class="" role="search">
-                <a class="btn btn-outline-dark" href="/views/carts/userlogged">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"></path>
+<div class='container-fluid' style='margin: 0; padding: 0;'>
+    <nav class='navbar bg-body-tertiary'>
+        <div class='container-sm'>
+            <a class='navbar-brand' href='/views/products'>ecommerce</a>
+            <form class='' role='search'>
+                <a class='btn btn-outline-dark' href='/views/carts/userlogged'>
+                    <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        width='16'
+                        height='16'
+                        fill='currentColor'
+                        class='bi bi-cart'
+                        viewBox='0 0 16 16'
+                    >
+                        <path
+                            d='M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2'
+                        ></path>
                     </svg>
                 </a>
-                <a class="btn btn-outline-dark" href="/views/users/current">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"></path>
+                <a class='btn btn-outline-dark' href='/views/users/current'>
+                    <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        width='16'
+                        height='16'
+                        fill='currentColor'
+                        class='bi bi-person'
+                        viewBox='0 0 16 16'
+                    >
+                        <path
+                            d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z'
+                        ></path>
                     </svg>
                 </a>
             </form>
         </div>
     </nav>
-    <div class="container-sm">
-        <div class="row">
+    <div class='container-sm'>
+        <div class='row'>
             {{#each payload}}
-                <div class="col-4">
-                    <div class="card m-2" style="width: 18rem;">
+                <div class='col-4'>
+                    <div class='card m-2' style='width: 18rem;'>
                         {{#each this.thumbnails}}
-                            <img src={{this}} class="card-img-top" />
+                            <img src={{this}} class='card-img-top' />
                         {{/each}}
-                        <div class="card-body">
-                            <h5 class="card-title">{{this.title}}</h5>
-                            <p class="card-text">code: {{this.code}}</p>
-                            <p class="card-text">category: {{this.category}}</p>
-                            <p class="card-text">descripcion: {{this.description}}</p>
-                            <p class="card-text">stock: {{this.stock}}</p>
-                            <p class="card-text">precio: ${{this.price}}</p>
-                            <div class="btn-group">
+                        <div class='card-body'>
+                            <h5 class='card-title'>{{this.title}}</h5>
+                            <p class='card-text'>code: {{this.code}}</p>
+                            <p class='card-text'>category: {{this.category}}</p>
+                            <p class='card-text'>descripcion: {{this.description}}</p>
+                            <p class='card-text'>stock: {{this.stock}}</p>
+                            <p class='card-text'>precio: ${{this.price}}</p>
+                            <div class='btn-group'>
                                 {{#if this.status}}
-                                    <a href="/views/carts/userlogged/{{this._id}}" class="btn btn-secondary btn-add-cart">Agregar al carrito</a>
+                                    <a
+                                        href='/views/carts/userlogged/{{this._id}}'
+                                        class='btn btn-secondary btn-add-cart'
+                                    >Agregar al carrito</a>
                                 {{/if}}
-                                <a href="/views/products/{{this._id}}" class="btn btn-outline-dark">Ver</a>
+                                <a
+                                    href='/views/products/{{this._id}}'
+                                    class='btn btn-outline-dark'
+                                >Ver</a>
                             </div>
                         </div>
                     </div>
                 </div>
             {{/each}}
         </div>
-        <div class="d-flex justify-content-center">
-            <div class="btn-group shadow" role="group" aria-label="Basic outlined example">
+        <div class='d-flex justify-content-center'>
+            <div class='btn-group shadow' role='group' aria-label='Basic outlined example'>
                 {{#if hasPrevPage}}
-                    <a href={{this.prevLink}} class="btn btn-dark">Anterior</a>
+                    <a href={{this.prevLink}} class='btn btn-dark'>Anterior</a>
                 {{/if}}
-                    <a class="btn btn-dark disabled">Pagina {{this.page}}</a>
+                <a class='btn btn-dark disabled'>Pagina {{this.page}}</a>
                 {{#if hasNextPage}}
-                    <a href={{this.nextLink}} class="btn btn-dark">Siguiente</a>
-                {{/if}} 
+                    <a href={{this.nextLink}} class='btn btn-dark'>Siguiente</a>
+                {{/if}}
             </div>
         </div>
     </div>

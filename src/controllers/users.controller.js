@@ -1,4 +1,8 @@
-import { userService } from '../repositories/index.js'
+import jwt from 'jsonwebtoken'
+import { createTransport } from 'nodemailer'
+
+import config from '../config/dotenv.config.js'
+import { cartService, userService } from '../repositories/index.js'
 import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
 import { invalidFieldErrorInfo } from '../services/errors/info.errors.js'
@@ -6,7 +10,7 @@ import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
 import { generateToken } from '../utils/jwt.util.js'
 
 class UserController {
-    createUser = async (req, res) => {
+    createUser = async (req, res, next) => {
         const { firstName, lastName, email, age, username, password, rol } = req.body
         if (!firstName || !isNaN(firstName)) {
             CustomError.createError({
@@ -81,7 +85,19 @@ class UserController {
             })
         }
 
-        const user = { firstName, lastName, email, age, username, password, rol }
+        const cart = await cartService.createCart()
+
+        const user = {
+            firstName,
+            lastName,
+            email,
+            age,
+            username,
+            password,
+            rol,
+            cart: cart._id
+        }
+
         const result = await userService.createUser(user)
 
         return { result }
@@ -203,12 +219,11 @@ class UserController {
     loginViews = async (req, res) => {
         const { token } = await this.#login(req, res)
 
-        res.cookie('authorization', token)
-        return res.redirect('/views/products')
+        return res.cookie('authorization', token).redirect('/views/products')
     }
 
-    registerApi = async (req, res) => {
-        const { result } = await this.createUser(req, res)
+    registerApi = async (req, res, next) => {
+        const { result } = await this.createUser(req, res, next)
 
         return res.status(201).json({
             status: 'success',
@@ -217,8 +232,8 @@ class UserController {
         })
     }
 
-    registerViews = async (req, res) => {
-        await this.createUser(req, res)
+    registerViews = async (req, res, next) => {
+        await this.createUser(req, res, next)
 
         return res.redirect('/views/users/login')
     }
@@ -251,8 +266,7 @@ class UserController {
     }
 
     logout = async (req, res) => {
-        res.clearCookie('connect.sid')
-        res.clearCookie('authorization')
+        res.clearCookie('connect.sid').clearCookie('authorization')
         req.session.destroy((err) => {
             if (err) {
                 console.error('Error al destruir la sesión:', err)
@@ -272,6 +286,114 @@ class UserController {
     githubCallBack = async (req, res) => {
         req.session.user = req.user
         return res.redirect('/views/products')
+    }
+
+    restoreMailer = async (req, res) => {
+        try {
+            const { email } = req.body
+
+            const token = generateToken(email)
+
+            const transport = createTransport({
+                service: 'gmail',
+                port: 587,
+                auth: {
+                    user: config.emailUser,
+                    pass: config.emailPass
+                }
+            })
+
+            await transport.sendMail({
+                from: `ecommerce <${config.emailUser}>`,
+                to: email,
+                subject: 'Restaurar contraseña',
+                html: ` <div style="text-align: center;">
+                            <p>Haga click en el siguiente <a href="http://localhost:${config.port}/views/users/restore/${token}">enlace</a> para reestablecer su contraseña</p>
+                        </div>`
+            })
+
+            return res.redirect('/views/users/login')
+        } catch (error) {
+            CustomError.createError({
+                name: 'error mailer',
+                cause: error.message,
+                message: error.message,
+                code: errorCodes.MAILER
+            })
+        }
+    }
+
+    restorePassword = async (req, res) => {
+        const { token } = req?.params
+
+        if (token && !isNaN(token)) {
+            CustomError.createError({
+                name: 'error token',
+                cause: 'token is not valid',
+                message: 'error in verify restore password',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        let err = null
+        const result = jwt.verify(token, config.privateKey, (error, credentials) => {
+            if (error?.message.includes('expired')) {
+                err = error.message
+            }
+
+            return credentials
+        })
+
+        if (!err) res.cookie('credentials', result.user)
+
+        res.render(err ? 'restore-mailer' : 'restore-password', {
+            title: 'restore-password'
+        })
+    }
+
+    verify = async (req, res) => {
+        const { password } = req.body
+        const user = req?.cookies?.credentials
+
+        if (!password) {
+            return res.render('restore-password', {
+                title: 'restore-password',
+                equalPassword: false,
+                emptyPassword: true
+            })
+        }
+
+        const result = await userService.getUserByEmail(user)
+
+        if (await isValidPassword(result, password)) {
+            return res.render('restore-password', {
+                title: 'restore-password',
+                equalPassword: true,
+                emptyPassword: false
+            })
+        }
+
+        await userService.updateUser({ _id: result._id, password: createHash(password) })
+
+        return res.clearCookie('credentials').redirect('/views/users/login')
+    }
+
+    changeRol = async (req, res) => {
+        const { user } = req.session
+        const transitions = {
+            user: 'premium',
+            premium: 'user'
+        }
+
+        user.rol = transitions[user.rol] || 'admin'
+
+        const result = await userService.updateUser(user)
+
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully updated',
+            data: result
+        })
     }
 }
 

@@ -12,7 +12,7 @@ export default class UserDTO {
                 this.username = user.username || null
                 this.password = user.password || null
                 this.rol = user.rol || null
-                this.cart = null
+                this.cart = user.cart || null
                 this.tickets = []
 
                 break
@@ -24,6 +24,7 @@ export default class UserDTO {
                 this.email = user.email || null
                 this.age = user.age || null
                 this.cart = user.cart || null
+                this.rol = user.rol || null
                 this.tickets = user.tickets || []
 
                 break

@@ -9,7 +9,9 @@ import { generateProductMock } from '../utils/faker.util.js'
 
 class ProductController {
     addProduct = async (req, res) => {
+        const { user } = req.session
         const { title, description, code, price, status, stock, category } = req.body
+        const owner = user?.email
         const thumbnails = req?.file?.filename
 
         if (
@@ -36,12 +38,14 @@ class ProductController {
                     status,
                     stock,
                     category,
-                    thumbnails
+                    thumbnails,
+                    owner
                 }),
                 message: 'Error to create product',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
+
         const result = await productService.addProduct({
             title,
             description,
@@ -50,7 +54,8 @@ class ProductController {
             status,
             stock,
             category,
-            thumbnails
+            thumbnails,
+            owner
         })
 
         return res.status(201).json({
@@ -94,14 +99,24 @@ class ProductController {
     }
 
     updateProduct = async (req, res) => {
+        const { user } = req.session
         const { title, description, code, price, status, stock, category } = req.body
         const { pid } = req.params
-        if (!pid || isNaN(pid)) {
+        if (!pid || !isNaN(pid)) {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
                 message: 'Error to update product',
                 code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        const prod = await productService.getProductById(pid)
+        if (prod.owner !== user.email && user.rol === 'premium') {
+            CustomError.createError({
+                name: 'forbidden',
+                cause: 'this is not your product',
+                message: 'error to update product',
+                code: errorCodes.USER_FORBIDDEN
             })
         }
 
@@ -140,13 +155,23 @@ class ProductController {
     }
 
     deleteProduct = async (req, res) => {
+        const { user } = req.session
         const { pid } = req.params
-        if (!pid || isNaN(pid)) {
+        if (!pid || !isNaN(pid)) {
             CustomError.createError({
                 name: 'pid is not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
                 message: 'Error to delete product',
                 code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+        const product = await productService.getProductById(pid)
+        if (product.owner !== user.email && user.rol === 'premium') {
+            CustomError.createError({
+                name: 'forbidden',
+                cause: 'this is not your product',
+                message: 'error to delete product',
+                code: errorCodes.USER_FORBIDDEN
             })
         }
 

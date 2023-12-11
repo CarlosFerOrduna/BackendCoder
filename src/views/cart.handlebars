@@ -1,26 +1,26 @@
-<div class="container" style="width: 100vh;">
-    <div class="row d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="column d-flex justify-content-center">
-            <div class="card" style="width: 100vh;">
-                <div class="card-body">
+<div class='container' style='width: 100vh;'>
+    <div class='row d-flex justify-content-center align-items-center' style='height: 100vh;'>
+        <div class='column d-flex justify-content-center'>
+            <div class='card' style='width: 100vh;'>
+                <div class='card-body'>
                     {{#if cart.products.length}}
-                        <div class="card-title m-3">
+                        <div class='card-title m-3'>
                             <h2>Carrito</h2>
                         </div>
-                        <table class="table">
+                        <table class='table'>
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">nombre</th>
-                                    <th scope="col">precio</th>
-                                    <th scope="col">stock</th>
-                                    <th scope="col">cantidad</th>
+                                    <th scope='col'>#</th>
+                                    <th scope='col'>nombre</th>
+                                    <th scope='col'>precio</th>
+                                    <th scope='col'>stock</th>
+                                    <th scope='col'>cantidad</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each cart.products}}
                                     <tr>
-                                        <th scope="row">{{@index}}</th>
+                                        <th scope='row'>{{@index}}</th>
                                         <td>{{this.product.title}}</td>
                                         <td>${{this.product.price}}</td>
                                         <td>{{this.product.stock}}</td>
@@ -29,13 +29,19 @@
                                 {{/each}}
                             </tbody>
                         </table>
-                        <div class="btn-group">
-                            <a href="/api/carts/{{cart._id}}/purchase" class="btn btn-secondary">Terminar compra</a>
-                            <a href="/views/products" class="btn btn-outline-secondary">Volver</a>
+                        <div class='btn-group'>
+                            <a
+                                href='/api/carts/{{cart._id}}/purchase'
+                                class='btn btn-secondary'
+                            >Terminar compra</a>
+                            <a
+                                href='/views/products'
+                                class='btn btn-outline-secondary'
+                            >Volver</a>
                         </div>
                     {{else}}
-                            <p>No hay productos en el carrito.</p>
-                            <a href="/views/products" class="btn btn-outline-dark">Volver</a>
+                        <p>No hay productos en el carrito.</p>
+                        <a href='/views/products' class='btn btn-outline-dark'>Volver</a>
                     {{/if}}
                 </div>
             </div>
