@@ -1,0 +1,552 @@
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: ecommerce
+security:
+    - bearerAuth: []
+
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+    schemas:
+        MongoDBObjectId:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+            description: >
+                Identificador único de un documento en MongoDB.
+                Debe ser una cadena hexadecimal de 24 caracteres.
+        Cart:
+            type: object
+            properties:
+                _id:
+                    $ref: '#/components/schemas/MongoDBObjectId'
+                products:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            product:
+                                $ref: '#/components/schemas/MongoDBObjectId'
+                            quantity:
+                                type: number
+                                description: Cantidad del producto en el carrito
+                                default: 1
+    examples:
+        CartFindOne:
+            value:
+                status: success
+                message: cart found with success
+                data:
+                    _id: 65764efccd4d3f45607f999c
+                    products:
+                        - product:
+                              owner: admin
+                              _id: 649227e384cf9a8cc6ce60e0
+                              title: Fish
+                              description: The Apollotech B340 is an affordable wireless mouse with reliable connectivity 12 months battery life and modern design
+                              code: abc209
+                              price: 17
+                              status: true
+                              stock: 73
+                              category: Incredible
+                              thumbnails: []
+                              __v: 0
+                          quantity: 1
+                          _id: 65765929c2667a65f234dffa
+                        - product:
+                              owner: admin
+                              _id: 649227cc84cf9a8cc6ce5fe0
+                              title: Sausages
+                              description: The automobile layout consists of a front-engine design with transaxle-type transmissions mounted at the rear of the engine and four wheel drive
+                              code: abc81
+                              price: 13
+                              status: true
+                              stock: 92
+                              category: Unbranded
+                              thumbnails: []
+                              _v: 0
+                          quantity: 1
+                          _id: 657698b16fb2cfc433eb01ad
+
+paths:
+    /api/carts/userlogged:
+        get:
+            summary: Obtiene el carrito del usuario autenticado.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                200:
+                    description: Carrito obtenido exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        product:
+                                                            type: object
+                                                            properties:
+                                                                owner:
+                                                                    type: string
+                                                                _id:
+                                                                    type: string
+                                                                title:
+                                                                    type: string
+                                                                description:
+                                                                    type: string
+                                                                code:
+                                                                    type: string
+                                                                price:
+                                                                    type: number
+                                                                status:
+                                                                    type: boolean
+                                                                stock:
+                                                                    type: number
+                                                                category:
+                                                                    type: string
+                                                                thumbnails:
+                                                                    type: array
+                                                                    items:
+                                                                        type: string
+                                                                __v:
+                                                                    type: number
+                                                        quantity:
+                                                            type: number
+                                                        _id:
+                                                            type: string
+                400:
+                    description: No hay usuario en seción.
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+                500:
+                    description: El usuario no tiene carrito.
+
+    /api/carts/{cid}/purchase:
+        get:
+            summary: Procesa la compra del carrito.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                200:
+                    description: Compra procesada exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            result:
+                                                type: object
+                                                properties:
+                                                    code:
+                                                        type: string
+                                                    purchase_datetime:
+                                                        type: string
+                                                        format: date-time
+                                                    amount:
+                                                        type: number
+                                                    purchaser:
+                                                        type: string
+                                                    _id:
+                                                        type: string
+                                                    __v:
+                                                        type: number
+                                            productsOk:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        title:
+                                                            type: string
+                                                        description:
+                                                            type: string
+                                                        code:
+                                                            type: string
+                                                        price:
+                                                            type: number
+                                                        status:
+                                                            type: boolean
+                                                        stock:
+                                                            type: number
+                                                        category:
+                                                            type: string
+                                                        thumbnails:
+                                                            type: array
+                                                            items:
+                                                                type: string
+                                                        amount:
+                                                            type: number
+                                            productsError:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        title:
+                                                            type: string
+                                                        description:
+                                                            type: string
+                                                        code:
+                                                            type: string
+                                                        price:
+                                                            type: number
+                                                        status:
+                                                            type: boolean
+                                                        stock:
+                                                            type: number
+                                                        category:
+                                                            type: string
+                                                        thumbnails:
+                                                            type: array
+                                                            items:
+                                                                type: string
+                                                        amount:
+                                                            type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+
+    /api/carts/{cid}:
+        get:
+            summary: Obtiene el carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                200:
+                    description: Carrito obtenido exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        product:
+                                                            type: object
+                                                            properties:
+                                                                owner:
+                                                                    type: string
+                                                                _id:
+                                                                    type: string
+                                                                title:
+                                                                    type: string
+                                                                description:
+                                                                    type: string
+                                                                code:
+                                                                    type: string
+                                                                price:
+                                                                    type: number
+                                                                status:
+                                                                    type: boolean
+                                                                stock:
+                                                                    type: number
+                                                                category:
+                                                                    type: string
+                                                                thumbnails:
+                                                                    type: array
+                                                                    items:
+                                                                        type: string
+                                                                __v:
+                                                                    type: number
+                                                        quantity:
+                                                            type: number
+                                                        _id:
+                                                            type: string
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        put:
+            summary: Agrega productos al carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                products:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            product:
+                                                type: string
+            responses:
+                200:
+                    description: Productos agregados exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        product:
+                                                            type: string
+                                                        quantity:
+                                                            type: number
+                                                        _id:
+                                                            type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        delete:
+            summary: Elimina todos los productos del carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                200:
+                    description: Todos los productos eliminados exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        product:
+                                                            type: string
+                                                        quantity:
+                                                            type: number
+                                                        _id:
+                                                            type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+
+    /api/carts/{cid}/products/{pid}:
+        post:
+            summary: Agrega un producto al carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                201:
+                    description: Producto agregado exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        quantity:
+                                                            type: number
+                                                        _id:
+                                                            type: string
+                                                        product:
+                                                            type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        put:
+            summary: Actualiza la cantidad de un producto en el carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                quantity:
+                                    type: number
+            responses:
+                200:
+                    description: Cantidad de producto actualizada exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: object
+                                                properties:
+                                                    product:
+                                                        type: string
+                                                    quantity:
+                                                        type: number
+                                                    _id:
+                                                        type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        delete:
+            summary: Elimina un producto del carrito por ID.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                200:
+                    description: Producto eliminado exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: object
+                                                properties:
+                                                    product:
+                                                        type: string
+                                                    quantity:
+                                                        type: number
+                                                    _id:
+                                                        type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+
+    /api/carts:
+        post:
+            summary: Crea un nuevo carrito.
+            tags: [Carts]
+            security:
+                - bearerAuth: []
+            responses:
+                201:
+                    description: Carrito creado exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                    message:
+                                        type: string
+                                    data:
+                                        type: object
+                                        properties:
+                                            _id:
+                                                type: string
+                                            products:
+                                                type: object
+                                                properties:
+                                                    product:
+                                                        type: string
+                                                    quantity:
+                                                        type: number
+                                                    _id:
+                                                        type: string
+                                            __v:
+                                                type: number
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.

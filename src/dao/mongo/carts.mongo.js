@@ -115,7 +115,7 @@ export default class Carts {
     }
 
     addProductsInCart = async (cid, products) => {
-        const cart = cartModel.findById(cid)
+        const cart = await cartModel.findById(cid)
         if (!cart) {
             CustomError.createError({
                 name: 'cart does not exist',
@@ -129,11 +129,13 @@ export default class Carts {
             })
         }
 
-        products.forEach(async (p) => {
-            const aux = await productModel.findById(p._id)
+        for (const p of products) {
+            const { _id } = p
+            const aux = await productModel.findById(_id)
+
             if (!aux) {
                 CustomError.createError({
-                    name: 'aux not exists: ' + p._id,
+                    name: 'aux not exists: ' + _id,
                     cause: invalidFieldErrorInfo({
                         name: 'aux',
                         type: 'string',
@@ -143,7 +145,7 @@ export default class Carts {
                     code: errorCodes.DATABASE_ERROR
                 })
             }
-        })
+        }
 
         return await cartModel.findByIdAndUpdate(cid, {
             $set: { products }

@@ -6,6 +6,8 @@ import compression from 'express-compression'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import passport from 'passport'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUIExpress from 'swagger-ui-express'
 
 import config from './config/dotenv.config.js'
 import initializatePassport from './config/passport.config.js'
@@ -19,6 +21,20 @@ import socketServer from './utils/socket.util.js'
 
 const app = express()
 
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.3',
+        info: {
+            title: 'ecommerce',
+            description: 'Documentation for API ecommerce'
+        }
+    },
+    apis: [__dirname + '/../docs/**/*.yaml']
+}
+
+const specs = swaggerJSDoc(swaggerOptions)
+
+app.use('/apidocs', swaggerUIExpress.serve, swaggerUIExpress.setup(specs))
 app.use(cors())
 app.use(compression({ brotli: { enabled: true, zlib: {} } }))
 app.use(express.json())

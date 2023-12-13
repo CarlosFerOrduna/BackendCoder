@@ -196,15 +196,23 @@ class CartController {
         }
         if (!products || products.length < 1) {
             CustomError.createError({
-                name: 'pid not valid',
-                cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),
+                name: 'products not valid',
+                cause: invalidFieldErrorInfo({
+                    name: 'products',
+                    type: 'array',
+                    value: products
+                }),
                 message: 'Error to add products in cart',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
 
-        for (const product of products) {
-            if (product.owner === user.email && user.rol === 'premium') {
+        let productsFinal = []
+        for (const p of products) {
+            const { product } = p
+            const aux = await productService.getProductById(product)
+
+            if (aux.owner === user.email && user.rol === 'premium') {
                 CustomError.createError({
                     name: 'forbidden',
                     cause: 'can not add your product in your cart',
@@ -212,9 +220,11 @@ class CartController {
                     code: errorCodes.USER_FORBIDDEN
                 })
             }
+
+            productsFinal.push(aux)
         }
 
-        const result = await cartService.addProductsInCart(cid, products)
+        const result = await cartService.addProductsInCart(cid, productsFinal)
 
         return res.status(201).json({
             status: 'success',
@@ -233,7 +243,7 @@ class CartController {
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
-        if (!products || products.length < 1) {
+        if (!pid || !isNaN(pid)) {
             CustomError.createError({
                 name: 'pid not valid',
                 cause: invalidFieldErrorInfo({ name: 'pid', type: 'string', value: pid }),

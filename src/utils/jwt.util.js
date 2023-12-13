@@ -29,6 +29,7 @@ const authToken = (authorization) => {
                 code: errorCodes.TOKEN_EXPIRED
             })
         }
+
         if (error) {
             CustomError.createError({
                 name: 'forbidden',
