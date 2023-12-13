@@ -83,7 +83,7 @@ paths:
             security:
                 - bearerAuth: []
             responses:
-                '200':
+                200:
                     description: Productos obtenidos exitosamente.
                     content:
                         application/json:
@@ -127,8 +127,10 @@ paths:
                                                     items:
                                                         type: string
                                                         description: URL de la miniatura del producto
-                '401':
+                401:
                     description: No autorizado.
+                403:
+                    description: Forbidden.
 
     /products/{pid}:
         get:
@@ -144,8 +146,8 @@ paths:
                   schema:
                       type: string
             responses:
-                '200':
-                    description: Producto obtenido exitosamente.
+                201:
+                    description: Producto agregado exitosamente.
                     content:
                         application/json:
                             schema:
@@ -160,12 +162,6 @@ paths:
                                     data:
                                         type: object
                                         properties:
-                                            owner:
-                                                type: string
-                                                description: Propietario del producto
-                                            _id:
-                                                type: string
-                                                description: Identificador único del producto
                                             title:
                                                 type: string
                                                 description: Título del producto
@@ -180,7 +176,7 @@ paths:
                                                 description: Precio del producto
                                             status:
                                                 type: boolean
-                                                description: Estado del producto (true o false)
+                                                description: Estado del producto (puede ser nulo)
                                             stock:
                                                 type: integer
                                                 description: Cantidad en stock del producto
@@ -189,90 +185,19 @@ paths:
                                                 description: Categoría del producto
                                             thumbnails:
                                                 type: array
+                                                description: Lista de miniaturas del producto (puede ser nulo)
                                                 items:
                                                     type: string
-                                                    description: URL de la miniatura del producto
+                                            owner:
+                                                type: string
+                                                description: Propietario del producto
+                                            _id:
+                                                type: string
+                                                description: Identificador único del producto
                                             __v:
                                                 type: integer
                                                 description: Versión del esquema
-                '401':
+                401:
                     description: No autorizado.
-                '404':
-                    description: Producto no encontrado.
-
-        put:
-            summary: Actualiza un producto por ID.
-            tags: [Products]
-            security:
-                - bearerAuth: []
-            parameters:
-                - in: path
-                  name: pid
-                  required: true
-                  description: ID del producto a actualizar.
-                  schema:
-                      type: string
-            requestBody:
-                description: Datos actualizados del producto.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Product'
-            responses:
-                '200':
-                    description: Producto actualizado exitosamente.
-                '401':
-                    description: No autorizado.
-                '404':
-                    description: Producto no encontrado.
-
-        delete:
-            summary: Elimina un producto por ID.
-            tags: [Products]
-            security:
-                - bearerAuth: []
-            parameters:
-                - in: path
-                  name: pid
-                  required: true
-                  description: ID del producto a eliminar.
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Producto eliminado exitosamente.
-                '401':
-                    description: No autorizado.
-                '404':
-                    description: Producto no encontrado.
-
-    /products:
-        get:
-            summary: Obtiene todos los productos.
-            tags: [Products]
-            security:
-                - bearerAuth: []
-            responses:
-                '200':
-                    description: Productos obtenidos exitosamente.
-                '401':
-                    description: No autorizado.
-
-        post:
-            summary: Agrega un nuevo producto.
-            tags: [Products]
-            security:
-                - bearerAuth: []
-            requestBody:
-                description: Datos del nuevo producto.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Product'
-            responses:
-                '201':
-                    description: Producto agregado exitosamente.
-                '401':
-                    description: No autorizado.
+                403:
+                    description: Forbidden.

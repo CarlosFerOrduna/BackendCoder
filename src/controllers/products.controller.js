@@ -102,6 +102,7 @@ class ProductController {
         const { user } = req.session
         const { title, description, code, price, status, stock, category } = req.body
         const { pid } = req.params
+
         if (!pid || !isNaN(pid)) {
             CustomError.createError({
                 name: 'pid is not valid',
@@ -111,6 +112,7 @@ class ProductController {
             })
         }
         const prod = await productService.getProductById(pid)
+        console.log(user)
         if (prod.owner !== user.email && user.rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
