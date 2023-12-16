@@ -1,5 +1,6 @@
-import { Router, request } from 'express'
+import { Router } from 'express'
 
+import { uploader } from '../middlewares/multer/index.js'
 import { authToken } from '../utils/jwt.util.js'
 import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
@@ -21,7 +22,16 @@ export default class BaseRouter {
     }
 
     post(path, policies, ...callbacks) {
-        this.router.post(path, this.handlePolicies(policies), this.applyCallbacks(callbacks))
+        let field = 'thumbnails'
+        if (path.includes('documents')) field = 'docs'
+        if (path.includes('profiles')) field = 'profiles'
+
+        this.router.post(
+            path,
+            this.handlePolicies(policies),
+            uploader.array(field),
+            this.applyCallbacks(callbacks)
+        )
     }
 
     put(path, policies, ...callbacks) {
@@ -50,7 +60,16 @@ export default class BaseRouter {
 
             const authorization = req?.headers?.authorization || req?.cookies?.authorization
 
-            const user = authToken(authorization)
+            const { user } = authToken(authorization)
+
+            if (!policies.includes(user.rol)) {
+                CustomError.createError({
+                    name: 'forbidden',
+                    cause: 'can not add your product in your cart',
+                    message: 'error add product in cart',
+                    code: errorCodes.USER_FORBIDDEN
+                })
+            }
 
             req.user = user
 

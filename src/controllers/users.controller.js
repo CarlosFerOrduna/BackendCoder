@@ -7,7 +7,8 @@ import CustomError from '../services/errors/CostumError.js'
 import errorCodes from '../services/errors/enum.errors.js'
 import { invalidFieldErrorInfo } from '../services/errors/info.errors.js'
 import { createHash, isValidPassword } from '../utils/bcrypt.util.js'
-import { generateToken } from '../utils/jwt.util.js'
+import { authToken, generateToken } from '../utils/jwt.util.js'
+import { format } from 'date-fns'
 
 class UserController {
     createUser = async (req, res, next) => {
@@ -125,7 +126,8 @@ class UserController {
 
     updateUser = async (req, res) => {
         const { firstName, lastName, email, age, password, rol, cart, tickets } = req.body
-        const { _id } = req.session.user
+        const user = req?.session?.user || req?.user?.user
+        const { _id } = user
         let newUser = { _id }
 
         if (firstName) newUser.firstName = firstName
@@ -201,6 +203,9 @@ class UserController {
         const user = await userService.getUserById(data._id)
         const token = generateToken(user)
 
+        user.lastConnection = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+        await userService.updateUser(user)
+
         const { _id, firstName, lastName, age, rol, tickets, cart } = user
         req.session.user = { _id, firstName, lastName, email, age, rol, cart, tickets }
 
@@ -239,7 +244,7 @@ class UserController {
     }
 
     #current = async (req, res) => {
-        const { user } = req.user || req.session
+        const user = req?.user?.user || req?.session?.user
         if (!user) {
             CustomError.createError({
                 name: 'user is not valid',
@@ -266,18 +271,35 @@ class UserController {
     }
 
     logoutApi = async (req, res) => {
-        res.clearCookie('connect.sid').clearCookie('authorization')
-        req.session.destroy((err) => {
-            if (err) {
-                console.error('Error al destruir la sesión:', err)
-            } else {
+        try {
+            const authorization = req?.headers?.authorization || req?.cookies?.authorization
+            const { user } = authToken(authorization)
+
+            user.lastConnection = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+            await userService.updateUser(user)
+
+            res.clearCookie('connect.sid').clearCookie('authorization')
+
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error al destruir la sesión:', err)
+                    throw new Error(err)
+                }
+
                 res.json({
                     status: 'success',
                     message: 'Logout successful',
                     data: null
                 })
-            }
-        })
+            })
+        } catch (error) {
+            CustomError.createError({
+                name: 'error logout',
+                cause: 'no user logged in',
+                message: error.message,
+                code: errorCodes.NOT_AUTENTICATE
+            })
+        }
     }
 
     logoutViews = async (req, res) => {
@@ -394,16 +416,69 @@ class UserController {
     }
 
     changeRol = async (req, res) => {
-        const { user } = req.user || req.session
-
-        const transitions = {
-            user: 'premium',
-            premium: 'user'
+        const { uid } = req.params
+        if (!uid || !isNaN(uid)) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to change rol user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
         }
 
-        user.rol = transitions[user.rol] || 'admin'
+        const transitions = { user: 'premium', premium: 'user' }
 
+        const user = await userService.getUserById(uid)
+
+        if (user.rol === 'user') {
+            const requiredNames = [
+                'identificacion',
+                'comprobante de domicilio',
+                'comprobante de estado de cuenta'
+            ]
+
+            if (!requiredNames.every((n) => user.documents.some((d) => d.name === n))) {
+                const hasNames = user.documents?.join(', ') || ''
+                const missingNames = requiredNames
+                    .map((n) => {
+                        if (!user.documents?.includes(n)) return n
+                    })
+                    .join(', ')
+
+                CustomError.createError({
+                    name: 'pending documents',
+                    cause: 'must have all documents',
+                    message: `user has these documents '${hasNames}', needs these '${missingNames}'`,
+                    code: errorCodes.INVALID_TYPES_ERROR
+                })
+            }
+        }
+
+        user.rol = transitions[user.rol]
         const result = await userService.updateUser(user)
+        return res.status(201).json({
+            status: 'success',
+            message: 'user successfully updated',
+            data: result
+        })
+    }
+
+    addDocuments = async (req, res) => {
+        const { uid } = req.params
+        const { files } = req
+
+        const documents = files.map((doc) => {
+            const reference = `http://localhost:${config.port}/documents/${doc.filename}`
+            const name = doc.filename
+                .split('-')
+                .slice(1)
+                .join(' ')
+                .replace(/\.[^/.]+$/, '')
+
+            return { name, reference }
+        })
+
+        const result = await userService.updateUser({ _id: uid, documents })
 
         return res.status(201).json({
             status: 'success',

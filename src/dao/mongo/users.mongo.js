@@ -67,13 +67,13 @@ export default class Users {
 
     updateUser = async (user) => {
         const result = await userModel.findByIdAndUpdate(user._id, user, { new: true })
-        if (!user) {
+        if (!result) {
             CustomError.createError({
                 name: 'user does not exist',
                 cause: invalidFieldErrorInfo({
                     name: 'user',
                     type: 'string',
-                    value: user
+                    value: result
                 }),
                 message: 'Error to update user',
                 code: errorCodes.NOT_FOUND

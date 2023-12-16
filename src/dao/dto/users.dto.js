@@ -9,23 +9,27 @@ export default class UserDTO {
                 this.lastName = user.lastName || null
                 this.email = user.email || null
                 this.age = user.age || null
-                this.username = user.username || null
+                this.username = user.username || `${user.firstName} ${user.lastName}`
                 this.password = user.password || null
                 this.rol = user.rol || null
                 this.cart = user.cart || null
-                this.tickets = []
+                this.tickets = user.tickets || []
+                this.lastConnection = user.lastConnection || null
+                this.documents = user.documents || []
 
                 break
             case 'response':
                 this._id = user._id || null
                 this.firstName = user.firstName || null
                 this.lastName = user.lastName || null
-                this.username = user.username || null
+                this.username = user.username || `${user.firstName} ${user.lastName}`
                 this.email = user.email || null
                 this.age = user.age || null
                 this.cart = user.cart || null
                 this.rol = user.rol || null
                 this.tickets = user.tickets || []
+                this.lastConnection = user.lastConnection || null
+                this.documents = user.documents || []
 
                 break
 

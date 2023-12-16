@@ -1,5 +1,4 @@
 import productController from '../../controllers/products.controller.js'
-import { uploader } from '../../utils/multer.util.js'
 import BaseRouter from '../BaseRouter.js'
 
 export default class ApiRouterProducts extends BaseRouter {

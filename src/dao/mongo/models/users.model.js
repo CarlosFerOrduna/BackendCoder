@@ -11,7 +11,11 @@ const userSchema = new Schema({
     password: { type: String, require: true },
     rol: { type: String, enum: ['admin', 'user', 'premium'], default: 'user' },
     cart: { type: Schema.Types.ObjectId, ref: 'carts' },
-    tickets: [{ type: Schema.Types.ObjectId, ref: 'tickets' }]
+    tickets: [{ type: Schema.Types.ObjectId, ref: 'tickets' }],
+    documents: [
+        { name: { type: String, require: true }, reference: { type: String, require: true } }
+    ],
+    lastConnection: { type: Date }
 })
 
 userSchema.pre('save', function () {

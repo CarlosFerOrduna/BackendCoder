@@ -6,13 +6,17 @@ import {
     invalidFieldErrorInfo
 } from '../services/errors/info.errors.js'
 import { generateProductMock } from '../utils/faker.util.js'
+import config from '../config/dotenv.config.js'
 
 class ProductController {
     addProduct = async (req, res) => {
         const { user } = req.session || req.session.user
         const { title, description, code, price, status, stock, category } = req.body
         const owner = user?.email
-        const thumbnails = req?.file?.filename
+        const files = req.files
+        const thumbnails = files.map(
+            (thmb) => `http://localhost:${config.port}/products/${thmb.filename}`
+        )
 
         if (
             !title ||
