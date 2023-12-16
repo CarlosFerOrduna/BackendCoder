@@ -7,7 +7,7 @@ export default class ApiRouterUsers extends BaseRouter {
         this.post('/login', ['public'], userController.loginApi)
         this.post('/register', ['public'], userController.registerApi)
         this.post('/restore', ['public'], userController.updateUser)
-        this.post('/logout', ['user', 'premium', 'admin'], userController.logout)
+        this.post('/logout', ['user', 'premium', 'admin'], userController.logoutApi)
         this.put('/premium/:uid', ['user', 'premium', 'admin'], userController.changeRol)
     }
 }

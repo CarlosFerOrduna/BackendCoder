@@ -11,9 +11,6 @@ import { invalidFieldErrorInfo } from '../services/errors/info.errors.js'
 class CartController {
     createCart = async (req, res) => {
         const result = await cartService.createCart()
-        const { user } = req.session
-        user.cart = result._id
-        await userService.updateUser(user)
 
         return res.status(201).send({
             status: 'success',
@@ -43,7 +40,7 @@ class CartController {
     }
 
     #getCartOfLoggedUser = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user
 
         if (!user) {
             CustomError.createError({
@@ -75,7 +72,7 @@ class CartController {
     }
 
     addProductInCart = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user
         const { cid, pid } = req.params
         if (!cid || !isNaN(cid)) {
             CustomError.createError({
@@ -94,7 +91,7 @@ class CartController {
             })
         }
         const product = await productService.getProductById(pid)
-        if (product.owner === user.email && user.rol === 'premium') {
+        if (product?.owner === user?.email && user?.rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
                 cause: 'can not add your product in your cart',
@@ -113,7 +110,7 @@ class CartController {
     }
 
     addProductInCartUserLogged = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user
         const { result } = await this.#getCartOfLoggedUser(req, res)
         const { pid } = req.params
 
@@ -126,7 +123,7 @@ class CartController {
             })
         }
         const product = await productService.getProductById(pid)
-        if (product.owner === user.email && user.rol === 'premium') {
+        if (product?.owner === user?.email && user?.rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
                 cause: 'can not add your product in your cart',
@@ -182,7 +179,7 @@ class CartController {
     }
 
     addProductsInCart = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user
         const { cid } = req.params
         const { products } = req.body
 
@@ -212,7 +209,7 @@ class CartController {
             const { product } = p
             const aux = await productService.getProductById(product)
 
-            if (aux.owner === user.email && user.rol === 'premium') {
+            if (aux?.owner === user?.email && user?.rol === 'premium') {
                 CustomError.createError({
                     name: 'forbidden',
                     cause: 'can not add your product in your cart',
@@ -317,7 +314,8 @@ class CartController {
         const productsOk = []
         const productsError = []
 
-        const { user } = req.session
+        const { user } = req.user || req.session
+
         let amount = 0
         for (const p of products) {
             const product = await productService.getProductById(p.product._id)

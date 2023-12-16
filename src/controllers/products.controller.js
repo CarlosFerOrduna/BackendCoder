@@ -9,7 +9,7 @@ import { generateProductMock } from '../utils/faker.util.js'
 
 class ProductController {
     addProduct = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.session || req.session.user
         const { title, description, code, price, status, stock, category } = req.body
         const owner = user?.email
         const thumbnails = req?.file?.filename
@@ -99,7 +99,7 @@ class ProductController {
     }
 
     updateProduct = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.session || req.session.user
         const { title, description, code, price, status, stock, category } = req.body
         const { pid } = req.params
 
@@ -111,9 +111,9 @@ class ProductController {
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
+
         const prod = await productService.getProductById(pid)
-        console.log(user)
-        if (prod.owner !== user.email && user.rol === 'premium') {
+        if (prod?.owner !== user?.email && user?.rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
                 cause: 'this is not your product',
@@ -157,7 +157,8 @@ class ProductController {
     }
 
     deleteProduct = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user || req.session
+
         const { pid } = req.params
         if (!pid || !isNaN(pid)) {
             CustomError.createError({

@@ -22,7 +22,7 @@ export default class Ticket {
                     value: ticket
                 }),
                 message: 'Error to get ticket',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -50,7 +50,7 @@ export default class Ticket {
                     value: ticketUpdated
                 }),
                 message: 'Error to update ticket',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -68,7 +68,7 @@ export default class Ticket {
                     value: ticketDeleted
                 }),
                 message: 'Error to delete ticket',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 

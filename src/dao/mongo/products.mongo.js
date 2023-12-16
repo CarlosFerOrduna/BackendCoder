@@ -31,7 +31,7 @@ export default class Products {
                     value: product
                 }),
                 message: 'Error to get product',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -51,7 +51,7 @@ export default class Products {
                     value: product
                 }),
                 message: 'Error to upadte product',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -69,7 +69,7 @@ export default class Products {
                     value: deletedProduct
                 }),
                 message: 'Error to upadte product',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 

@@ -22,7 +22,7 @@ export default class Users {
                     value: user
                 }),
                 message: 'Error to get user',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -40,7 +40,7 @@ export default class Users {
                     value: user
                 }),
                 message: 'Error to get user',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -58,7 +58,7 @@ export default class Users {
                     value: user
                 }),
                 message: 'Error to get user',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -76,7 +76,7 @@ export default class Users {
                     value: user
                 }),
                 message: 'Error to update user',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -94,7 +94,7 @@ export default class Users {
                     value: user
                 }),
                 message: 'Error to delete user',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 

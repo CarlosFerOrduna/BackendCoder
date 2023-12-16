@@ -239,7 +239,7 @@ class UserController {
     }
 
     #current = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user || req.session
         if (!user) {
             CustomError.createError({
                 name: 'user is not valid',
@@ -265,7 +265,22 @@ class UserController {
         return res.render('current', { firstName, lastName, email })
     }
 
-    logout = async (req, res) => {
+    logoutApi = async (req, res) => {
+        res.clearCookie('connect.sid').clearCookie('authorization')
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error al destruir la sesión:', err)
+            } else {
+                res.json({
+                    status: 'success',
+                    message: 'Logout successful',
+                    data: null
+                })
+            }
+        })
+    }
+
+    logoutViews = async (req, res) => {
         res.clearCookie('connect.sid').clearCookie('authorization')
         req.session.destroy((err) => {
             if (err) {
@@ -379,7 +394,8 @@ class UserController {
     }
 
     changeRol = async (req, res) => {
-        const { user } = req.session
+        const { user } = req.user || req.session
+
         const transitions = {
             user: 'premium',
             premium: 'user'

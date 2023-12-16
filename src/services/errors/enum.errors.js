@@ -5,7 +5,8 @@ const errorCodes = {
     USER_FORBIDDEN: 4,
     TOKEN_EXPIRED: 5,
     NOT_AUTENTICATE: 6,
-    MAILER: 6
+    MAILER: 7,
+    NOT_FOUND: 8
 }
 
 export default errorCodes

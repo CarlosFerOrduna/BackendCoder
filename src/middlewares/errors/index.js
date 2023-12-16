@@ -30,6 +30,7 @@ export default async (error, req, res, next) => {
             logError(403, 'error')
             break
         case errorCodes.ROUTING_ERROR:
+        case errorCodes.NOT_FOUND:
             logError(404, 'warning')
             break
         case errorCodes.DATABASE_ERROR:

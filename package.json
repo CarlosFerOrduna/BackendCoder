@@ -6,13 +6,13 @@
     "main": "./src/app.js",
     "scripts": {
         "start": "node ./src/app.js --mode prd",
-        "dev": "nodemon ./src/app.js --mode dev"
+        "dev": "nodemon ./src/app.js --mode dev",
+        "test": "mocha test/*.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@faker-js/faker": "^8.3.1",
         "bcryptjs": "^2.4.3",
         "cluster": "^0.7.7",
         "commander": "^11.1.0",
@@ -42,5 +42,11 @@
         "twilio": "^4.19.0",
         "uuid": "^9.0.1",
         "winston": "^3.11.0"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^8.3.1",
+        "chai": "^4.3.10",
+        "mocha": "^10.2.0",
+        "supertest": "^6.3.3"
     }
 }

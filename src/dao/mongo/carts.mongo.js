@@ -20,7 +20,7 @@ export default class Carts {
                     value: result
                 }),
                 message: 'Error to get cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -38,7 +38,7 @@ export default class Carts {
                     value: cart
                 }),
                 message: 'Error to add product in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -52,7 +52,7 @@ export default class Carts {
                     value: product
                 }),
                 message: 'Error to add product in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -77,7 +77,7 @@ export default class Carts {
                     value: cart
                 }),
                 message: 'Error to update quantity in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -91,13 +91,16 @@ export default class Carts {
                     value: product
                 }),
                 message: 'Error to update quantity in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
-        const result = await cartModel.updateOne(
-            { _id: cid, 'products.product': pid },
-            { $set: { 'products.$.quantity': quantity } }
+
+        const result = await cartModel.findByIdAndUpdate(
+            cid,
+            { $set: { 'products.$[elem].quantity': quantity } },
+            { arrayFilters: [{ 'elem.product': pid }] }
         )
+
         if (result.modifiedCount < 1) {
             CustomError.createError({
                 name: 'Product not modified',
@@ -107,7 +110,7 @@ export default class Carts {
                     value: result
                 }),
                 message: 'Error to get cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -125,7 +128,7 @@ export default class Carts {
                     value: cart
                 }),
                 message: 'Error to add products in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -142,7 +145,7 @@ export default class Carts {
                         value: aux
                     }),
                     message: 'Error to add products in cart',
-                    code: errorCodes.DATABASE_ERROR
+                    code: errorCodes.NOT_FOUND
                 })
             }
         }
@@ -163,7 +166,7 @@ export default class Carts {
                     value: cart
                 }),
                 message: 'Error to remove product in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
         const product = await productModel.findById(pid)
@@ -176,7 +179,7 @@ export default class Carts {
                     value: product
                 }),
                 message: 'Error to remove product in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
@@ -196,7 +199,7 @@ export default class Carts {
                     value: cart
                 }),
                 message: 'Error to remove all products in cart',
-                code: errorCodes.DATABASE_ERROR
+                code: errorCodes.NOT_FOUND
             })
         }
 
