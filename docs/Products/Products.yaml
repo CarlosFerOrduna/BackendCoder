@@ -201,3 +201,80 @@ paths:
                     description: No autorizado.
                 403:
                     description: Forbidden.
+
+        post:
+            summary: Agrega un nuevo producto.
+            tags: [Products]
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: '#/components/schemas/Product'
+            responses:
+                201:
+                    description: Producto agregado exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: '#/components/schemas/Product'
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        put:
+            summary: Actualiza un producto por ID.
+            tags: [Products]
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: pid
+                  required: true
+                  description: ID del producto a obtener.
+                  schema:
+                      type: string
+                      $ref: '#/components/schemas/MongoDBObjectId'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: '#/components/schemas/Product'
+            responses:
+                200:
+                    description: Producto actualizado exitosamente.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: '#/components/schemas/Product'
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
+        delete:
+            summary: Elimina un producto por ID.
+            tags: [Products]
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: pid
+                  required: true
+                  description: ID del producto a obtener.
+                  schema:
+                      type: string
+                      $ref: '#/components/schemas/MongoDBObjectId'
+            responses:
+                204:
+                    description: Producto eliminado exitosamente.
+                401:
+                    description: No autorizado.
+                403:
+                    description: Forbidden.
