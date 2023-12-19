@@ -76,7 +76,7 @@ components:
                     __v: 0
 
 paths:
-    /products/mockingproducts:
+    /api/products/mockingproducts:
         get:
             summary: Obtiene productos de prueba.
             tags: [Products]
@@ -132,7 +132,7 @@ paths:
                 403:
                     description: Forbidden.
 
-    /products/{pid}:
+    /api/products/{pid}:
         get:
             summary: Obtiene un producto por ID.
             tags: [Products]
