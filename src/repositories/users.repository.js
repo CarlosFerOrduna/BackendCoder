@@ -12,8 +12,21 @@ export default class UserRepository {
 
     searchUsers = async (limit, page, query) => {
         const users = await this.dao.searchUsers(limit, page, query)
-        console.log(users)
         return users.docs.map((u) => new UserDTO(u, 'search'))
+    }
+
+    searchUsersViews = async (limit, page) => {
+        const { docs, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage } =
+            await this.dao.searchUsers(limit, page)
+
+        return {
+            docs: docs.map((u) => new UserDTO(u, 'response')),
+            totalPages,
+            prevPage,
+            nextPage,
+            hasPrevPage,
+            hasNextPage
+        }
     }
 
     getUserById = async (uid) => {

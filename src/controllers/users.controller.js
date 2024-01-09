@@ -124,6 +124,29 @@ class UserController {
         })
     }
 
+    getUsersViews = async (req, res) => {
+        const { limit, page } = req.query
+        const { firstName } = req.user
+
+        const { docs, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage } =
+            await userService.searchUsersViews(limit, page)
+
+        return res.render('users', {
+            payload: docs,
+            totalPages: totalPages,
+            prevPage: prevPage,
+            nextPage: nextPage,
+            page: page,
+            hasPrevPage: hasPrevPage,
+            hasNextPage: hasNextPage,
+            prevLink: `/views/users/?page=${prevPage}`,
+            nextLink: `/views/users/?page=${nextPage}`,
+            title: 'Users',
+            firstName: firstName,
+            userLog: !!firstName
+        })
+    }
+
     searchUsers = async (req, res) => {
         const { limit, page, firstName, lastName, email, age, username, rol, lastConnection } =
             req.query
@@ -280,9 +303,11 @@ class UserController {
     }
 
     loginViews = async (req, res) => {
-        const { token } = await this.#login(req, res)
+        const { token, user } = await this.#login(req, res)
 
-        return res.cookie('authorization', `Bearer ${token}`).redirect('/views/products')
+        return res
+            .cookie('authorization', `Bearer ${token}`)
+            .redirect(`/views/${user.rol === 'admin' ? 'users' : 'products'}`)
     }
 
     registerApi = async (req, res, next) => {
@@ -326,6 +351,85 @@ class UserController {
         const { firstName, lastName, email } = data
 
         return res.render('current', { firstName, lastName, email })
+    }
+
+    getUserViews = async (req, res) => {
+        const { uid } = req.params
+        if (!uid) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to get user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        const data = await userService.getUserById(uid)
+
+        return res.render('user', {
+            user: { ...data },
+            title: `User: ${data._id}`
+        })
+    }
+
+    getUserUpdateViews = async (req, res) => {
+        const { uid } = req.params
+        if (!uid) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to get user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        const data = await userService.getUserById(uid)
+
+        return res.render('user-update', {
+            user: { ...data },
+            title: `User: ${data._id}`
+        })
+    }
+
+    deleteUserViews = async (req, res) => {
+        const { uid } = req.params
+        if (!uid) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to get user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        await userService.deleteUser(uid)
+
+        return res.redirect('/views/users')
+    }
+
+    updateUserViews = async (req, res) => {
+        const { firstName, lastName, username, email, age, rol } = req.body
+        const { uid } = req.params
+        if (!uid) {
+            CustomError.createError({
+                name: 'uid is not valid',
+                cause: invalidFieldErrorInfo({ name: 'uid', type: 'string', value: uid }),
+                message: 'Error to get user',
+                code: errorCodes.INVALID_TYPES_ERROR
+            })
+        }
+
+        let query = { _id: uid }
+        if (firstName) query.firstName = firstName
+        if (lastName) query.lastName = lastName
+        if (username) query.username = username
+        if (email) query.email = email
+        if (age) query.age = age
+        if (rol) query.rol = rol
+
+        await userService.updateUser(query)
+
+        return res.redirect(`/views/users/${uid}`)
     }
 
     logoutApi = async (req, res) => {

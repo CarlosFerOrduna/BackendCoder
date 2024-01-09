@@ -88,7 +88,7 @@ export default class Users {
         return emailsUsersInactive
     }
 
-    searchUsers = async (limit, page, query) => {
+    searchUsers = async (limit, page, query = {}) => {
         return await userModel.paginate(query, { limit: limit ?? 10, page: page ?? 1 })
     }
 

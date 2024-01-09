@@ -1,0 +1,39 @@
+<div class='container-fluid' style='margin: 0; padding: 0;'>
+    <div class='container-sm'>
+        <div class='row'>
+            {{#each payload}}
+                <div class='col-4'>
+                    <div class='card m-2' style='width: 18rem;'>
+                        <div class='card-body'>
+                            <h5 class='card-title'>User {{this._id}}</h5>
+                            <p class='card-text'>firstName: {{this.firstName}}</p>
+                            <p class='card-text'>lastName: {{this.lastName}}</p>
+                            <p class='card-text'>email: {{this.email}}</p>
+                            <p class='card-text'>age: {{this.age}}</p>
+                            <p class='card-text'>username: {{this.username}}</p>
+                            <p class='card-text'>rol: {{this.rol}}</p>
+                            <p class='card-text'>lastConnection: {{this.lastConnection}}</p>
+                            <div class='btn-group'>
+                                <a
+                                    href='/views/users/{{this._id}}'
+                                    class='btn btn-outline-dark'
+                                >Ver</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        <div class='d-flex justify-content-center'>
+            <div class='btn-group shadow' role='group' aria-label='Basic outlined example'>
+                {{#if hasPrevPage}}
+                    <a href={{this.prevLink}} class='btn btn-dark'>Anterior</a>
+                {{/if}}
+                <a class='btn btn-dark disabled'>Pagina {{this.page}}</a>
+                {{#if hasNextPage}}
+                    <a href={{this.nextLink}} class='btn btn-dark'>Siguiente</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

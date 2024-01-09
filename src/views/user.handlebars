@@ -1,0 +1,48 @@
+<div class='container-fluid' style='margin: 0; padding: 0;'>
+    <div class='container-fluid' style='width: 100vh;'>
+        <div
+            class='row d-flex justify-content-center align-items-center'
+            style='height: 90vh;'
+        >
+            <div class='column d-flex justify-content-center'>
+                <div class='card'>
+                    <div class='row g-0'>
+                        <div class='col-lg-8'>
+                            <div class='card-body'>
+                                <div class='card-body'>
+                                    <h5 class='card-title'>User: {{user._id}}</h5>
+                                    <p class='card-text'>firstName: {{user.firstName}}</p>
+                                    <p class='card-text'>lastName: {{user.lastName}}</p>
+                                    <p class='card-text'>email: {{user.email}}</p>
+                                    <p class='card-text'>age: {{user.age}}</p>
+                                    <p class='card-text'>username: {{user.username}}</p>
+                                    <p class='card-text'>password: {{user.password}}</p>
+                                    <p class='card-text'>rol: {{user.rol}}</p>
+                                    <p class='card-text'>cart: {{user.cart}}</p>
+                                    <p class='card-text'>tickets: {{user.tickets}}</p>
+                                    <p class='card-text'>documents: {{user.documents}}</p>
+                                    <p class='card-text'>lastConnection:
+                                        {{user.lastConnection}}</p>
+                                    <div class='btn-group'>
+                                        <a
+                                            href='/views/users/delete/{{user._id}}'
+                                            class='btn btn-secondary'
+                                        >Eliminar</a>
+                                        <a
+                                            href='/views/users/update/{{user._id}}'
+                                            class='btn btn-outline-dark'
+                                        >Actualizar</a>
+                                        <a
+                                            href='/views/users'
+                                            class='btn btn-outline-dark'
+                                        >Volver</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

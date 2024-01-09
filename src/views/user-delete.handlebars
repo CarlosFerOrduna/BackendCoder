@@ -1,0 +1,23 @@
+<div class='container' style='width: 100vh;'>
+    <div class='row d-flex justify-content-center align-items-center' style='height: 100vh;'>
+        <div class='column d-flex justify-content-center'>
+            <div class='card' style='width: 30rem;'>
+                <div class='card-body'>
+                    <div class='card-title m-3'>
+                        <h2>Delete</h2>
+                    </div>
+                    <form action='/views/users/delete/{{uid}}' method='post'>
+                        <div>
+                            <p>Estas seguro de eliminar al usuario:
+                                <strong>{{uid}}</strong>?</p>
+                        </div>
+                        <div class='btn-group m-3'>
+                            <button type='submit' class='btn btn-secondary'>Si</button>
+                            <a href='/views/users' class='btn btn-outline-dark'>No</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
