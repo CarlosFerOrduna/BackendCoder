@@ -13,8 +13,8 @@ export default class ViewsRouterpublics extends BaseRouter {
         this.get('/restore', ['public'], (req, res) =>
             res.render('restore-mailer', { title: 'restore-password' })
         )
-        this.get('/current', ['user'], userController.currentViews)
-        this.get('/logout', ['user'], userController.logoutViews)
+        this.get('/current', ['user', 'premium'], userController.currentViews)
+        this.get('/logout', ['user', 'premium'], userController.logoutViews)
         this.post('/login', ['public'], userController.loginViews)
         this.post('/register', ['public'], userController.registerViews)
         this.post('/restore', ['public'], userController.restoreMailer)

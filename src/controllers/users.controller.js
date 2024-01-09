@@ -282,7 +282,7 @@ class UserController {
     loginViews = async (req, res) => {
         const { token } = await this.#login(req, res)
 
-        return res.cookie('authorization', token).redirect('/views/products')
+        return res.cookie('authorization', `Bearer ${token}`).redirect('/views/products')
     }
 
     registerApi = async (req, res, next) => {
@@ -302,17 +302,17 @@ class UserController {
     }
 
     #current = async (req, res) => {
-        const user = req?.user?.user || req?.session?.user
-        if (!user) {
+        const { _id } = req.user
+        if (!_id) {
             CustomError.createError({
-                name: 'user is not valid',
-                cause: invalidFieldErrorInfo({ name: 'user', type: 'string', value: user }),
+                name: '_id is not valid',
+                cause: invalidFieldErrorInfo({ name: '_id', type: 'string', value: _id }),
                 message: 'Error to current user',
                 code: errorCodes.INVALID_TYPES_ERROR
             })
         }
 
-        const data = await userService.getUserById(user._id)
+        const data = await userService.getUserById(_id)
         return { data }
     }
 

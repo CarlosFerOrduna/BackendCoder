@@ -47,7 +47,7 @@ const loggers = { prd: loggerPrd, dev: loggerDev }
 export const addLogger = (req, res, next) => {
     const time = new Date().toLocaleTimeString()
     req.logger = loggers[config.logger]
-    req.logger.info(`${req.method} en ${req.url} - ${time}`)
+    req.logger.info(`${req.method} in ${req.url} - ${time}`)
 
     const originalJson = res.json
     res.json = function (body) {
