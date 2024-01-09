@@ -124,6 +124,28 @@ class UserController {
         })
     }
 
+    searchUsers = async (req, res) => {
+        const { limit, page, firstName, lastName, email, age, username, rol, lastConnection } =
+            req.query
+
+        let query = {}
+        if (firstName) query.firstName = firstName
+        if (lastName) query.lastName = lastName
+        if (email) query.email = email
+        if (age) query.age = age
+        if (username) query.username = username
+        if (rol) query.rol = rol
+        if (lastConnection) query.lastConnection = lastConnection
+
+        const result = await userService.searchUsers(limit, page, query)
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'user successfully found',
+            data: result
+        })
+    }
+
     updateUser = async (req, res) => {
         const { firstName, lastName, email, age, password, rol, cart, tickets } = req.body
         const user = req?.session?.user || req?.user?.user
@@ -162,6 +184,42 @@ class UserController {
         await userService.deleteUser(uid)
 
         return res.status(204).json({})
+    }
+
+    deleteInactiveUsers = async (req, res) => {
+        const emailsUsersInavtive = await userService.getEmailsUsersInactive()
+        console.log('length:', emailsUsersInavtive.length)
+        if (emailsUsersInavtive.length < 1) {
+            return res.json({
+                status: 'success',
+                message: 'there are no users with last connection more than two days old',
+                data: []
+            })
+        }
+
+        const transport = createTransport({
+            service: 'gmail',
+            port: 587,
+            auth: {
+                user: config.emailUser,
+                pass: config.emailPass
+            }
+        })
+
+        await transport.sendMail({
+            from: `ecommerce <${config.emailUser}>`,
+            to: emailsUsersInavtive.join(', '),
+            subject: 'Restaurar contraseña',
+            html: ` <div style="text-align: center;">
+                        <p>Su cuenta fue eliminada por falta de uso</p>
+                    </div>`
+        })
+
+        return res.json({
+            status: 'success',
+            message: 'user successfully deleted',
+            data: emailsUsersInavtive
+        })
     }
 
     #login = async (req, res) => {

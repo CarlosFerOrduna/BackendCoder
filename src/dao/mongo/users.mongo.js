@@ -1,3 +1,4 @@
+import { subDays, subMilliseconds } from 'date-fns'
 import CustomError from '../../services/errors/CostumError.js'
 import errorCodes from '../../services/errors/enum.errors.js'
 import { invalidFieldErrorInfo } from '../../services/errors/info.errors.js'
@@ -63,6 +64,32 @@ export default class Users {
         }
 
         return user
+    }
+
+    getEmailsUsersInactive = async () => {
+        const emailsUsersInactive = await userModel.find(
+            {
+                $and: [
+                    {
+                        $or: [
+                            { lastConnection: { $lt: subDays(new Date(), 2) } },
+                            { lastConnection: null },
+                            { lastConnection: undefined }
+                        ]
+                    },
+                    { rol: { $eq: 'user' } }
+                ]
+            },
+            'email'
+        )
+
+        await userModel.deleteMany({ email: { $in: emailsUsersInactive.map((u) => u.email) } })
+
+        return emailsUsersInactive
+    }
+
+    searchUsers = async (limit, page, query) => {
+        return await userModel.paginate(query, { limit: limit ?? 10, page: page ?? 1 })
     }
 
     updateUser = async (user) => {

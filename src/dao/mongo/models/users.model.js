@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import paginate from 'mongoose-paginate-v2'
 
 import { createHash } from '../../../utils/bcrypt.util.js'
 
@@ -17,6 +18,8 @@ const userSchema = new Schema({
     ],
     lastConnection: { type: Date }
 })
+
+userSchema.plugin(paginate)
 
 userSchema.pre('save', function () {
     if (this.password) this.password = createHash(this.password)

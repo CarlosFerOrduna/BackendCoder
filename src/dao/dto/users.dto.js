@@ -16,7 +16,6 @@ export default class UserDTO {
                 this.tickets = user.tickets || []
                 this.lastConnection = user.lastConnection || null
                 this.documents = user.documents || []
-
                 break
             case 'response':
                 this._id = user._id || null
@@ -30,16 +29,19 @@ export default class UserDTO {
                 this.tickets = user.tickets || []
                 this.lastConnection = user.lastConnection || null
                 this.documents = user.documents || []
-
                 break
-
             case 'bcrypt':
                 this._id = user._id || null
                 this.password = user.password || null
                 this.rol = user.rol || null
-
                 break
-
+            case 'search':
+                this.firstName = user.firstName || null
+                this.lastName = user.lastName || null
+                this.username = user.username || `${user.firstName} ${user.lastName}` || null
+                this.email = user.email || null
+                this.rol = user.rol || null
+                break
             default:
                 CustomError.createError({
                     name: 'Case not valid',

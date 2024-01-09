@@ -1,4 +1,4 @@
-import { connect } from 'mongoose'
+import { connect, set } from 'mongoose'
 
 import config from '../config/dotenv.config.js'
 import CustomError from '../services/errors/CostumError.js'
@@ -14,7 +14,7 @@ switch (config.persistence) {
     case 'mongo':
         try {
             await connect(config.connectionString)
-            console.log('connected successfully')
+            set('debug', true)
 
             const { default: CartsMongo } = await import('./mongo/carts.mongo.js')
             Cart = CartsMongo

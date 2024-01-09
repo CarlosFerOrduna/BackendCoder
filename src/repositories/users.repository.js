@@ -10,6 +10,12 @@ export default class UserRepository {
         return await this.dao.createUser(userDto)
     }
 
+    searchUsers = async (limit, page, query) => {
+        const users = await this.dao.searchUsers(limit, page, query)
+        console.log(users)
+        return users.docs.map((u) => new UserDTO(u, 'search'))
+    }
+
     getUserById = async (uid) => {
         const userDto = await this.dao.getUserById(uid)
         return new UserDTO(userDto, 'response')
@@ -23,6 +29,10 @@ export default class UserRepository {
     getUserByUsername = async (username) => {
         const userDto = await this.dao.getUserByUsername(username)
         return new UserDTO(userDto, 'response')
+    }
+
+    getEmailsUsersInactive = async () => {
+        return await this.dao.getEmailsUsersInactive()
     }
 
     updateUser = async (user) => {

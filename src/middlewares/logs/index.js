@@ -51,7 +51,7 @@ export const addLogger = (req, res, next) => {
 
     const originalJson = res.json
     res.json = function (body) {
-        req.logger.info(`response:`, body)
+        req.logger.http(`response:`, body)
 
         originalJson.call(res, body)
     }
