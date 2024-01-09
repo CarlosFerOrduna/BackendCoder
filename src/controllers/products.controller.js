@@ -7,6 +7,7 @@ import {
 } from '../services/errors/info.errors.js'
 import { generateProductMock } from '../utils/faker.util.js'
 import config from '../config/dotenv.config.js'
+import { createTransport } from 'nodemailer'
 
 class ProductController {
     addProduct = async (req, res) => {
@@ -161,7 +162,7 @@ class ProductController {
     }
 
     deleteProduct = async (req, res) => {
-        const { user } = req.user || req.session
+        const { email, rol } = req.user || req.session
 
         const { pid } = req.params
         if (!pid || !isNaN(pid)) {
@@ -173,12 +174,32 @@ class ProductController {
             })
         }
         const product = await productService.getProductById(pid)
-        if (product.owner !== user.email && user.rol === 'premium') {
+        if (product.owner !== email && rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
                 cause: 'this is not your product',
                 message: 'error to delete product',
                 code: errorCodes.USER_FORBIDDEN
+            })
+        }
+        if (product.owner !== 'admin') {
+            const transport = createTransport({
+                service: 'gmail',
+                port: 587,
+                auth: {
+                    user: config.emailUser,
+                    pass: config.emailPass
+                }
+            })
+
+            await transport.sendMail({
+                from: `ecommerce <${config.emailUser}>`,
+                to: product.owner,
+                subject: 'Producto eliminado',
+                html: ` <div style="text-align: center;">
+                            <p>Se elimino el siguiente producto</p>
+                            <code>${product}</code>
+                        </div>`
             })
         }
 

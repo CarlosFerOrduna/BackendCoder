@@ -209,7 +209,7 @@ class UserController {
         await transport.sendMail({
             from: `ecommerce <${config.emailUser}>`,
             to: emailsUsersInavtive.join(', '),
-            subject: 'Restaurar contraseña',
+            subject: 'Usuario eliminado por inactividad',
             html: ` <div style="text-align: center;">
                         <p>Su cuenta fue eliminada por falta de uso</p>
                     </div>`
