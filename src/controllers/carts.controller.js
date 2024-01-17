@@ -107,7 +107,7 @@ class CartController {
             })
         }
         const product = await productService.getProductById(pid)
-        if (product?.owner === user?.email && user?.rol === 'premium') {
+        if (product?.owner === email && rol === 'premium') {
             CustomError.createError({
                 name: 'forbidden',
                 cause: 'can not add your product in your cart',
@@ -225,7 +225,7 @@ class CartController {
             const { product } = p
             const aux = await productService.getProductById(product)
 
-            if (aux?.owner === user?.email && user?.rol === 'premium') {
+            if (aux?.owner === email && rol === 'premium') {
                 CustomError.createError({
                     name: 'forbidden',
                     cause: 'can not add your product in your cart',
